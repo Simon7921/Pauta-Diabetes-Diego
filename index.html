@@ -41,7 +41,7 @@ h1{font-size:28px;line-height:1.1;margin:0 0 4px;font-weight:700;text-wrap:balan
 h2{font-size:17px;margin:22px 0 8px}
 .field{display:grid;gap:6px;margin-bottom:14px}
 .field label{font-size:15px;font-weight:600}
-input[type=number]{font:inherit;font-size:22px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);width:100%;min-height:52px;font-variant-numeric:tabular-nums}
+input[type=number],input[type=text]{font:inherit;font-size:22px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);width:100%;min-height:52px;font-variant-numeric:tabular-nums}
 input:focus-visible,button:focus-visible{outline:3px solid var(--pr);outline-offset:2px}
 .unit{position:relative}.unit span{position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--mut);font-size:15px;pointer-events:none}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
@@ -94,12 +94,44 @@ select{font:inherit;font-size:16px;padding:10px 12px;border:1.5px solid var(--li
 .hypo div{padding:10px 12px}.hypo div+div{border-top:1px solid var(--cr)}
 .hypo .a{background:var(--crs)}.hypo b{color:var(--cr)}
 @media(prefers-reduced-motion:no-preference){.dose{transition:color .2s}}
+
+/* compact layout */
+.wrap{padding-top:calc(10px + env(safe-area-inset-top))!important;padding-bottom:calc(24px + env(safe-area-inset-bottom))!important}
+h1{font-size:21px!important;margin:0 0 6px!important}
+.tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1.5px solid var(--pr);border-radius:10px;overflow:hidden;position:sticky;top:0;z-index:5;background:var(--bg);margin:0 0 10px}
+.tabs button{font:inherit;font-size:15px;min-height:42px;border:0;background:var(--bg);color:var(--pr);cursor:pointer}
+.tabs button+button{border-left:1px solid var(--pr)}
+.tabs button[aria-selected=true]{background:var(--pr);color:#fff;font-weight:600}
+.tab[hidden]{display:none!important}
+.formula{font-size:13px;color:var(--mut);margin:0 0 8px}
+.res{padding:10px 12px 8px!important;border-radius:12px!important}
+.dose{font-size:clamp(40px,12vw,56px)!important;margin:2px 0 0!important}
+.sum{font-size:14px!important;margin-top:4px!important;gap:6px!important}.sum b{font-size:15px!important}
+.rnd{font-size:12px!important;margin-top:4px!important}
+.alerts{margin-top:8px!important;gap:6px!important}.al{padding:8px 10px!important;font-size:13.5px!important}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.field{margin-bottom:8px!important;gap:4px!important}.field label{font-size:14px!important}
+input[type=number],input[type=text],select{min-height:46px!important;font-size:20px!important;padding:8px 10px!important}
+select{font-size:16px!important}
+.unit span{font-size:13px!important;right:10px!important}
+.chips{gap:6px!important}.chip{min-height:38px!important;padding:4px 10px!important;font-size:13px!important}
+h2{font-size:15px!important;margin:14px 0 4px!important}
+.q{padding:6px 0!important;font-size:14px!important}.seg button{min-height:38px!important;min-width:48px!important}
+details{margin-top:12px!important;padding:0 12px!important}summary{min-height:40px!important;font-size:14px}
+.emer{margin-top:10px!important;padding:8px 10px!important;font-size:13px!important;line-height:1.4}
+.foot{font-size:12px!important;margin-top:10px!important}
+.hc,.ficha{margin-top:0!important;border-top:0!important;padding-top:0!important}
+.btn{min-height:46px!important}.row2{grid-template-columns:minmax(0,1fr) 110px!important}
+.prev{margin:6px 0 6px!important;font-size:14px!important}.tot{margin:8px 0!important}.tot span:last-child{font-size:24px!important}
+.items li{padding:4px 0!important}.ficha h3{margin:14px 0 6px!important;font-size:15px!important}.tb th,.tb td{padding:6px 8px!important;font-size:14px!important}
 </style>
 </head>
 <body>
 <div class="wrap">
 <h1>Pauta de Diego</h1>
-<p class="sub"><a href="#hc" style="color:var(--pr)">Calcular carbohidratos ↓</a> · <a href="#ficha" style="color:var(--pr)">Ver ficha ↓</a><br>Calculadora de insulina rápida según la epicrisis del 12/11/2026: (glicemia − <span id="tT">110</span>) ÷ <span id="tF">50</span> + HC ÷ <span id="tR">12</span></p>
+<nav class="tabs" role="tablist"><button data-t="ins" aria-selected="true">Insulina</button><button data-t="hc" aria-selected="false">Carbohidratos</button><button data-t="fi" aria-selected="false">Ficha</button></nav>
+<div class="tab" id="t-ins">
+<p class="formula">(glicemia − <span id="tT">110</span>) ÷ <span id="tF">50</span> + HC ÷ <span id="tR">12</span></p>
 
 <div class="res" id="res" aria-live="polite">
   <div class="lab" id="rLab">Dosis calculada</div>
@@ -110,21 +142,22 @@ select{font:inherit;font-size:16px;padding:10px 12px;border:1.5px solid var(--li
 
 <div class="alerts" id="alerts"></div>
 
-<h2>Datos</h2>
+<div class="two">
 <div class="field">
-  <label for="g">Glicemia actual</label>
+  <label for="g">Glicemia</label>
   <div class="unit"><input id="g" type="text" inputmode="decimal" autocomplete="off" min="20" max="600" placeholder="Ej. 214"><span>mg/dL</span></div>
 </div>
 <div class="field">
-  <label for="c">Carbohidratos que va a comer</label>
+  <label for="c">Carbohidratos</label>
   <div class="unit"><input id="c" type="text" inputmode="decimal" autocomplete="off" min="0" max="300" placeholder="Ej. 72"><span>g</span></div>
-  <div class="chips" id="chips"></div>
 </div>
+</div>
+<div class="chips" id="chips"></div>
 
 <h2>Antes de inyectar</h2>
-<div class="q"><span>¿Se puso insulina rápida en las últimas 3 horas?</span><div class="seg" data-k="recent"><button data-v="1">Sí</button><button data-v="0" aria-pressed="true">No</button></div></div>
-<div class="q"><span>¿Hará fútbol o gimnasio en las próximas horas?</span><div class="seg" data-k="sport"><button data-v="1">Sí</button><button data-v="0" aria-pressed="true">No</button></div></div>
-<div class="q" style="border-bottom:1px solid var(--line)"><span>¿Tiene síntomas que no coinciden con el sensor?</span><div class="seg" data-k="sym"><button data-v="1">Sí</button><button data-v="0" aria-pressed="true">No</button></div></div>
+<div class="q"><span>¿Insulina rápida en las últimas 3 h?</span><div class="seg" data-k="recent"><button data-v="1">Sí</button><button data-v="0" aria-pressed="true">No</button></div></div>
+<div class="q"><span>¿Fútbol o gimnasio pronto?</span><div class="seg" data-k="sport"><button data-v="1">Sí</button><button data-v="0" aria-pressed="true">No</button></div></div>
+<div class="q" style="border-bottom:1px solid var(--line)"><span>¿Síntomas distintos al sensor?</span><div class="seg" data-k="sym"><button data-v="1">Sí</button><button data-v="0" aria-pressed="true">No</button></div></div>
 
 <details>
   <summary>Parámetros de la pauta</summary>
@@ -138,29 +171,28 @@ select{font:inherit;font-size:16px;padding:10px 12px;border:1.5px solid var(--li
 </details>
 
 <div class="emer"><b>Es poco probable, pero si está inconsciente, convulsiona o no puede tragar:</b> no darle nada por la boca. Ponerlo de lado, usar glucagón si hay y llevarlo a la clínica. Si no puede trasladarlo de inmediato, llamar al 131 (SAMU).</div>
+<p class="foot">Solo aplica la fórmula de la pauta; no descuenta insulina activa ni define el redondeo. Si el resultado parece raro, confirma con glucómetro y consulta.</p>
+</div>
 
-
-<section class="hc" id="hc">
-<h2>Calculadora de carbohidratos</h2>
-<p class="sub">Elige el alimento y escribe cuánto pesa. Puedes sumar varios para armar el plato y pasar el total a la calculadora de insulina.</p>
+<section class="hc tab" id="t-hc" hidden>
+<p class="formula">Elige el alimento, escribe el peso y toca Agregar. Suma varios para armar el plato.</p>
 <div class="field"><label for="al">Alimento</label><select id="al"></select><button class="del" id="delMy" style="display:none;font-size:14px;text-align:left;min-width:0;padding:0;color:var(--cr)">Borrar de mis alimentos</button></div>
 <div id="otro">
   <div class="field"><label for="oN">Nombre</label><input id="oN" type="text" placeholder="Ej. galletas X" style="font:inherit;font-size:16px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);width:100%;min-height:52px"></div>
   <div class="field"><label for="oC">Carbohidratos por 100 g (de la etiqueta)</label><div class="unit"><input id="oC" type="text" inputmode="decimal" autocomplete="off" placeholder="Ej. 65"><span>g</span></div></div>
 </div>
 <div class="row2">
-  <div class="field" style="margin:0"><label for="pe">Peso</label><div class="unit"><input id="pe" type="text" inputmode="decimal" autocomplete="off" placeholder="Ej. 150"><span>g / ml</span></div></div>
+  <div class="field" style="margin:0"><label for="pe" id="peL">Peso</label><div class="unit"><input id="pe" type="text" inputmode="decimal" autocomplete="off" placeholder="Ej. 150"><span id="peU">g / ml</span></div></div>
   <button class="btn" id="add">Agregar</button>
 </div>
 <div class="prev" id="prev"></div>
 <ul class="items" id="items"></ul>
 <div class="tot"><span>Total del plato</span><span id="hcTot">0 g</span></div>
-<button class="btn sec" id="use">Usar este total en la calculadora ↑</button>
-<p class="foot">Valores aproximados por cada 100 g (o 100 ml) de alimento, según tablas de composición (USDA). Los productos envasados varían: si tiene etiqueta, elige "Otro" y usa el dato de "Hidratos de carbono disponibles" por 100 g. Los alimentos que agregues con "Otro" quedan guardados en "Mis alimentos", solo en este teléfono. Fruta pesada sin cáscara ni pepas. Fideos y papas se pesan ya cocidos; los tallarines sin cocer se pesan secos, antes de hervirlos.</p>
+<button class="btn sec" id="use">Usar este total en Insulina</button>
+<p class="foot">Valores aproximados por 100 g o 100 ml (USDA). Con etiqueta, usa "Otro" y el dato de "Hidratos de carbono disponibles"; queda guardado en "Mis alimentos" solo en este teléfono. Fruta sin cáscara ni pepas. Fideos y papas cocidos; tallarines sin cocer, secos.</p>
 </section>
 
-<section class="ficha" id="ficha">
-<h2>Ficha de tratamiento</h2>
+<section class="ficha tab" id="t-fi" hidden>
 <p class="sub">Según la epicrisis de Clínica Santa María (alta 12/11/2026) · Dra. Francisca Eyzaguirre C. · Diagnóstico: diabetes tipo 1. Si el equipo médico cambia la pauta, se sigue la nueva indicación.</p>
 
 <h3>Insulinas</h3>
@@ -220,7 +252,6 @@ select{font:inherit;font-size:16px;padding:10px 12px;border:1.5px solid var(--li
 </ol>
 </section>
 
-<p class="foot">Esta calculadora solo aplica la fórmula de la pauta. No reemplaza al equipo médico, no descuenta la insulina activa y no define cómo redondear. Si el resultado te parece raro, confirma la glicemia con el glucómetro y consulta antes de inyectar.</p>
 </div>
 
 <script>
@@ -280,8 +311,9 @@ function calc(){
   $("alerts").innerHTML=A.join("");
 }
 
-const FOODS={"Frutas":[["Manzana",13.8],["Plátano",22.8],["Naranja",11.8],["Mandarina",13.3],["Piña",13.1],["Palta",8.5]],
-"Verduras":[["Tomate",3.9],["Tomate cherry",3.9]],
+const FOODS={"Frutas":[["Manzana",13.8],["Plátano",22.8],["Plátano mediano entero (unidad)",22.8,118],["Medio plátano (unidad)",22.8,59],["Naranja",11.8],["Mandarina",13.3],["Piña",13.1],["Palta",8.5]],
+"Verduras":[["Tomate",3.9],["Tomate mediano (unidad)",3.9,123],["Tomate cherry",3.9]],
+"Huevos":[["Huevo (unidad)",0.7,50]],
 "Lácteos":[["Yoghito vainilla sin azúcar (120 g)",7.4],["Queso mantecoso / gauda",1],["Helado de crema",23.6]],
 "Panes y cereales":[["Marraqueta",58],["Hallulla",55],["Pan de molde blanco",49],["Corn flakes",84],["Galletas de soda",71]],
 "Acompañamientos":[["Fideos cocidos",31],["Tallarines sin cocer (aprox.)",74],["Papa cocida",20],["Puré de papas",16],["Puré mamá",17.3],["Papas fritas",41]],
@@ -289,7 +321,7 @@ const FOODS={"Frutas":[["Manzana",13.8],["Plátano",22.8],["Naranja",11.8],["Man
 const ALL=[];let MY=[];
 try{MY=JSON.parse(localStorage.getItem("diegoAlimentos")||"[]")||[]}catch(e){MY=[]}
 function saveMy(){try{localStorage.setItem("diegoAlimentos",JSON.stringify(MY))}catch(e){}}
-const grp=Object.entries(FOODS).map(([g,l])=>`<optgroup label="${g}">`+l.map(([n,c])=>{ALL.push([n,c]);return `<option value="${ALL.length-1}">${n} · ${String(c).replace(".",",")} g/100</option>`}).join("")+`</optgroup>`).join("");
+const grp=Object.entries(FOODS).map(([g,l])=>`<optgroup label="${g}">`+l.map(([n,c,u])=>{ALL.push([n,c,u]);return `<option value="${ALL.length-1}">${n} · ${u?(Math.round(c*u/10)/10).toLocaleString("es-CL")+" g c/u":String(c).replace(".",",")+" g/100"}</option>`}).join("")+`</optgroup>`).join("");
 const esc=t=>String(t).replace(/[&<>"]/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m]));
 function buildSel(keep){const my=MY.length?`<optgroup label="Mis alimentos">`+MY.map(([n,c],i)=>`<option value="m${i}">${esc(n)} · ${String(c).replace(".",",")} g/100</option>`).join("")+`</optgroup>`:"";
   $("al").innerHTML=my+grp+`<optgroup label="Otro"><option value="otro">Otro (dato de la etiqueta)</option></optgroup>`;
@@ -298,20 +330,26 @@ buildSel();
 const items=[];
 const fmt0=x=>(Math.round(x*10)/10).toLocaleString("es-CL",{maximumFractionDigits:1});
 function cur(){const v=$("al").value;if(v==="otro"){const c=num("oC");return [($("oN").value||"Otro").trim(),c]}if(v[0]==="m")return MY[+v.slice(1)];return ALL[+v]}
-function prev(){$("otro").style.display=$("al").value==="otro"?"block":"none";$("delMy").style.display=$("al").value[0]==="m"?"block":"none";const [n,c]=cur(),p=num("pe");
-  $("prev").textContent=(p>0&&c>=0&&!isNaN(c))?`${p} g de ${n.toLowerCase()} = ${fmt0(p*c/100)} g de carbohidratos`:""}
-function render(){$("items").innerHTML=items.map((it,i)=>`<li><span>${it.n} · ${it.p} g</span><span><span class="g">${fmt0(it.hc)} g</span><button class="del" data-i="${i}" aria-label="Quitar">×</button></span></li>`).join("");
+function prev(){const v=$("al").value;$("otro").style.display=v==="otro"?"block":"none";$("delMy").style.display=v[0]==="m"?"block":"none";
+  const [n,c,u]=cur(),p=num("pe");$("peL").textContent=u?"Cantidad":"Peso";$("peU").textContent=u?"unidades":"g / ml";$("pe").placeholder=u?"Ej. 2":"Ej. 150";
+  const hc=u?p*u*c/100:p*c/100;
+  $("prev").textContent=(p>0&&c>=0&&!isNaN(c))?`${u?p+" u":p+" g"} de ${n.toLowerCase().replace(" (unidad)","")} = ${fmt0(hc)} g de carbohidratos`:""}
+function render(){$("items").innerHTML=items.map((it,i)=>`<li><span>${it.n} · ${it.p} ${it.u?"u":"g"}</span><span><span class="g">${fmt0(it.hc)} g</span><button class="del" data-i="${i}" aria-label="Quitar">×</button></span></li>`).join("");
   $("hcTot").textContent=fmt0(items.reduce((a,b)=>a+b.hc,0))+" g"}
 ["al","pe","oN","oC"].forEach(id=>$(id).addEventListener("input",prev));
-$("add").addEventListener("click",()=>{const [n,c]=cur(),p=num("pe");if(!(p>0)||isNaN(c))return;
-  items.push({n,p,hc:p*c/100});
+$("add").addEventListener("click",()=>{const [n,c,u]=cur(),p=num("pe");if(!(p>0)||isNaN(c))return;
+  items.push({n:n.replace(" (unidad)",""),p,u:!!u,hc:u?p*u*c/100:p*c/100});
   if($("al").value==="otro"&&$("oN").value.trim()&&c>=0){const nm=$("oN").value.trim(),k=MY.findIndex(x=>x[0].toLowerCase()===nm.toLowerCase());
     if(k>=0)MY[k]=[nm,c];else MY.push([nm,c]);saveMy();$("oN").value="";$("oC").value="";buildSel("m"+(k>=0?k:MY.length-1))}
   $("pe").value="";prev();render()});
 $("delMy").addEventListener("click",()=>{const v=$("al").value;if(v[0]!=="m")return;MY.splice(+v.slice(1),1);saveMy();buildSel();prev()});
 $("items").addEventListener("click",e=>{const b=e.target.closest(".del");if(!b)return;items.splice(+b.dataset.i,1);render()});
-$("use").addEventListener("click",()=>{const t=items.reduce((a,b)=>a+b.hc,0);if(!t)return;$("c").value=Math.round(t*10)/10;calc();window.scrollTo({top:0,behavior:"smooth"})});
+$("use").addEventListener("click",()=>{const t=items.reduce((a,b)=>a+b.hc,0);if(!t)return;$("c").value=Math.round(t*10)/10;calc();showTab("ins")});
 prev();render();
+
+function showTab(t){document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.t===t)));
+  ["ins","hc","fi"].forEach(k=>{$("t-"+k).hidden=k!==t});window.scrollTo(0,0)}
+document.querySelector(".tabs").addEventListener("click",e=>{const b=e.target.closest("button");if(b)showTab(b.dataset.t)});
 syncP();calc();
 if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{})}
 }
