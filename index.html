@@ -113,11 +113,11 @@ select{font:inherit;font-size:16px;padding:10px 12px;border:1.5px solid var(--li
 <h2>Datos</h2>
 <div class="field">
   <label for="g">Glicemia actual</label>
-  <div class="unit"><input id="g" type="number" inputmode="numeric" min="20" max="600" placeholder="Ej. 214"><span>mg/dL</span></div>
+  <div class="unit"><input id="g" type="text" inputmode="decimal" autocomplete="off" min="20" max="600" placeholder="Ej. 214"><span>mg/dL</span></div>
 </div>
 <div class="field">
   <label for="c">Carbohidratos que va a comer</label>
-  <div class="unit"><input id="c" type="number" inputmode="decimal" min="0" max="300" placeholder="Ej. 72"><span>g</span></div>
+  <div class="unit"><input id="c" type="text" inputmode="decimal" autocomplete="off" min="0" max="300" placeholder="Ej. 72"><span>g</span></div>
   <div class="chips" id="chips"></div>
 </div>
 
@@ -130,9 +130,9 @@ select{font:inherit;font-size:16px;padding:10px 12px;border:1.5px solid var(--li
   <summary>Parámetros de la pauta</summary>
   <p class="foot" style="margin-top:4px">Cámbialos solo si el equipo médico indica una pauta nueva.</p>
   <div class="grid3">
-    <label>Objetivo (mg/dL)<input id="pT" type="number" inputmode="numeric"></label>
-    <label>Sensibilidad<input id="pF" type="number" inputmode="numeric"></label>
-    <label>Ratio (g/U)<input id="pR" type="number" inputmode="decimal"></label>
+    <label>Objetivo (mg/dL)<input id="pT" type="text" inputmode="decimal" autocomplete="off"></label>
+    <label>Sensibilidad<input id="pF" type="text" inputmode="decimal" autocomplete="off"></label>
+    <label>Ratio (g/U)<input id="pR" type="text" inputmode="decimal" autocomplete="off"></label>
   </div>
   <button class="reset" id="reset">Volver a la pauta de la epicrisis</button>
 </details>
@@ -146,10 +146,10 @@ select{font:inherit;font-size:16px;padding:10px 12px;border:1.5px solid var(--li
 <div class="field"><label for="al">Alimento</label><select id="al"></select><button class="del" id="delMy" style="display:none;font-size:14px;text-align:left;min-width:0;padding:0;color:var(--cr)">Borrar de mis alimentos</button></div>
 <div id="otro">
   <div class="field"><label for="oN">Nombre</label><input id="oN" type="text" placeholder="Ej. galletas X" style="font:inherit;font-size:16px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);width:100%;min-height:52px"></div>
-  <div class="field"><label for="oC">Carbohidratos por 100 g (de la etiqueta)</label><div class="unit"><input id="oC" type="number" inputmode="decimal" placeholder="Ej. 65"><span>g</span></div></div>
+  <div class="field"><label for="oC">Carbohidratos por 100 g (de la etiqueta)</label><div class="unit"><input id="oC" type="text" inputmode="decimal" autocomplete="off" placeholder="Ej. 65"><span>g</span></div></div>
 </div>
 <div class="row2">
-  <div class="field" style="margin:0"><label for="pe">Peso</label><div class="unit"><input id="pe" type="number" inputmode="decimal" placeholder="Ej. 150"><span>g / ml</span></div></div>
+  <div class="field" style="margin:0"><label for="pe">Peso</label><div class="unit"><input id="pe" type="text" inputmode="decimal" autocomplete="off" placeholder="Ej. 150"><span>g / ml</span></div></div>
   <button class="btn" id="add">Agregar</button>
 </div>
 <div class="prev" id="prev"></div>
@@ -228,6 +228,7 @@ select{font:inherit;font-size:16px;padding:10px 12px;border:1.5px solid var(--li
 const DEF={t:110,f:50,r:12};
 const MEALS=[["Desayuno",60],["Colación",20],["Almuerzo",65],["Once",60],["Cena",65]];
 const $=id=>document.getElementById(id);
+const num=id=>parseFloat(String($(id).value).trim().replace(",","."));
 let P={...DEF};
 try{const s=JSON.parse(localStorage.getItem("diegoPauta")||"null");if(s&&s.t&&s.f&&s.r)P=s}catch(e){}
 const st={recent:0,sport:0,sym:0};
@@ -240,14 +241,14 @@ document.querySelectorAll(".seg").forEach(s=>s.addEventListener("click",e=>{cons
   st[s.dataset.k]=+b.dataset.v;s.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));calc()}));
 ["g","c"].forEach(id=>$(id).addEventListener("input",calc));
 function syncP(){$("pT").value=P.t;$("pF").value=P.f;$("pR").value=P.r;$("tT").textContent=P.t;$("tF").textContent=P.f;$("tR").textContent=P.r}
-["pT","pF","pR"].forEach((id,i)=>$(id).addEventListener("input",()=>{const v=parseFloat($(id).value);if(v>0){P[["t","f","r"][i]]=v;
+["pT","pF","pR"].forEach((id,i)=>$(id).addEventListener("input",()=>{const v=num(id);if(v>0){P[["t","f","r"][i]]=v;
   try{localStorage.setItem("diegoPauta",JSON.stringify(P))}catch(e){}$("tT").textContent=P.t;$("tF").textContent=P.f;$("tR").textContent=P.r;calc()}}));
 $("reset").addEventListener("click",()=>{P={...DEF};try{localStorage.removeItem("diegoPauta")}catch(e){}syncP();calc()});
 
 function al(type,title,body){return `<div class="al ${type}"><b>${title}</b>${body}</div>`}
 
 function calc(){
-  const g=parseFloat($("g").value), c=parseFloat($("c").value);
+  const g=num("g"), c=num("c");
   document.querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed",String(+b.dataset.g===c)));
   const res=$("res"),A=[];
   res.classList.remove("bad");$("rSum").innerHTML="";$("rRnd").textContent="";$("rLab").textContent="Dosis calculada";
@@ -283,7 +284,7 @@ const FOODS={"Frutas":[["Manzana",13.8],["Plátano",22.8],["Naranja",11.8],["Man
 "Verduras":[["Tomate",3.9],["Tomate cherry",3.9]],
 "Lácteos":[["Yoghito vainilla sin azúcar (120 g)",7.4],["Queso mantecoso / gauda",1],["Helado de crema",23.6]],
 "Panes y cereales":[["Marraqueta",58],["Hallulla",55],["Pan de molde blanco",49],["Corn flakes",84],["Galletas de soda",71]],
-"Acompañamientos":[["Fideos cocidos",31],["Tallarines sin cocer (aprox.)",74],["Papa cocida",20],["Puré de papas",16],["Papas fritas",41]],
+"Acompañamientos":[["Fideos cocidos",31],["Tallarines sin cocer (aprox.)",74],["Papa cocida",20],["Puré de papas",16],["Puré mamá",17.3],["Papas fritas",41]],
 "Bebidas":[["Jugo de naranja natural",10.4],["Néctar de fruta (aprox.)",12]]};
 const ALL=[];let MY=[];
 try{MY=JSON.parse(localStorage.getItem("diegoAlimentos")||"[]")||[]}catch(e){MY=[]}
@@ -296,13 +297,13 @@ function buildSel(keep){const my=MY.length?`<optgroup label="Mis alimentos">`+MY
 buildSel();
 const items=[];
 const fmt0=x=>(Math.round(x*10)/10).toLocaleString("es-CL",{maximumFractionDigits:1});
-function cur(){const v=$("al").value;if(v==="otro"){const c=parseFloat($("oC").value);return [($("oN").value||"Otro").trim(),c]}if(v[0]==="m")return MY[+v.slice(1)];return ALL[+v]}
-function prev(){$("otro").style.display=$("al").value==="otro"?"block":"none";$("delMy").style.display=$("al").value[0]==="m"?"block":"none";const [n,c]=cur(),p=parseFloat($("pe").value);
+function cur(){const v=$("al").value;if(v==="otro"){const c=num("oC");return [($("oN").value||"Otro").trim(),c]}if(v[0]==="m")return MY[+v.slice(1)];return ALL[+v]}
+function prev(){$("otro").style.display=$("al").value==="otro"?"block":"none";$("delMy").style.display=$("al").value[0]==="m"?"block":"none";const [n,c]=cur(),p=num("pe");
   $("prev").textContent=(p>0&&c>=0&&!isNaN(c))?`${p} g de ${n.toLowerCase()} = ${fmt0(p*c/100)} g de carbohidratos`:""}
 function render(){$("items").innerHTML=items.map((it,i)=>`<li><span>${it.n} · ${it.p} g</span><span><span class="g">${fmt0(it.hc)} g</span><button class="del" data-i="${i}" aria-label="Quitar">×</button></span></li>`).join("");
   $("hcTot").textContent=fmt0(items.reduce((a,b)=>a+b.hc,0))+" g"}
 ["al","pe","oN","oC"].forEach(id=>$(id).addEventListener("input",prev));
-$("add").addEventListener("click",()=>{const [n,c]=cur(),p=parseFloat($("pe").value);if(!(p>0)||isNaN(c))return;
+$("add").addEventListener("click",()=>{const [n,c]=cur(),p=num("pe");if(!(p>0)||isNaN(c))return;
   items.push({n,p,hc:p*c/100});
   if($("al").value==="otro"&&$("oN").value.trim()&&c>=0){const nm=$("oN").value.trim(),k=MY.findIndex(x=>x[0].toLowerCase()===nm.toLowerCase());
     if(k>=0)MY[k]=[nm,c];else MY.push([nm,c]);saveMy();$("oN").value="";$("oC").value="";buildSel("m"+(k>=0?k:MY.length-1))}
