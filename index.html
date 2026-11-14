@@ -98,8 +98,8 @@ select{font:inherit;font-size:16px;padding:10px 12px;border:1.5px solid var(--li
 /* compact layout */
 .wrap{padding-top:calc(10px + env(safe-area-inset-top))!important;padding-bottom:calc(24px + env(safe-area-inset-bottom))!important}
 h1{font-size:21px!important;margin:0 0 6px!important}
-.tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1.5px solid var(--pr);border-radius:10px;overflow:hidden;position:sticky;top:0;z-index:5;background:var(--bg);margin:0 0 10px}
-.tabs button{font:inherit;font-size:15px;min-height:42px;border:0;background:var(--bg);color:var(--pr);cursor:pointer}
+.tabs{display:grid;grid-template-columns:1.05fr 1.35fr 1.1fr .85fr;border:1.5px solid var(--pr);border-radius:10px;overflow:hidden;position:sticky;top:0;z-index:5;background:var(--bg);margin:0 0 10px}
+.tabs button{font:inherit;font-size:13.5px;padding:0 2px;min-height:42px;border:0;background:var(--bg);color:var(--pr);cursor:pointer}
 .tabs button+button{border-left:1px solid var(--pr)}
 .tabs button[aria-selected=true]{background:var(--pr);color:#fff;font-weight:600}
 .tab[hidden]{display:none!important}
@@ -124,17 +124,67 @@ details{margin-top:12px!important;padding:0 12px!important}summary{min-height:40
 .btn{min-height:46px!important}.row2{grid-template-columns:minmax(0,1fr) 110px!important}
 .prev{margin:6px 0 6px!important;font-size:14px!important}.tot{margin:8px 0!important}.tot span:last-child{font-size:24px!important}
 .items li{padding:4px 0!important}.ficha h3{margin:14px 0 6px!important;font-size:15px!important}.tb th,.tb td{padding:6px 8px!important;font-size:14px!important}
+.saverow{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin-top:12px;align-items:center}
+.saverow input{font-size:16px!important}
+.hist li{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start}
+.hist .d{font-size:13px;color:var(--mut)}.hist .v{font-size:15px}
+
+/* ===== Color & UI refresh =====
+   Color con significado: rango de glicemia (verde/ámbar/naranjo/rojo), comidas con color propio,
+   advertencias en ámbar, guardar en verde, emergencia en rojo. Tipografía de sistema tipo app. */
+:root{--ok:light-dark(#15803d,#4ade80);--oks:light-dark(#e8f7ee,#0f2a1b);--hi:light-dark(#b45309,#fbbf24);--his:light-dark(#fff6e5,#2e2310);
+--vh:light-dark(#c2410c,#fb923c);--vhs:light-dark(#ffede3,#33190d);--pr2:light-dark(#2563eb,#60a5fa);--card:light-dark(#f3f6fb,#161b23)}
+body{font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif!important;background:light-dark(#f4f7fb,#0f1217)!important}
+h1{display:flex;align-items:center;gap:10px;background:linear-gradient(135deg,#0b4f8a 0%,#2563eb 100%);color:#fff!important;padding:12px 14px!important;border-radius:14px;margin:0 0 10px!important;font-weight:700;letter-spacing:-.01em;box-shadow:0 4px 14px rgba(11,79,138,.25)}
+h1::before{content:"";width:22px;height:22px;flex:none;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M12 2C9 6.5 5 10.5 5 14.5a7 7 0 0 0 14 0C19 10.5 15 6.5 12 2z'/%3E%3C/svg%3E") center/contain no-repeat}
+.tabs{border:0!important;background:light-dark(#e3eaf5,#1c2430)!important;padding:4px;gap:4px;border-radius:12px!important;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.tabs button{border:0!important;border-radius:9px;background:transparent!important;color:light-dark(#334155,#cbd5e1)!important;font-weight:600}
+.tabs button[aria-selected=true]{background:light-dark(#fff,#0b4f8a)!important;color:light-dark(#0b4f8a,#fff)!important;box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.res{border:0!important;background:light-dark(#fff,#161b23)!important;box-shadow:0 4px 16px rgba(15,23,42,.08);border-top:6px solid var(--pr)!important}
+.rtop{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.gpill{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.gpill:empty{display:none}
+.res.r-ok{border-top-color:var(--ok)!important}.res.r-ok .gpill{background:var(--oks);color:var(--ok)}
+.res.r-high{border-top-color:var(--hi)!important}.res.r-high .gpill{background:var(--his);color:var(--hi)}
+.res.r-vhigh{border-top-color:var(--vh)!important}.res.r-vhigh .gpill{background:var(--vhs);color:var(--vh)}
+.res.r-low,.res.bad{border-top-color:var(--cr)!important;background:var(--crs)!important}.res.r-low .gpill{background:var(--cr);color:#fff}
+input[type=text],select{background:light-dark(#fff,#161b23)!important;border-color:light-dark(#cfd8e3,#2a303b)!important;border-radius:12px!important}
+input:focus{border-color:var(--pr2)!important;outline:none}
+.chip{border:0!important;font-weight:600}
+.chip:nth-child(1){background:#fff1d6;color:#8a5300}.chip:nth-child(2){background:#dcf5f1;color:#0f6b5e}.chip:nth-child(3){background:#ffe4d6;color:#a23f0c}
+.chip:nth-child(4){background:#efe5ff;color:#5b34a8}.chip:nth-child(5){background:#e0e7ff;color:#3730a3}
+.chip[aria-pressed=true]{box-shadow:inset 0 0 0 2px currentColor;transform:translateY(-1px)}
+.q{border-top-color:light-dark(#e2e8f0,#2a303b)!important}
+.seg{border:0!important;background:light-dark(#e9eef5,#1c2430);padding:3px;border-radius:10px!important;gap:3px}
+.seg button{border-radius:8px;background:transparent!important;font-weight:600}
+.seg button[data-v="0"][aria-pressed=true]{background:light-dark(#fff,#2a303b)!important;color:var(--ink)!important;box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.seg button[data-v="1"][aria-pressed=true]{background:#f59e0b!important;color:#fff!important}
+.btn{border-radius:12px!important;background:linear-gradient(135deg,#0b4f8a,#2563eb)!important}
+#save{background:linear-gradient(135deg,#15803d,#22a35a)!important}
+.btn.sec{background:light-dark(#fff,#161b23)!important;color:var(--pr)!important;border:1.5px solid var(--pr)!important}
+.al.a{background:var(--his)!important;border-color:#f59e0b!important}
+.emer{background:var(--crs);border-width:0!important;border-left:5px solid var(--cr)!important;border-radius:12px!important}
+details{background:light-dark(#fff,#161b23);border:0!important;box-shadow:0 1px 4px rgba(0,0,0,.06);border-radius:12px!important}
+.items li{background:light-dark(#fff,#161b23);border:0!important;border-radius:10px;padding:8px 10px!important;margin-bottom:6px;box-shadow:0 1px 3px rgba(0,0,0,.05);border-left:4px solid var(--pr2)!important}
+.tot span:last-child{color:var(--ok)!important}
+.hist li.r-ok{border-left-color:var(--ok)!important}.hist li.r-high{border-left-color:#f59e0b!important}.hist li.r-vhigh{border-left-color:var(--vh)!important}.hist li.r-low{border-left-color:var(--cr)!important;background:var(--crs)}
+.ficha h3{display:flex;align-items:center;gap:8px}.ficha h3::before{content:"";width:6px;height:18px;border-radius:3px;background:var(--pr2)}
+.tb{background:light-dark(#fff,#161b23);border-radius:12px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.tb thead th{background:light-dark(#eaf1fb,#1c2430)!important;color:var(--pr)!important}
+.box{background:light-dark(#fff,#161b23)!important;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.hypo{border-radius:12px!important}
+#clrH{color:var(--cr)!important;border-color:var(--cr)!important}
 </style>
 </head>
 <body>
 <div class="wrap">
 <h1>Pauta de Diego</h1>
-<nav class="tabs" role="tablist"><button data-t="ins" aria-selected="true">Insulina</button><button data-t="hc" aria-selected="false">Carbohidratos</button><button data-t="fi" aria-selected="false">Ficha</button></nav>
+<nav class="tabs" role="tablist"><button data-t="ins" aria-selected="true">Insulina</button><button data-t="hc" aria-selected="false">Carbohidratos</button><button data-t="hi" aria-selected="false">Historial</button><button data-t="fi" aria-selected="false">Ficha</button></nav>
 <div class="tab" id="t-ins">
 <p class="formula">(glicemia − <span id="tT">110</span>) ÷ <span id="tF">50</span> + HC ÷ <span id="tR">12</span></p>
 
 <div class="res" id="res" aria-live="polite">
-  <div class="lab" id="rLab">Dosis calculada</div>
+  <div class="rtop"><span class="lab" id="rLab">Dosis calculada</span><span class="gpill" id="gp"></span></div>
   <div class="dose" id="rDose">—</div>
   <div class="sum" id="rSum"></div>
   <div class="rnd" id="rRnd"></div>
@@ -155,10 +205,12 @@ details{margin-top:12px!important;padding:0 12px!important}summary{min-height:40
 <div class="chips" id="chips"></div>
 
 <h2>Antes de inyectar</h2>
-<div class="q"><span>¿Insulina rápida en las últimas 3 h?</span><div class="seg" data-k="recent"><button data-v="1">Sí</button><button data-v="0" aria-pressed="true">No</button></div></div>
+<div class="q"><span>¿Insulina rápida hace menos de 3 h?</span><div class="seg" data-k="recent"><button data-v="1">Sí</button><button data-v="0" aria-pressed="true">No</button></div></div>
 <div class="q"><span>¿Fútbol o gimnasio pronto?</span><div class="seg" data-k="sport"><button data-v="1">Sí</button><button data-v="0" aria-pressed="true">No</button></div></div>
 <div class="q" style="border-bottom:1px solid var(--line)"><span>¿Síntomas distintos al sensor?</span><div class="seg" data-k="sym"><button data-v="1">Sí</button><button data-v="0" aria-pressed="true">No</button></div></div>
 
+<div class="saverow"><div class="unit"><input id="ap" type="text" inputmode="decimal" autocomplete="off" placeholder="Aplicadas (opc.)"><span>U</span></div><button class="btn" id="save">Guardar cálculo</button></div>
+<div class="prev" id="saved"></div>
 <details>
   <summary>Parámetros de la pauta</summary>
   <p class="foot" style="margin-top:4px">Cámbialos solo si el equipo médico indica una pauta nueva.</p>
@@ -192,6 +244,13 @@ details{margin-top:12px!important;padding:0 12px!important}summary{min-height:40
 <p class="foot">Valores aproximados por 100 g o 100 ml (USDA). Con etiqueta, usa "Otro" y el dato de "Hidratos de carbono disponibles"; queda guardado en "Mis alimentos" solo en este teléfono. Fruta sin cáscara ni pepas. Fideos y papas cocidos; tallarines sin cocer, secos.</p>
 </section>
 
+<section class="tab" id="t-hi" hidden>
+<p class="formula">Cada vez que tocas "Guardar cálculo" queda aquí con fecha y hora. Se guarda solo en este teléfono.</p>
+<ul class="items hist" id="hist"></ul>
+<div class="saverow" style="margin-top:12px"><button class="btn sec" id="copyH">Copiar historial</button><button class="btn sec" id="clrH" style="color:var(--cr);border-color:var(--cr)">Borrar todo</button></div>
+<div class="prev" id="hMsg"></div>
+</section>
+
 <section class="ficha tab" id="t-fi" hidden>
 <p class="sub">Según la epicrisis de Clínica Santa María (alta 12/11/2026) · Dra. Francisca Eyzaguirre C. · Diagnóstico: diabetes tipo 1. Si el equipo médico cambia la pauta, se sigue la nueva indicación.</p>
 
@@ -200,7 +259,7 @@ details{margin-top:12px!important;padding:0 12px!important}summary{min-height:40
 <thead><tr><th>Insulina</th><th>Cuándo</th></tr></thead>
 <tbody>
 <tr><td><b>Tresiba</b><br><span class="lab">basal (lenta)</span></td><td><b>14 U a las 20:00</b>, todos los días<br><span class="lab">Ajustada por el equipo médico (antes 15 U)</span></td></tr>
-<tr><td><b>NovoRapid o Fiasp</b><br><span class="lab">rápida</span></td><td>Antes de cada comida, según la fórmula de arriba</td></tr>
+<tr><td><b>NovoRapid o Fiasp</b><br><span class="lab">rápida</span></td><td>Antes de cada comida, según la fórmula (pestaña Insulina)</td></tr>
 </tbody></table>
 
 <h3>Parámetros</h3>
@@ -262,12 +321,12 @@ const $=id=>document.getElementById(id);
 const num=id=>parseFloat(String($(id).value).trim().replace(",","."));
 let P={...DEF};
 try{const s=JSON.parse(localStorage.getItem("diegoPauta")||"null");if(s&&s.t&&s.f&&s.r)P=s}catch(e){}
-const st={recent:0,sport:0,sym:0};
+const st={recent:0,sport:0,sym:0};let LAST=null;
 const fmt=x=>(Math.round(x*10)/10).toLocaleString("es-CL",{minimumFractionDigits:1,maximumFractionDigits:1});
 const fmtH=x=>(Math.round(x*2)/2).toLocaleString("es-CL",{minimumFractionDigits:1,maximumFractionDigits:1});
 
 $("chips").innerHTML=MEALS.map(([n,g])=>`<button class="chip" data-g="${g}" aria-pressed="false">${n} ${g} g</button>`).join("");
-$("chips").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;$("c").value=b.dataset.g;calc()});
+let selChip=null;$("chips").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;selChip=b;$("c").value=b.dataset.g;calc()});
 document.querySelectorAll(".seg").forEach(s=>s.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;
   st[s.dataset.k]=+b.dataset.v;s.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));calc()}));
 ["g","c"].forEach(id=>$(id).addEventListener("input",calc));
@@ -280,12 +339,14 @@ function al(type,title,body){return `<div class="al ${type}"><b>${title}</b>${bo
 
 function calc(){
   const g=num("g"), c=num("c");
-  document.querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed",String(+b.dataset.g===c)));
+  document.querySelectorAll(".chip").forEach(b=>b.setAttribute("aria-pressed",String(b===selChip&&+b.dataset.g===c)));
   const res=$("res"),A=[];
-  res.classList.remove("bad");$("rSum").innerHTML="";$("rRnd").textContent="";$("rLab").textContent="Dosis calculada";
+  res.classList.remove("bad","r-low","r-ok","r-high","r-vhigh");const gp=$("gp");gp.textContent="";
+  if(!isNaN(g)){const r=g<70?["r-low","Baja"]:g<=180?["r-ok","En rango"]:g<=250?["r-high","Alta"]:["r-vhigh","Muy alta"];res.classList.add(r[0]);gp.textContent=g+" mg/dL · "+r[1]}
+  $("rSum").innerHTML="";$("rRnd").textContent="";$("rLab").textContent="Dosis calculada";
   if(st.sym)A.push(al("a","Confirma con glucómetro","Si los síntomas no coinciden con el sensor, mide en el dedo antes de calcular."));
-  if(isNaN(g)){$("rDose").textContent="—";$("rSum").textContent="Ingresa la glicemia y los carbohidratos";$("alerts").innerHTML=A.join("");return}
-  if(g<70){
+  LAST=null;if(isNaN(g)){$("rDose").textContent="—";$("rSum").textContent="Ingresa la glicemia y los carbohidratos";$("alerts").innerHTML=A.join("");return}
+  if(g<70){LAST={g,c:isNaN(c)?0:c,dose:0,hypo:1};
     res.classList.add("bad");$("rLab").textContent=`Glicemia ${g} mg/dL`;$("rDose").textContent="Hipoglucemia: no inyectar";
     $("rSum").textContent="Primero hay que tratar la hipoglucemia";
     A.unshift(al("r","Qué hacer ahora","Dale 15 g de azúcar rápida (jugo, tabletas de glucosa o azúcar en agua). Vuelve a medir a los 15 minutos y repite si sigue bajo 70. Cuando se recupere, vuelve a calcular la insulina de la comida."));
@@ -300,7 +361,7 @@ function calc(){
   }
   if(main<0)main=0;
   $("rLab").textContent=label;
-  $("rDose").innerHTML=`${fmt(main)} <small>U</small>`;
+  $("rDose").innerHTML=`${fmt(main)} <small>U</small>`;LAST={g,c:cc,dose:main,corr,food,recent:st.recent,sport:st.sport};
   $("rSum").innerHTML=st.recent?`<span>Comida ${fmt(food)} U</span><span>· corrección no sumada</span>`
     :`<span>Corrección <b>${fmt(corr)}</b></span><span>+</span><span>Comida <b>${fmt(food)}</b></span><span>=</span><span><b>${fmt(total)} U</b></span>`;
   $("rRnd").textContent=`Referencia: ${fmtH(main)} U si redondea a 0,5 · ${Math.round(main)} U si redondea a 1. Cómo redondear lo define el equipo.`;
@@ -311,7 +372,7 @@ function calc(){
   $("alerts").innerHTML=A.join("");
 }
 
-const FOODS={"Frutas":[["Manzana",13.8],["Plátano",22.8],["Plátano mediano entero (unidad)",22.8,118],["Medio plátano (unidad)",22.8,59],["Naranja",11.8],["Mandarina",13.3],["Piña",13.1],["Palta",8.5]],
+const FOODS={"Frutas":[["Manzana",13.8],["Plátano pesado (sin cáscara)",22.8],["Medio plátano (mitad)",22.8,59],["Naranja",11.8],["Mandarina",13.3],["Piña",13.1],["Palta",8.5]],
 "Verduras":[["Tomate",3.9],["Tomate mediano (unidad)",3.9,123],["Tomate cherry",3.9]],
 "Huevos":[["Huevo (unidad)",0.7,50]],
 "Lácteos":[["Yoghito vainilla sin azúcar (120 g)",7.4],["Queso mantecoso / gauda",1],["Helado de crema",23.6]],
@@ -348,8 +409,24 @@ $("use").addEventListener("click",()=>{const t=items.reduce((a,b)=>a+b.hc,0);if(
 prev();render();
 
 function showTab(t){document.querySelectorAll(".tabs button").forEach(b=>b.setAttribute("aria-selected",String(b.dataset.t===t)));
-  ["ins","hc","fi"].forEach(k=>{$("t-"+k).hidden=k!==t});window.scrollTo(0,0)}
+  ["ins","hc","hi","fi"].forEach(k=>{$("t-"+k).hidden=k!==t});window.scrollTo(0,0)}
 document.querySelector(".tabs").addEventListener("click",e=>{const b=e.target.closest("button");if(b)showTab(b.dataset.t)});
+
+let H=[];try{H=JSON.parse(localStorage.getItem("diegoHistorial")||"[]")||[]}catch(e){H=[]}
+const saveH=()=>{try{localStorage.setItem("diegoHistorial",JSON.stringify(H.slice(0,300)))}catch(e){}};
+const fdt=t=>{const d=new Date(t);return d.toLocaleDateString("es-CL",{weekday:"short",day:"2-digit",month:"2-digit"})+" "+d.toLocaleTimeString("es-CL",{hour:"2-digit",minute:"2-digit",hourCycle:"h23"})};
+const line=h=>`${h.meal?h.meal+" · ":""}Glicemia ${h.g} · HC ${fmt(h.c)} g · `+(h.hypo?"Hipoglucemia, sin dosis":`Calculada ${fmt(h.dose)} U`)+(h.ap!=null?` · Aplicada ${String(h.ap).replace(".",",")} U`:"")+(h.recent?" · bolo <3 h":"")+(h.sport?" · deporte":"");
+function renderH(){$("hist").innerHTML=H.length?H.map((h,i)=>`<li class="${h.g<70?"r-low":h.g<=180?"r-ok":h.g<=250?"r-high":"r-vhigh"}"><span><span class="d">${fdt(h.t)}</span><br><span class="v">${line(h)}</span></span><button class="del" data-i="${i}" aria-label="Borrar">×</button></li>`).join(""):'<li><span class="d">Todavía no hay cálculos guardados.</span></li>'}
+$("save").addEventListener("click",()=>{if(!LAST){$("saved").textContent="Primero ingresa la glicemia.";return}
+  const ch=document.querySelector('.chip[aria-pressed="true"]');const ap=num("ap");
+  H.unshift({t:Date.now(),...LAST,meal:ch?ch.textContent.replace(/\s\d+\sg$/,""):"",ap:isNaN(ap)?null:ap});saveH();renderH();$("ap").value="";
+  $("saved").textContent="Guardado: "+fdt(H[0].t)+" (ver Historial)"});
+$("hist").addEventListener("click",e=>{const b=e.target.closest(".del");if(!b)return;H.splice(+b.dataset.i,1);saveH();renderH()});
+$("copyH").addEventListener("click",()=>{const txt="Historial Pauta de Diego\n"+H.map(h=>fdt(h.t)+" — "+line(h)).join("\n");
+  try{navigator.clipboard.writeText(txt).then(()=>{$("hMsg").textContent="Copiado. Puedes pegarlo en WhatsApp o un correo."},()=>{$("hMsg").textContent="No se pudo copiar en este navegador."})}catch(e){$("hMsg").textContent="No se pudo copiar en este navegador."}});
+let clrArm=0;$("clrH").addEventListener("click",()=>{if(!clrArm){clrArm=1;$("clrH").textContent="Tocar otra vez para borrar";setTimeout(()=>{clrArm=0;$("clrH").textContent="Borrar todo"},4000);return}
+  H=[];saveH();renderH();clrArm=0;$("clrH").textContent="Borrar todo";$("hMsg").textContent="Historial borrado."});
+renderH();
 syncP();calc();
 if("serviceWorker" in navigator){navigator.serviceWorker.register("sw.js").catch(()=>{})}
 }
