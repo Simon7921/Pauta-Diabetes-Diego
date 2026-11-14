@@ -306,6 +306,94 @@ body{background:radial-gradient(120% 60% at 85% -10%,rgba(56,225,198,.10),transp
 .dosebox .dv.stop{color:var(--danger);font-size:clamp(34px,10vw,44px);text-shadow:none}
 .dosebox .brk{font-size:15px;color:var(--text2)}.dosebox .brk b{color:var(--text)}
 .dosebox .rnd{font-size:13px;color:var(--muted);margin-top:6px}
+
+/* ===== Inicio sin scroll: todo cabe en la pantalla ===== */
+.hbtn{display:inline-flex;align-items:center;gap:6px;min-height:44px;min-width:44px;padding:0 12px;border-radius:12px;border:1px solid var(--border2);background:var(--surface);color:var(--text);font-weight:700;font-size:14px}
+.hbtn .ico{width:18px;height:18px}.hbtn.red{color:var(--danger);padding:0 10px}
+.shortcuts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.sc{flex-direction:column;align-items:flex-start;justify-content:center;gap:4px;min-height:64px;padding:10px 12px}
+.sc>.ico:first-child{width:22px;height:22px}
+.sc b{font-size:14px}.sc small{font-size:11.5px}
+.sc:not(.lime):not(.teal){border-color:var(--border2)}.sc:not(.lime):not(.teal)>.ico{color:var(--accent)}
+@media (max-width:899px){
+  html.fit,html.fit body{height:100%;overflow:hidden}
+  html.fit .wrap{height:100dvh;display:flex;flex-direction:column;padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+  html.fit #s-inicio{flex:1;min-height:0;display:flex;flex-direction:column}
+  #s-inicio .cols{flex:1;min-height:0;display:flex;flex-direction:column}
+  #s-inicio .cols>div:first-child{flex:1;min-height:0;display:flex;flex-direction:column}
+  #s-inicio .plist{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+  #s-inicio .mast{min-height:0;height:clamp(108px,18.5dvh,220px);margin-bottom:2px;flex:none}
+  #s-inicio .mast-art{height:112%;width:auto;max-width:72%}
+  #s-inicio .mast-row{margin-top:clamp(2px,1dvh,10px)}
+  #s-inicio .ava{width:clamp(44px,7dvh,58px);height:clamp(44px,7dvh,58px)}
+  #s-inicio .hi{font-size:clamp(22px,min(7.6vw,4.2dvh),32px)}
+  #s-inicio .hi2{font-size:clamp(14px,2.2dvh,17px)}
+  #s-inicio .q1{margin-top:clamp(6px,3.6dvh,48px);font-size:clamp(21px,min(7.2vw,3.9dvh),30px)}
+  #s-inicio .mchips{padding:2px 2px clamp(6px,1.4dvh,14px);flex:none}
+  #s-inicio .mchips .chip{min-height:44px}
+  #s-inicio .plateh{padding:clamp(10px,1.8dvh,18px) 12px clamp(10px,1.8dvh,18px) 16px;flex:none}
+  #s-inicio .ph-title{font-size:clamp(15px,2.3dvh,19px)}
+  #s-inicio .ph-total{font-size:clamp(28px,min(10.5vw,6.2dvh),52px);margin:clamp(2px,1dvh,12px) 0 clamp(2px,.6dvh,6px)}
+  #s-inicio .plateh p{margin-bottom:clamp(4px,1dvh,14px);font-size:clamp(13px,1.9dvh,15px)}
+  #s-inicio #heroPauta{margin:-2px 0 clamp(6px,1.2dvh,14px)!important}
+  #s-inicio .btn.go{min-height:44px}
+  #s-inicio .bowl{width:min(40%,20dvh);margin-top:6px}
+  #s-inicio .sect2{margin:clamp(6px,1.4dvh,20px) 2px clamp(4px,.8dvh,10px);flex:none}
+  #s-inicio .sect2 h2{font-size:clamp(17px,2.6dvh,22px)}
+  #s-inicio .plist .li{padding:4px 0}
+  #s-inicio .thumb{width:clamp(36px,5dvh,48px);height:clamp(36px,5dvh,48px);font-size:clamp(20px,2.8dvh,26px)}
+  #s-inicio .plist .main{min-height:44px;padding:2px 0}
+  #s-inicio .plist .empty{padding:8px}
+  #s-inicio .plist .empty .ico{width:clamp(22px,4dvh,44px);height:clamp(22px,4dvh,44px)}
+  #s-inicio .plist .empty p{margin:4px 0}
+  #s-inicio .shortcuts{margin-top:clamp(6px,1.2dvh,12px);flex:none}
+  #s-inicio .sc{min-height:50px;padding:6px 8px;flex-direction:row;align-items:center;justify-content:center;gap:6px}
+  #s-inicio .sc b{font-size:13.5px}
+  #s-inicio .sc small{display:none}
+  #s-inicio .plateh p{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+}
+@media (max-width:899px) and (min-height:900px){#s-inicio .sc{flex-direction:column;align-items:flex-start;min-height:64px}#s-inicio .sc small{display:block}}
+@media (max-width:899px) and (max-height:620px){#s-inicio .plateh p#heroDesc{display:none}}
+
+/* Contador a la próxima comida o dosis */
+.nextp{display:inline-flex;align-items:center;gap:6px;margin-top:6px;min-height:40px;padding:0 12px;border-radius:999px;border:1px solid rgba(56,225,198,.45);background:rgba(56,225,198,.12);color:var(--text);font-size:13.5px;font-weight:700;white-space:nowrap;position:relative}
+.nextp::before{content:"";position:absolute;inset:-4px -2px}
+.nextp .ico{width:16px;height:16px;color:var(--accent2)}
+.nextp b{color:var(--accent)}
+:root[data-mode=light] .nextp b{color:#3F6212}
+.nextp:empty{display:none}
+.sched{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.sched:last-child{border-bottom:0}
+.sched .tm{flex:none}
+.sched .tm select{width:74px;min-height:46px;font-size:18px;padding:6px 8px;text-align:center}
+.sched .lb{flex:1;font-weight:650}
+.sched.nx .lb::after{content:"Próxima";margin-left:8px;font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;background:var(--accent);color:var(--on-accent)}
+@media (max-width:899px){#s-inicio .nextp{margin-top:clamp(2px,.8dvh,6px)}}
+
+/* Contador más notorio */
+.nextp{min-height:44px;padding:0 14px 0 10px;gap:8px;font-size:15px;border:1.5px solid var(--accent);background:linear-gradient(90deg,rgba(184,255,59,.20),rgba(56,225,198,.14));box-shadow:0 0 0 3px rgba(184,255,59,.08),0 6px 18px rgba(184,255,59,.18)}
+.nextp .ico{width:22px;height:22px;color:var(--accent);stroke-width:2.4}
+.nextp .lbl{font-weight:800}
+.nextp b{font-size:17px;font-weight:900;color:var(--accent);letter-spacing:-.01em}
+.nextp.soon{background:var(--accent);color:var(--on-accent);animation:pulse 1.8s ease-in-out infinite}
+.nextp.soon .ico,.nextp.soon b{color:var(--on-accent)}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(184,255,59,.55)}50%{box-shadow:0 0 0 8px rgba(184,255,59,0)}}
+:root[data-mode=light] .nextp{border-color:#65A30D;background:#F1FFDB}
+:root[data-mode=light] .nextp b,:root[data-mode=light] .nextp .ico{color:#3F6212}
+:root[data-mode=light] .nextp.soon{background:var(--accent)}
+:root[data-mode=light] .nextp.soon b,:root[data-mode=light] .nextp.soon .ico{color:var(--on-accent)}
+
+/* Tarjeta "Tu plato de hoy" compacta: más espacio para la lista */
+@media (max-width:899px){
+  #s-inicio .plateh{display:block;position:relative;padding:12px 14px 12px 16px}
+  #s-inicio .bowl{position:absolute;left:10px;top:4px;width:clamp(46px,6.4dvh,56px);margin:0;filter:drop-shadow(0 4px 8px rgba(0,0,0,.45))}
+  #s-inicio .ph-title .lbar,#s-inicio .ph-title>.ico{display:none}
+  #s-inicio .ph-txt{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:10px}
+  #s-inicio .ph-title{grid-column:1/-1;padding-left:clamp(44px,6dvh,52px);min-height:clamp(34px,4.8dvh,42px)}
+  #s-inicio .ph-total{grid-column:1;font-size:clamp(28px,min(9vw,5dvh),44px);margin:4px 0 2px}
+  #s-inicio .btn.go{grid-column:2;grid-row:2;min-height:44px;padding:0 14px;font-size:15px}
+  #s-inicio .plateh p#heroDesc{grid-column:1/-1;margin:2px 0 0;font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 </style>
 </head>
@@ -361,7 +449,7 @@ body{background:radial-gradient(120% 60% at 85% -10%,rgba(56,225,198,.10),transp
       </svg>
       <div class="mast-row">
         <button class="ava" data-go="perfil" aria-label="Perfil y configuración"><svg class="ico"><use href="#i-user"/></svg></button>
-        <div><h1 class="hi" id="hiT">¡Hola, Diego!</h1><div class="hi2" id="hello">¡Vamos, Diego! ⚡</div></div>
+        <div><h1 class="hi" id="hiT">¡Hola, Diego!</h1><div class="hi2" id="hello">¡Vamos, Diego! ⚡</div><button class="nextp" id="nextPill" aria-label="Ver horarios"></button></div>
       </div>
       <p class="q1">¿Qué comeremos hoy?</p>
     </header>
@@ -372,7 +460,7 @@ body{background:radial-gradient(120% 60% at 85% -10%,rgba(56,225,198,.10),transp
           <div class="ph-txt">
             <div class="ph-title"><span class="lbar"></span><svg class="ico"><use href="#i-utensils"/></svg>Tu plato de hoy</div>
             <div class="ph-total" id="total" aria-live="polite">0 g HC</div>
-            <p class="t2" id="heroDesc"></p><p class="muted small" id="heroPauta" style="margin:-8px 0 14px"></p>
+            <p class="t2" id="heroDesc"></p><p class="muted small" id="heroPauta" hidden></p>
             <button class="btn btn-primary go" data-go="alimentos" id="addFood"></button>
           </div>
           <svg class="bowl" viewBox="0 0 140 120" aria-hidden="true" focusable="false">
@@ -390,14 +478,14 @@ body{background:radial-gradient(120% 60% at 85% -10%,rgba(56,225,198,.10),transp
             <path d="M0 112 C 40 104, 90 96, 140 70" stroke="#38E1C6" stroke-width="3" fill="none" opacity=".7"/>
           </svg>
         </div>
-        <div class="sect2"><span class="lbar"></span><h2>Mi plato</h2><span class="sp"></span><button class="lk" id="clearPlate" hidden style="color:var(--danger)">Vaciar</button></div>
+        <div class="sect2"><span class="lbar"></span><h2>Mi plato</h2><span class="sp"></span><button class="hbtn" id="saveFav" aria-label="Guardar plato como favorita"></button><button class="hbtn red" id="clearPlate" hidden aria-label="Vaciar plato"></button></div>
         <div class="card plist"><ul class="list" id="plate"></ul></div>
-        <div class="grid2" style="margin-top:10px"><button class="btn btn-secondary sm" id="saveFav"></button><button class="btn btn-secondary sm" id="toPauta"></button></div>
       </div>
       <div>
-        <div class="grid2 shortcuts">
-          <button class="sc lime" data-go="favoritos"><svg class="ico"><use href="#i-star"/></svg><span><b>Mis favoritos</b><small>¡Los de siempre!</small></span><svg class="ico s ch"><use href="#i-chev"/></svg></button>
-          <button class="sc teal" data-go="recetas"><svg class="ico"><use href="#i-chef"/></svg><span><b>Mis recetas</b><small>¡A crear algo rico!</small></span><svg class="ico s ch"><use href="#i-chev"/></svg></button>
+        <div class="shortcuts">
+          <button class="sc lime" data-go="favoritos"><svg class="ico"><use href="#i-star"/></svg><span><b>Favoritos</b><small>¡Los de siempre!</small></span></button>
+          <button class="sc teal" data-go="recetas"><svg class="ico"><use href="#i-chef"/></svg><span><b>Recetas</b><small>¡A crear algo rico!</small></span></button>
+          <button class="sc" id="toPauta"><svg class="ico"><use href="#i-drop"/></svg><span><b>Mi pauta</b><small>Calcular dosis</small></span></button>
         </div>
       </div>
     </div>
@@ -472,6 +560,7 @@ body{background:radial-gradient(120% 60% at 85% -10%,rgba(56,225,198,.10),transp
     <div class="card" style="padding-top:4px;padding-bottom:4px">
       <button class="set" id="rulesB"><span class="ic"><svg class="ico s"><use href="#i-shield"/></svg></span><span class="tx"><b>Notas del equipo</b><span id="rulesCount"></span></span><svg class="ico s muted"><use href="#i-chev"/></svg></button>
       <button class="set" id="paramsB"><span class="ic"><svg class="ico s"><use href="#i-lock"/></svg></span><span class="tx"><b>Parámetros médicos</b><span id="paramsTxt"></span></span><svg class="ico s muted"><use href="#i-chev"/></svg></button>
+      <button class="set" id="schedB"><span class="ic"><svg class="ico s"><use href="#i-clock"/></svg></span><span class="tx"><b>Horarios y alarmas</b><span id="schedTxt">Comidas y Tresiba</span></span><svg class="ico s muted"><use href="#i-chev"/></svg></button>
       <button class="set" id="pautaB"><span class="ic"><svg class="ico s"><use href="#i-drop"/></svg></span><span class="tx"><b>Mi pauta completa</b><span>Insulinas, comidas y controles</span></span><svg class="ico s muted"><use href="#i-chev"/></svg></button>
     </div>
     <p class="muted small" style="margin:14px 4px">diego. v5 · Midnight Energy ⚡ La app no envía tus datos a ningún servidor.</p>

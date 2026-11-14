@@ -53,7 +53,8 @@ Reglas: emojis con moderación (saludos y mensajes positivos); nunca felicitar p
 3. **Recetas:** constructor en 8 pasos (nombre, ingredientes, cantidades, peso final real, total, por 100 g, porción, guardar). Se pueden editar, duplicar y usar.
 4. **Favoritas:** tarjetas con alimentos, cantidades y g HC. "Usar" deja ajustar las cantidades antes de cargar. Nunca guardan glicemia ni dosis.
 5. **Mi pauta:** carbohidratos y glicemia arriba; justo debajo, la dosis de la fórmula en grande y con 2 decimales (el redondeo lo hace el usuario según su equipo). Luego las verificaciones (bolo reciente, síntomas, ejercicio). Bajo 70 aparece "No inyectar". Las notas del equipo en Perfil son opcionales y no bloquean nada (decisión de la familia, v5).
-6. **Perfil:** tema oscuro o claro, unidades, mis alimentos, historial, respaldo (exportar e importar con validación), notas del equipo (opcionales) y parámetros médicos protegidos por confirmación.
+6. **Horarios y alarmas:** contador en Inicio hasta la próxima comida o la Tresiba (07:00, 10:00, 13:00, 16:00, 19:00, Tresiba 20:00, 22:00; editable). Aviso dentro de la app a la hora y archivo .ics para crear alarmas diarias en el Calendario del iPhone (10 min antes y a la hora).
+7. **Perfil:** tema oscuro o claro, unidades, mis alimentos, historial, respaldo (exportar e importar con validación), notas del equipo (opcionales) y parámetros médicos protegidos por confirmación.
 
 ## 4. Implementación en GitHub Pages
 

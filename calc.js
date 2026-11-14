@@ -51,6 +51,44 @@
     return { done: done.length, total: CLINICAL_RULES.length, complete: done.length === CLINICAL_RULES.length };
   }
 
+  // Horario del día (definido por la familia). La Tresiba de las 20:00 viene de la pauta.
+  var SCHEDULE_DEFAULT = Object.freeze([
+    { t: "07:00", id: "desayuno", label: "Desayuno" },
+    { t: "10:00", id: "colacion", label: "Colación" },
+    { t: "13:00", id: "almuerzo", label: "Almuerzo" },
+    { t: "16:00", id: "colacion", label: "Colación" },
+    { t: "19:00", id: "once", label: "Once" },
+    { t: "20:00", id: "tresiba", label: "Tresiba (basal)", basal: true },
+    { t: "22:00", id: "cena", label: "Cena" }
+  ]);
+  function toMin(t) { var m = /^(\d{1,2}):(\d{2})$/.exec(String(t || "")); return m ? (+m[1]) * 60 + (+m[2]) : NaN; }
+  // Próximo evento desde "now" (Date). Devuelve {item, minutes, tomorrow}
+  function nextEvent(now, sched) {
+    var list = (sched || SCHEDULE_DEFAULT).filter(function (x) { return !isNaN(toMin(x.t)); }).slice().sort(function (a, b) { return toMin(a.t) - toMin(b.t); });
+    if (!list.length) return null;
+    var cur = now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60;
+    for (var i = 0; i < list.length; i++) { var d = toMin(list[i].t) - cur; if (d > 0) return { item: list[i], minutes: Math.ceil(d), tomorrow: false }; }
+    return { item: list[0], minutes: Math.ceil(toMin(list[0].t) + 1440 - cur), tomorrow: true };
+  }
+  function fmtDur(min) { var h = Math.floor(min / 60), m = min % 60; return h ? h + " h" + (m ? " " + m + " min" : "") : m + " min"; }
+  // Archivo de calendario (.ics) con eventos diarios y aviso a la hora exacta y 10 min antes
+  function icsFor(sched, from) {
+    var d = from || new Date(), p = function (n) { return (n < 10 ? "0" : "") + n; };
+    var day = d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()), stamp = new Date().toISOString().replace(/[-:]/g, "").slice(0, 15) + "Z";
+    var L = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//diego.//Pauta//ES", "CALSCALE:GREGORIAN", "METHOD:PUBLISH", "X-WR-CALNAME:diego. horarios"];
+    (sched || SCHEDULE_DEFAULT).forEach(function (x, i) {
+      var mm = toMin(x.t); if (isNaN(mm)) return;
+      var t = p(Math.floor(mm / 60)) + p(mm % 60) + "00";
+      L.push("BEGIN:VEVENT", "UID:diego-" + x.id + "-" + i + "-" + t + "@pauta", "DTSTAMP:" + stamp, "DTSTART:" + day + "T" + t, "DURATION:PT15M", "RRULE:FREQ=DAILY",
+        "SUMMARY:" + (x.basal ? "Tresiba (insulina basal) · diego." : x.label + " · diego."),
+        "DESCRIPTION:" + (x.basal ? "Dosis basal según tu pauta." : "Mide la glicemia y calcula en la app antes de comer."),
+        "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:" + x.label, "TRIGGER:-PT10M", "END:VALARM",
+        "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:" + x.label, "TRIGGER:PT0M", "END:VALARM", "END:VEVENT");
+    });
+    L.push("END:VCALENDAR");
+    return L.join("\r\n");
+  }
+
   function slug(s) {
     return String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
   }
@@ -145,6 +183,6 @@
   return {
     PAUTA_DEFAULT: PAUTA_DEFAULT, MEALS: MEALS, FOODS: FOODS,
     baseFoods: baseFoods, slug: slug, num: num, round1: round1,
-    hcFor: hcFor, CLINICAL_RULES: CLINICAL_RULES, rulesStatus: rulesStatus, plateTotal: plateTotal, recipe: recipe, glucoseRange: glucoseRange, dose: dose, fmt: fmt
+    SCHEDULE_DEFAULT: SCHEDULE_DEFAULT, toMin: toMin, nextEvent: nextEvent, fmtDur: fmtDur, icsFor: icsFor, hcFor: hcFor, CLINICAL_RULES: CLINICAL_RULES, rulesStatus: rulesStatus, plateTotal: plateTotal, recipe: recipe, glucoseRange: glucoseRange, dose: dose, fmt: fmt
   };
 });

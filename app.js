@@ -74,7 +74,7 @@
   var NAVOF = { inicio: "inicio", favoritos: "inicio", perfil: "inicio", alimentos: "alimentos", recetas: "recetas", pauta: "pauta", historial: "pauta" };
   function show(name, push) {
     if (SCREENS.indexOf(name) < 0) name = "inicio";
-    ui.screen = name; $("boot").hidden = true;
+    ui.screen = name; $("boot").hidden = true; document.documentElement.classList.toggle("fit", name === "inicio");
     SCREENS.forEach(function (k) { var el = $("s-" + k); el.hidden = k !== name; if (k === name) { el.classList.remove("enter"); void el.offsetWidth; el.classList.add("enter"); } });
     document.querySelectorAll(".nav button").forEach(function (b) { if (b.dataset.go === NAVOF[name]) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); });
     ({ inicio: renderInicio, alimentos: renderFoods, recetas: renderRecipes, favoritos: renderFavs, pauta: enterPauta, perfil: renderPerfil, historial: renderHist })[name]();
@@ -86,8 +86,8 @@
 
   /* ================= 1. INICIO / MI COMIDA ================= */
   
-  $("saveFav").innerHTML = ico("heart", "s") + "Guardar favorita";
-  $("toPauta").innerHTML = ico("drop", "s") + "Ver mi pauta";
+  $("saveFav").innerHTML = ico("heart", "s") + "Guardar";
+  $("clearPlate").innerHTML = ico("trash", "s");
   var MEAL_ICON = { desayuno: "coffee", colacion: "cookie", almuerzo: "salad", once: "apple", cena: "cloche" };
   // Miniatura por alimento (emoji como ilustración; el nombre siempre va en texto)
   var THUMBS = [[/marraqueta|hallulla|pan /, "🍞"], [/pl[aá]tano/, "🍌"], [/manzana/, "🍎"], [/pi[nñ]a/, "🍍"], [/palta/, "🥑"], [/tomate/, "🍅"], [/huevo/, "🥚"], [/yogh|yogur|leche/, "🥛"], [/queso/, "🧀"], [/helado/, "🍦"], [/corn|cereal|avena/, "🥣"], [/galleta/, "🍪"], [/fideo|tallar/, "🍝"], [/papas fritas/, "🍟"], [/pur[eé]|papa/, "🥔"], [/jugo|n[eé]ctar|bebida/, "🧃"], [/naranja|mandarina/, "🍊"]];
@@ -100,14 +100,15 @@
     var sel = $("meals").querySelector('[aria-pressed="true"]'); if (sel && sel.scrollIntoView) { var mc = $("meals"); mc.scrollLeft = Math.max(0, sel.offsetLeft - (mc.clientWidth - sel.offsetWidth) / 2); }
     var m = meal(plate.meal), tot = plateTotal(), n = plate.items.length;
     animateNum($("total"), tot, " g HC");
-    $("heroDesc").textContent = n ? "¡Listo, Diego! Ya tenemos la cuenta." : "Agrega tus alimentos y hacemos la cuenta.";
-    $("heroPauta").textContent = n ? "Pauta " + (m.id === "once" ? "de la once" : m.id === "colacion" ? "de la colación" : "del " + m.name.toLowerCase()) + ": " + m.hc + " g" : "";
-    $("addFood").innerHTML = (n ? "Agregar más" : "¡Vamos a elegir!") + ico("arrow");
+    $("heroDesc").textContent = n ? "¡Listo, Diego! Ya tenemos la cuenta · pauta: " + m.hc + " g" : "Agrega tus alimentos y hacemos la cuenta.";
+    $("heroPauta").textContent = "";
+    $("addFood").innerHTML = (n ? "Agregar" : "¡Vamos a elegir!") + ico("arrow");
     $("plate").innerHTML = n ? plate.items.map(function (it, i) {
       return '<li class="li" data-i="' + i + '"><button class="main" data-edit="' + i + '" aria-label="' + esc(it.name) + ", " + qtyTxt(it) + ", " + fmt(it.hc) + ' gramos de carbohidratos. Editar o quitar"><span class="thumb" aria-hidden="true">' + thumb(it) + '</span><span style="flex:1;min-width:0"><span class="nm">' + esc(it.name.replace(/ \(unidad\)| \(sin cáscara\)| \(mitad\)/, "")) + " · " + qtyTxt(it) + '</span></span><span class="hcpill">' + fmt(it.hc) + ' g</span><svg class="ico s chev" aria-hidden="true"><use href="#i-chev"/></svg></button></li>';
     }).join("") : '<li class="empty">' + ico("utensils") + "<p>Tu plato está vacío por ahora.<br>¿Qué se te antoja?</p></li>";
     $("clearPlate").hidden = !n;
     $("dot").textContent = n || "";
+    renderNext();
   }
   $("meals").addEventListener("click", function (e) { var b = e.target.closest("[data-m]"); if (!b) return; plate.meal = b.dataset.m; savePlate(); renderInicio(); });
   $("plate").addEventListener("click", function (e) {
@@ -451,6 +452,45 @@
       };
     });
   });
+
+  /* ================= HORARIOS Y ALARMAS ================= */
+  function sched() { return Array.isArray(prefs.schedule) && prefs.schedule.length ? prefs.schedule : C.SCHEDULE_DEFAULT.map(function (x) { return Object.assign({}, x); }); }
+  var lastNext = null;
+  function renderNext() {
+    var n = C.nextEvent(new Date(), sched()); if (!n) { $("nextPill").innerHTML = ""; return; }
+    $("nextPill").innerHTML = ico(n.item.basal ? "drop" : "clock") + '<span class="lbl">' + esc(n.item.label.replace(" (basal)", "")) + " " + n.item.t + "</span><b>" + (n.minutes <= 1 ? "¡ahora!" : "en " + C.fmtDur(n.minutes)) + "</b>";
+    $("nextPill").classList.toggle("soon", n.minutes <= 30);
+    $("nextPill").setAttribute("aria-label", "Próximo: " + n.item.label + " a las " + n.item.t + ", en " + C.fmtDur(n.minutes) + ". Ver horarios");
+    var key = n.item.t + n.item.id;
+    if (lastNext && lastNext !== key) { // pasó la hora del evento anterior mientras la app estaba abierta
+      var prev = sched().filter(function (x) { return x.t + x.id === lastNext; })[0];
+      if (prev) { toast(prev.basal ? "Hora de la Tresiba (basal)" : "¡Hora " + (prev.id === "once" ? "de la once" : prev.id === "colacion" ? "de la colación" : "del " + prev.label.toLowerCase()) + ", Diego! 🍽️", "clock"); try { navigator.vibrate && navigator.vibrate([200, 100, 200]); } catch (e) {} }
+    }
+    lastNext = key;
+  }
+  function scheduleSheet() {
+    var list = sched(), n = C.nextEvent(new Date(), list);
+    openSheet('<h3 id="shT">Horarios y alarmas ⏰</h3><p class="t2 small" style="margin:0 0 6px">Ajusta las horas si cambian. El contador de Inicio usa este horario.</p><div id="schL">' +
+      list.map(function (x, i) { var hh = x.t.split(":")[0], mm = x.t.split(":")[1]; var p2 = function (v) { return (v < 10 ? "0" : "") + v; };
+        var hs = ""; for (var h = 0; h < 24; h++) hs += '<option' + (p2(h) === hh ? " selected" : "") + ">" + p2(h) + "</option>";
+        var ms = ""; for (var m = 0; m < 60; m += 5) ms += '<option' + (p2(m) === mm ? " selected" : "") + ">" + p2(m) + "</option>";
+        return '<div class="sched' + (n && n.item === list[i] ? " nx" : "") + '"><div class="tm row" style="gap:4px"><select class="in" data-h="' + i + '" aria-label="Hora de ' + esc(x.label) + '">' + hs + '</select><b>:</b><select class="in" data-m="' + i + '" aria-label="Minutos de ' + esc(x.label) + '">' + ms + '</select></div><span class="lb">' + esc(x.label) + "</span></div>"; }).join("") +
+      '</div><div class="grid2" style="margin-top:12px"><button class="btn btn-secondary" id="schReset">Horario original</button><button class="btn btn-primary" id="schSave">Guardar horario</button></div>' +
+      '<div class="sect" style="margin-top:18px">Alarmas en el iPhone</div><p class="t2 small" style="margin:0 0 10px">Crea eventos diarios en el Calendario con aviso 10 minutos antes y a la hora exacta. Funcionan aunque la app esté cerrada. Hazlo en el iPhone de Diego.</p><button class="btn btn-primary" id="schIcs">' + ico("calendar", "s") + "Agregar alarmas al Calendario</button>", function (b) {
+      function read() { return list.map(function (x, i) { return Object.assign({}, x, { t: b.querySelector('[data-h="' + i + '"]').value + ":" + b.querySelector('[data-m="' + i + '"]').value }); }); }
+      b.querySelector("#schSave").onclick = function () { prefs.schedule = read(); S.savePrefs(prefs); renderNext(); closeSheet(); toast("¡Horario guardado! ⏰", "clock"); };
+      b.querySelector("#schReset").onclick = function () { delete prefs.schedule; S.savePrefs(prefs); renderNext(); scheduleSheet(); toast("Volvimos al horario original", "clock"); };
+      b.querySelector("#schIcs").onclick = function () {
+        var cur = read(), txt = C.icsFor(cur, new Date());
+        try { var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([txt], { type: "text/calendar" })); a.download = "alarmas-diego.ics"; document.body.appendChild(a); a.click(); a.remove(); toast("Abre el archivo y toca \"Agregar todo\"", "calendar"); }
+        catch (e) { toast("No se pudo crear el archivo", "info"); }
+      };
+    });
+  }
+  $("nextPill").addEventListener("click", scheduleSheet);
+  $("schedB").addEventListener("click", scheduleSheet);
+  setInterval(function () { renderNext(); }, 30000);
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) { lastNext = null; renderNext(); } });
 
   /* ================= HISTORIAL ================= */
   function fdt(t) { var d = new Date(t); return d.toLocaleDateString("es-CL", { weekday: "short", day: "2-digit", month: "2-digit" }) + " " + d.toLocaleTimeString("es-CL", { hour: "2-digit", minute: "2-digit", hourCycle: "h23" }); }
