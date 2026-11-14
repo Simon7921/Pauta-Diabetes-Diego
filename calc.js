@@ -1,0 +1,150 @@
+/* calc.js — Lógica pura (sin DOM). Pauta de Diego.
+   Contiene: base de alimentos, cálculo de carbohidratos, recetas y fórmula de la pauta.
+   No cambiar parámetros médicos aquí sin indicación del equipo. */
+(function (root, factory) {
+  if (typeof module === "object" && module.exports) module.exports = factory();
+  else root.Calc = factory();
+})(typeof self !== "undefined" ? self : this, function () {
+  "use strict";
+
+  // Pauta confirmada en la epicrisis (12/11/2026). t = objetivo, f = sensibilidad, r = ratio.
+  var PAUTA_DEFAULT = Object.freeze({ t: 110, f: 50, r: 12 });
+
+  // Carbohidratos objetivo por comida según la pauta (g).
+  var MEALS = Object.freeze([
+    { id: "desayuno", name: "Desayuno", hc: 60 },
+    { id: "colacion", name: "Colación", hc: 20 },
+    { id: "almuerzo", name: "Almuerzo", hc: 65 },
+    { id: "once", name: "Once", hc: 60 },
+    { id: "cena", name: "Cena", hc: 65 }
+  ]);
+
+  // Base de alimentos existente (la misma de la versión anterior).
+  // [nombre, g de HC por 100 g o 100 ml, peso por unidad en g (opcional)]
+  var FOODS = {
+    "Frutas": [["Manzana", 13.8], ["Plátano pesado (sin cáscara)", 22.8], ["Medio plátano (mitad)", 22.8, 59], ["Naranja", 11.8], ["Mandarina", 13.3], ["Piña", 13.1], ["Palta", 8.5]],
+    "Verduras": [["Tomate", 3.9], ["Tomate mediano (unidad)", 3.9, 123], ["Tomate cherry", 3.9]],
+    "Huevos": [["Huevo (unidad)", 0.7, 50]],
+    "Lácteos": [["Yoghito vainilla sin azúcar (120 g)", 7.4], ["Queso mantecoso / gauda", 1], ["Helado de crema", 23.6]],
+    "Panes y cereales": [["Marraqueta", 58], ["Hallulla", 55], ["Pan de molde blanco", 49], ["Corn flakes", 84], ["Galletas de soda", 71]],
+    "Acompañamientos": [["Fideos cocidos", 31], ["Tallarines sin cocer (aprox.)", 74], ["Papa cocida", 20], ["Puré de papas", 16], ["Puré mamá", 17.3], ["Papas fritas", 41]],
+    "Bebidas": [["Jugo de naranja natural", 10.4], ["Néctar de fruta (aprox.)", 12]]
+  };
+
+  // Estado y fuente de cada alimento base (no cambia los valores).
+  var STATE = { "Fideos cocidos": "cocido", "Tallarines sin cocer (aprox.)": "crudo", "Papa cocida": "cocido", "Puré de papas": "preparado", "Puré mamá": "preparado", "Papas fritas": "preparado" };
+  var SOURCE = { "Yoghito vainilla sin azúcar (120 g)": "Etiqueta Soprole", "Puré mamá": "Receta casera calculada (820 g)" };
+  var DEFAULT_SOURCE = "Tabla USDA (aprox.)";
+
+  // Reglas que el equipo clínico debe confirmar antes de mostrar un resultado de dosis.
+  var CLINICAL_RULES = Object.freeze([
+    { id: "redondeo", q: "Redondeo de la dosis (0,5 U o 1 U)" },
+    { id: "insulina-activa", q: "Insulina activa: cuánto esperar tras un bolo antes de corregir" },
+    { id: "bajo-objetivo", q: "Glicemia bajo 110: ¿se resta la corrección de la dosis de comida?" },
+    { id: "colacion", q: "¿La colación de 20 g lleva insulina?" },
+    { id: "dosis-maxima", q: "Dosis máxima por bolo y situaciones excepcionales (enfermedad, cetonas)" },
+    { id: "ejercicio", q: "Ajustes para fútbol y gimnasio (antes, durante y en la noche)" },
+    { id: "sensor-capilar", q: "Cuándo confirmar con glucómetro capilar antes de calcular" }
+  ]);
+  function rulesStatus(rules) {
+    var r = rules || {}, done = CLINICAL_RULES.filter(function (x) { return r[x.id] && r[x.id].ok && String(r[x.id].answer || "").trim(); });
+    return { done: done.length, total: CLINICAL_RULES.length, complete: done.length === CLINICAL_RULES.length };
+  }
+
+  function slug(s) {
+    return String(s).toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  }
+
+  // Lista plana con id estable: {id, name, hc100, unit, cat, kind}
+  function baseFoods() {
+    var out = [];
+    Object.keys(FOODS).forEach(function (cat) {
+      FOODS[cat].forEach(function (f) {
+        out.push({ id: "b:" + slug(f[0]), name: f[0], hc100: f[1], unit: f[2] || null, cat: cat, kind: "base", state: STATE[f[0]] || (/sin cocer|crud/i.test(f[0]) ? "crudo" : /cocid/i.test(f[0]) ? "cocido" : null), source: SOURCE[f[0]] || DEFAULT_SOURCE });
+      });
+    });
+    return out;
+  }
+
+  function num(v) {
+    if (typeof v === "number") return v;
+    var n = parseFloat(String(v == null ? "" : v).trim().replace(",", "."));
+    return n;
+  }
+
+  function round1(x) { return Math.round(x * 10) / 10; }
+
+  // Carbohidratos de una porción. qty en gramos/ml, o en unidades si el alimento tiene unit.
+  // mode: "u" (unidades) o "g" (gramos). Si no se indica: unidades cuando el alimento tiene peso por unidad.
+  function hcFor(food, qty, mode) {
+    var q = num(qty);
+    if (!food || !(q > 0) || !(food.hc100 >= 0)) return 0;
+    var byUnit = mode ? (mode === "u" && food.unit) : !!food.unit;
+    var grams = byUnit ? q * food.unit : q;
+    return grams * food.hc100 / 100;
+  }
+
+  function plateTotal(items) {
+    return (items || []).reduce(function (a, it) { return a + (it.hc || 0); }, 0);
+  }
+
+  // Receta: ingredientes [{name, hc100, grams}], peso final real de la preparación.
+  function recipe(ingredients, finalWeight) {
+    var fw = num(finalWeight);
+    var total = (ingredients || []).reduce(function (a, i) {
+      var g = num(i.grams), c = num(i.hc100);
+      return a + ((g > 0 && c >= 0) ? g * c / 100 : 0);
+    }, 0);
+    var rawWeight = (ingredients || []).reduce(function (a, i) { var g = num(i.grams); return a + (g > 0 ? g : 0); }, 0);
+    return { totalHC: total, rawWeight: rawWeight, finalWeight: fw > 0 ? fw : null, per100: fw > 0 ? total / fw * 100 : null };
+  }
+
+  function glucoseRange(g) {
+    if (!(g >= 0)) return null;
+    if (g < 70) return { id: "low", label: "Baja" };
+    if (g <= 180) return { id: "ok", label: "En rango" };
+    if (g <= 250) return { id: "high", label: "Alta" };
+    return { id: "vhigh", label: "Muy alta" };
+  }
+
+  /* Fórmula de la pauta: (glicemia − objetivo) ÷ sensibilidad + HC ÷ ratio.
+     Lógica idéntica a la versión anterior:
+     - glicemia < 70: hipoglucemia, sin dosis.
+     - insulina rápida hace < 3 h: solo la parte de la comida (no suma corrección).
+     - resultado negativo se muestra como 0.
+     Devuelve también los avisos que la interfaz debe mostrar. */
+  function dose(input) {
+    var P = input.P || PAUTA_DEFAULT;
+    var g = num(input.g), c = num(input.c);
+    var res = { valid: false, hypo: false, corr: null, food: null, total: null, main: null, mode: "full", warnings: [], range: glucoseRange(g) };
+    if (isNaN(g)) { res.reason = "sin-glicemia"; return res; }
+    if (g < 70) { res.hypo = true; res.valid = true; res.main = 0; res.warnings.push("hipo"); return res; }
+    var cc = isNaN(c) ? 0 : c;
+    res.corr = (g - P.t) / P.f;
+    res.food = cc / P.r;
+    res.total = res.corr + res.food;
+    var main = res.total;
+    if (input.recent) { main = Math.max(res.food, 0); res.mode = "food-only"; res.warnings.push("bolo-reciente"); }
+    else if (res.corr < 0) res.warnings.push("bajo-objetivo");
+    if (main < 0) main = 0;
+    res.main = main;
+    res.valid = true;
+    if (input.sport) res.warnings.push("deporte");
+    if (g >= 250) res.warnings.push("cetonas");
+    if (main > 15) res.warnings.push("dosis-alta");
+    if (isNaN(c)) res.warnings.push("sin-hc");
+    if (input.sym) res.warnings.push("sintomas");
+    return res;
+  }
+
+  function fmt(x, d) {
+    if (x == null || isNaN(x)) return "—";
+    return round1(x).toLocaleString("es-CL", { minimumFractionDigits: d == null ? 1 : d, maximumFractionDigits: 1 });
+  }
+
+  return {
+    PAUTA_DEFAULT: PAUTA_DEFAULT, MEALS: MEALS, FOODS: FOODS,
+    baseFoods: baseFoods, slug: slug, num: num, round1: round1,
+    hcFor: hcFor, CLINICAL_RULES: CLINICAL_RULES, rulesStatus: rulesStatus, plateTotal: plateTotal, recipe: recipe, glucoseRange: glucoseRange, dose: dose, fmt: fmt
+  };
+});
