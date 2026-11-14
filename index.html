@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="dark">
+<html lang="es" data-mode="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -17,7 +17,7 @@
    Oscuro (por defecto) y claro con el mismo verde lima.
    Lima = navegación y acciones. El estado clínico NUNCA se comunica con verde:
    glicemia baja = rojo, alta = ámbar, 70–180 = neutro con texto. */
-:root,:root[data-theme=dark]{color-scheme:dark;
+:root,:root[data-mode=dark]{color-scheme:dark;
 --bg:#0B1020;--bg2:#121A2B;--surface:#182235;--elev:#1F2A40;
 --accent:#B8FF3B;--accent-soft:#D8FF8A;--accent2:#38E1C6;--on-accent:#0B1020;--accent-text:#B8FF3B;
 --text:#F8FAFC;--text2:#A8B3C7;--muted:#8391A8;
@@ -26,7 +26,7 @@
 --border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.18);
 --shadow:0 1px 0 rgba(255,255,255,.03) inset,0 8px 24px rgba(0,0,0,.25);
 --glow:0 0 0 1px rgba(184,255,59,.25),0 8px 30px rgba(184,255,59,.12)}
-:root[data-theme=light]{color-scheme:light;
+:root[data-mode=light]{color-scheme:light;
 --bg:#F3F5F9;--bg2:#E9EDF4;--surface:#FFFFFF;--elev:#F5F7FB;
 --accent:#B8FF3B;--accent-soft:#D8FF8A;--accent2:#0F766E;--on-accent:#0B1020;--accent-text:#3F6212;
 --text:#0B1020;--text2:#3E4A5E;--muted:#5B677B;
@@ -58,7 +58,7 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .logo i{font-style:normal;color:var(--accent-text)}
 .hello{font-size:var(--fs-label);color:var(--text2);margin-top:2px}
 .h1{font-size:var(--fs-title);font-weight:800;letter-spacing:-.02em;margin:0}
-.avatar{width:44px;height:44px;border-radius:50%;border:1px solid var(--border2);background:var(--surface);display:grid;place-items:center;font-weight:800;color:var(--accent-text)}
+.avatar{flex:none;width:44px;height:44px;border-radius:50%;border:1px solid var(--border2);background:var(--surface);display:grid;place-items:center;font-weight:800;color:var(--accent-text)}
 .back{width:44px;height:44px;border-radius:14px;border:1px solid var(--border);background:var(--surface);display:grid;place-items:center}
 
 /* ===================== Cards ===================== */
@@ -69,7 +69,7 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .sect{display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:700;color:var(--text2);text-transform:none;margin:20px 2px 8px}
 .sect .lk,.lk{font-weight:700;color:var(--accent-text);background:none;border:0;min-height:44px!important;padding:0 4px;align-items:center}
 .hero{background:radial-gradient(120% 140% at 100% 0%,rgba(184,255,59,.16),transparent 55%),var(--surface);border-color:var(--border2)}
-:root[data-theme=light] .hero{background:radial-gradient(120% 140% at 100% 0%,rgba(184,255,59,.45),transparent 55%),var(--surface)}
+:root[data-mode=light] .hero{background:radial-gradient(120% 140% at 100% 0%,rgba(184,255,59,.45),transparent 55%),var(--surface)}
 .big{font-size:var(--fs-display);font-weight:800;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
 .big small{font-size:18px;font-weight:700;color:var(--text2);letter-spacing:0;margin-left:4px}
 .kicker{font-size:14px;font-weight:800;color:var(--accent-text)}
@@ -231,6 +231,81 @@ textarea.in{font-size:14px;min-height:90px;font-family:ui-monospace,Menlo,monosp
 @keyframes enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 @media (min-width:900px){.wrap{max-width:960px}.cols{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:16px;align-items:start}.cols>.card{margin-top:0!important}.hscroll{grid-auto-columns:44%}}
+
+/* ===================== Referencia visual (boceto) ===================== */
+body{background:radial-gradient(120% 60% at 85% -10%,rgba(56,225,198,.10),transparent 60%),var(--bg)}
+:root[data-mode=light] body{background:radial-gradient(120% 60% at 85% -10%,rgba(56,225,198,.18),transparent 60%),var(--bg)}
+.mast{position:relative;min-height:236px;margin:-4px -16px 6px;padding:8px 16px 0;overflow:hidden}
+.mast-art{-webkit-mask-image:linear-gradient(to bottom,#000 80%,transparent),linear-gradient(to right,transparent,#000 18%);-webkit-mask-composite:source-in;mask-image:linear-gradient(to bottom,#000 80%,transparent),linear-gradient(to right,transparent,#000 18%);mask-composite:intersect;position:absolute;right:-8px;top:-6px;width:min(66%,340px);height:auto;pointer-events:none;z-index:0}
+.mast-art .spark circle{animation:tw 2.4s ease-in-out infinite alternate}
+@keyframes tw{from{opacity:.25}to{opacity:1}}
+.mast-row{position:relative;z-index:1;display:flex;align-items:center;gap:12px;margin-top:10px}
+.ava{width:58px;height:58px;border-radius:50%;border:3px solid var(--accent);background:var(--bg2);color:var(--accent);display:grid;place-items:center;flex:none;box-shadow:0 0 18px rgba(184,255,59,.25)}
+.ava .ico{width:30px;height:30px;stroke-width:2.2}
+.hi{font-size:clamp(26px,7.6vw,32px);font-weight:800;letter-spacing:-.02em;margin:0;line-height:1.1;text-shadow:0 2px 12px rgba(0,0,0,.5)}
+.hi2{font-style:italic;font-weight:650;color:var(--accent2);font-size:17px;margin-top:2px}
+:root[data-mode=light] .hi{text-shadow:none}
+.q1{position:relative;z-index:1;font-size:clamp(25px,7.2vw,30px);font-weight:800;letter-spacing:-.02em;margin:clamp(48px,15vw,64px) 0 0;text-shadow:0 2px 14px rgba(0,0,0,.55)}
+:root[data-mode=light] .q1{text-shadow:0 1px 0 rgba(255,255,255,.6)}
+.mchips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:4px 2px 14px;margin:0 -2px;scroll-snap-type:x proximity}
+.mchips::-webkit-scrollbar{display:none}
+.mchips .chip{display:inline-flex;align-items:center;gap:7px;min-height:48px;padding:0 16px;font-size:15px;color:var(--text);background:var(--surface);border-color:var(--border2)}
+.mchips .chip .ico{width:20px;height:20px}
+.mchips .chip[aria-pressed=true]{background:var(--accent);color:var(--on-accent);box-shadow:var(--glow)}
+.plateh{position:relative;overflow:hidden;display:flex;align-items:center;gap:6px;padding:18px 14px 18px 18px;background:radial-gradient(90% 120% at 100% 100%,rgba(56,225,198,.18),transparent 60%),linear-gradient(160deg,var(--elev),var(--surface));border-color:var(--border2)}
+.ph-txt{flex:1;min-width:0;position:relative;z-index:1}
+.ph-title{display:flex;align-items:center;gap:8px;font-size:19px;font-weight:800}
+.lbar{display:inline-block;width:4px;height:22px;border-radius:2px;background:var(--accent);flex:none}
+.ph-total{white-space:nowrap;font-size:clamp(34px,10.5vw,52px);font-weight:900;letter-spacing:-.035em;line-height:1.05;color:var(--accent);margin:12px 0 6px;font-variant-numeric:tabular-nums;text-shadow:0 0 24px rgba(184,255,59,.25)}
+:root[data-mode=light] .ph-total{color:#4D7C0F;text-shadow:none}
+.plateh p{margin:0 0 14px;font-size:15px}
+.btn.go{width:auto;border-radius:999px;padding:0 18px;min-height:52px;font-size:16px;white-space:nowrap}
+.btn.go .ico{width:22px;height:22px}
+.bowl{width:44%;max-width:200px;flex:none;margin-right:-14px;align-self:flex-start;margin-top:22px;filter:drop-shadow(0 10px 18px rgba(0,0,0,.45))}
+.sect2{display:flex;align-items:center;gap:10px;margin:20px 2px 10px}
+.sect2 h2{font-size:22px;margin:0;font-weight:800}
+.plist{padding:6px 12px}
+.plist .li{gap:12px;padding:6px 0}
+.thumb{width:52px;height:52px;border-radius:14px;background:var(--bg2);border:1px solid var(--border2);display:grid;place-items:center;font-size:28px;flex:none;line-height:1}
+.hcpill{font-weight:800;font-variant-numeric:tabular-nums;color:var(--accent);background:var(--accent-bg);border-radius:999px;padding:6px 12px;white-space:nowrap}
+:root[data-mode=light] .hcpill{color:#3F6212}
+.plist .main{display:flex;align-items:center;gap:12px}
+.plist .nm{font-weight:650;font-size:16px}
+.plist .chev{color:var(--muted)}
+.btn.sm{min-height:46px;font-size:14.5px}
+.shortcuts{margin-top:14px}
+.sc{display:flex;align-items:center;gap:10px;min-height:80px;padding:12px;border-radius:18px;background:var(--surface);border:1.5px solid;text-align:left;color:var(--text)}
+.sc.lime{border-color:var(--accent);background:linear-gradient(160deg,rgba(184,255,59,.10),var(--surface) 70%)}
+.sc.teal{border-color:var(--accent2);background:linear-gradient(160deg,rgba(56,225,198,.10),var(--surface) 70%)}
+.sc>.ico:first-child{width:28px;height:28px;stroke-width:1.8}
+.sc.lime>.ico:first-child{color:var(--accent)}.sc.teal>.ico:first-child{color:var(--accent2)}
+:root[data-mode=light] .sc.lime>.ico:first-child{color:#4D7C0F}
+.sc span{flex:1;min-width:0}.sc b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sc small{display:block;color:var(--text2);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sc .ch{color:var(--text2)}
+/* Navegación inferior como el boceto */
+.nav{padding:0}
+.nav .in{max-width:none;border-radius:24px 24px 0 0;border:0;border-top:1px solid var(--border2);background:color-mix(in srgb,var(--bg2) 94%,transparent);padding:8px 8px calc(6px + env(safe-area-inset-bottom));box-shadow:0 -10px 30px rgba(0,0,0,.35)}
+.nav button{font-size:13px;font-weight:650;color:var(--text2);min-height:62px;border-radius:12px}
+.nav .ico{width:26px;height:26px;stroke-width:1.8}
+.nav button[aria-current=page]{background:transparent;color:var(--accent)}
+:root[data-mode=light] .nav button[aria-current=page]{color:#3F6212}
+.nav button[aria-current=page]::after{content:"";position:absolute;bottom:2px;left:50%;width:44px;height:4px;border-radius:2px;background:var(--accent);transform:translateX(-50%)}
+.nav button[aria-current=page] .ico{fill:currentColor;fill-opacity:.15}
+.wrap{padding-bottom:calc(110px + env(safe-area-inset-bottom))}
+@media (max-width:359px){.bowl{display:none}}
+@media (min-width:700px){.nav .in{max-width:640px;margin:0 auto}}
+@media (min-width:900px){.mast{min-height:230px}.mast-art{width:340px}}
+
+/* Dosis grande arriba */
+.calcc{border-color:var(--border2)}
+.dosebox{margin:14px 0 10px;padding:16px 12px;border-radius:18px;background:var(--bg2);border:1px solid var(--border2);text-align:center}
+.dosebox .lab{font-size:13px;font-weight:800;color:var(--text2)}
+.dosebox .dv{font-size:clamp(64px,22vw,96px);font-weight:900;letter-spacing:-.045em;line-height:1;color:var(--accent);font-variant-numeric:tabular-nums;margin:6px 0 4px;text-shadow:0 0 30px rgba(184,255,59,.22)}
+:root[data-mode=light] .dosebox .dv{color:#3F6212;text-shadow:none}
+.dosebox .dv small{font-size:.32em;color:var(--text2);letter-spacing:0;margin-left:6px}
+.dosebox .dv.stop{color:var(--danger);font-size:clamp(34px,10vw,44px);text-shadow:none}
+.dosebox .brk{font-size:15px;color:var(--text2)}.dosebox .brk b{color:var(--text)}
+.dosebox .rnd{font-size:13px;color:var(--muted);margin-top:6px}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 </style>
 </head>
@@ -239,23 +314,91 @@ textarea.in{font-size:14px;min-height:90px;font-family:ui-monospace,Menlo,monosp
   <div id="boot"><div class="sk" style="height:48px;width:60%"></div><div class="sk" style="height:180px"></div><div class="sk"></div><div class="sk"></div></div>
 
   <!-- 1. INICIO / MI COMIDA -->
-  <section class="screen" id="s-inicio" hidden aria-labelledby="logo">
-    <header class="top"><div><div class="logo" id="logo">diego<i>.</i></div><div class="hello" id="hello"></div></div><button class="avatar" data-go="perfil" aria-label="Perfil y configuración">D</button></header>
-    <div class="meals" id="meals" role="group" aria-label="Comida"></div>
+  <section class="screen" id="s-inicio" hidden aria-labelledby="hiT">
+    <header class="mast">
+      <!-- Arte del encabezado: SVG propio (futbolista + estelas de luz), adaptable y decorativo -->
+      <svg class="mast-art" viewBox="0 0 240 220" preserveAspectRatio="xMaxYMin meet" aria-hidden="true" focusable="false">
+        <defs>
+          <linearGradient id="gSw1" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#B8FF3B" stop-opacity="0"/><stop offset=".5" stop-color="#B8FF3B" stop-opacity=".95"/><stop offset="1" stop-color="#38E1C6" stop-opacity=".1"/></linearGradient>
+          <linearGradient id="gSw2" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#38E1C6" stop-opacity="0"/><stop offset=".55" stop-color="#38E1C6" stop-opacity=".95"/><stop offset="1" stop-color="#38E1C6" stop-opacity="0"/></linearGradient>
+          <radialGradient id="gHalo" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#38E1C6" stop-opacity=".55"/><stop offset=".5" stop-color="#1A6B80" stop-opacity=".22"/><stop offset="1" stop-color="#0B1020" stop-opacity="0"/></radialGradient>
+          <filter id="fBlur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="4"/></filter>
+          <filter id="fRim" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2.2"/></filter>
+          <g id="player" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="167" cy="33" r="11" stroke-width="0"/>
+            <path d="M156 34 Q156 20 170 19 Q184 19 186 31 Q181 29 178 32 Q172 28 166 30 Q160 31 156 34Z" stroke-width="1"/>
+            <path d="M163 42 L167 52" fill="none" stroke-width="9"/>
+            <path d="M149 59 Q166 46 189 51 Q193 60 187 74 L177 105 Q164 109 152 103 Q153 82 149 59 Z" stroke-width="2"/>
+            <path d="M185 56 L199 38" fill="none" stroke-width="11"/>
+            <path d="M199 38 L196 19" fill="none" stroke-width="8.5"/>
+            <circle cx="196" cy="15" r="6" stroke-width="0"/>
+            <path d="M153 62 L135 73" fill="none" stroke-width="10.5"/>
+            <path d="M135 73 L121 64" fill="none" stroke-width="8.5"/>
+            <circle cx="118" cy="62" r="5.5" stroke-width="0"/>
+            <path d="M151 98 L182 101 L186 125 Q168 131 149 124 Z" stroke-width="2"/>
+            <path d="M157 118 Q141 120 128 120" fill="none" stroke-width="17"/>
+            <path d="M128 120 Q114 116 101 110" fill="none" stroke-width="12"/>
+            <path d="M104 104 Q92 98 84 102 Q84 110 99 115 Z" stroke-width="2.5"/>
+            <path d="M178 121 Q175 138 169 151" fill="none" stroke-width="17"/>
+            <path d="M169 151 Q180 160 193 165" fill="none" stroke-width="12"/>
+            <path d="M190 160 Q201 160 206 170 Q201 176 189 170 Z" stroke-width="2.5"/>
+          </g>
+        </defs>
+        <ellipse cx="160" cy="100" rx="105" ry="95" fill="url(#gHalo)"/>
+        <path d="M-20 214 C 50 196, 120 176, 250 84" stroke="url(#gSw1)" stroke-width="12" fill="none" filter="url(#fBlur)"/>
+        <path d="M-20 214 C 50 196, 120 176, 250 84" stroke="url(#gSw1)" stroke-width="3" fill="none"/>
+        <path d="M10 222 C 90 206, 170 180, 250 128" stroke="url(#gSw2)" stroke-width="8" fill="none" filter="url(#fBlur)"/>
+        <path d="M10 222 C 90 206, 170 180, 250 128" stroke="url(#gSw2)" stroke-width="2" fill="none"/>
+        <g class="spark" fill="#B8FF3B"><circle cx="58" cy="198" r="1.8"/><circle cx="96" cy="186" r="1.2"/><circle cx="206" cy="128" r="1.5"/><circle cx="226" cy="102" r="1.1"/><circle cx="120" cy="196" r="1"/></g>
+        <use href="#player" stroke="#38E1C6" fill="#38E1C6" filter="url(#fRim)" opacity=".95"/>
+        <use href="#player" stroke="#38E1C6" fill="#38E1C6" transform="translate(1.4 -1.2)" opacity=".85"/>
+        <use href="#player" stroke="#0A1222" fill="#0A1222"/>
+        <g fill="none" stroke="#38E1C6" stroke-width="1.4" stroke-linecap="round" opacity=".55"><path d="M158 54 Q166 58 175 52"/><path d="M153 99 Q166 103 181 101"/><path d="M128 114 L130 126"/><path d="M164 151 L174 150"/></g>
+        <circle cx="70" cy="96" r="13" fill="#0E1A2E" stroke="#38E1C6" stroke-width="1.8"/>
+        <path d="M70 88 l6 4.3 -2.3 7 h-7.4 l-2.3 -7 z" fill="#38E1C6" opacity=".75"/>
+        <circle cx="70" cy="96" r="19" fill="#38E1C6" opacity=".14" filter="url(#fBlur)"/>
+        <g fill="#38E1C6" opacity=".8"><circle cx="214" cy="182" r="1.6"/><circle cx="222" cy="176" r="1.2"/><circle cx="218" cy="190" r="1"/></g>
+      </svg>
+      <div class="mast-row">
+        <button class="ava" data-go="perfil" aria-label="Perfil y configuración"><svg class="ico"><use href="#i-user"/></svg></button>
+        <div><h1 class="hi" id="hiT">¡Hola, Diego!</h1><div class="hi2" id="hello">¡Vamos, Diego! ⚡</div></div>
+      </div>
+      <p class="q1">¿Qué comeremos hoy?</p>
+    </header>
+    <div class="mchips" id="meals" role="group" aria-label="Comida"></div>
     <div class="cols">
       <div>
-        <div class="card hero">
-          <div class="kicker" id="kicker">¡Vamos, Diego! ⚡</div><div class="bigq" id="bigq">¿Qué comeremos hoy?</div>
-          <div class="row" style="align-items:flex-end;margin:8px 0 6px"><div class="big" id="total" aria-live="polite">0<small>g HC</small></div></div>
-          <p class="t2" id="heroDesc" style="margin:0 0 14px"></p>
-          <button class="btn btn-primary" data-go="alimentos" id="addFood"></button>
+        <div class="card plateh">
+          <div class="ph-txt">
+            <div class="ph-title"><span class="lbar"></span><svg class="ico"><use href="#i-utensils"/></svg>Tu plato de hoy</div>
+            <div class="ph-total" id="total" aria-live="polite">0 g HC</div>
+            <p class="t2" id="heroDesc"></p><p class="muted small" id="heroPauta" style="margin:-8px 0 14px"></p>
+            <button class="btn btn-primary go" data-go="alimentos" id="addFood"></button>
+          </div>
+          <svg class="bowl" viewBox="0 0 140 120" aria-hidden="true" focusable="false">
+            <defs><radialGradient id="gBowl" cx=".5" cy=".3" r=".8"><stop offset="0" stop-color="#2A3650"/><stop offset="1" stop-color="#121A2B"/></radialGradient>
+            <linearGradient id="gChk" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F2C27A"/><stop offset="1" stop-color="#C47A2C"/></linearGradient></defs>
+            <g stroke="#B8FF3B" stroke-width="4" stroke-linecap="round"><path d="M112 10 l6 -9"/><path d="M121 20 l9 -5"/><path d="M124 31 l9 0"/></g>
+            <ellipse cx="68" cy="66" rx="58" ry="40" fill="#0A0F1C"/>
+            <path d="M10 62 a58 44 0 0 0 116 0 z" fill="url(#gBowl)" stroke="#3A4766" stroke-width="1.5"/>
+            <ellipse cx="68" cy="60" rx="56" ry="26" fill="#1B2438"/>
+            <g fill="#4CAF50"><path d="M22 58 q4 -26 26 -24 q-4 14 -8 26z"/><path d="M34 52 q10 -30 30 -22 q-10 10 -12 26z" fill="#66BB3A"/><path d="M50 50 q14 -22 30 -10 q-14 6 -18 18z" fill="#3E9A3A"/></g>
+            <g><circle cx="92" cy="42" r="12" fill="#E53935"/><circle cx="92" cy="42" r="8" fill="#FF6F61"/><circle cx="104" cy="54" r="11" fill="#E53935"/><circle cx="104" cy="54" r="7" fill="#FF7A6B"/></g>
+            <g fill="#F4EFE4"><ellipse cx="96" cy="68" rx="2.2" ry="1.4"/><ellipse cx="101" cy="72" rx="2.2" ry="1.4"/><ellipse cx="90" cy="73" rx="2.2" ry="1.4"/><ellipse cx="106" cy="66" rx="2.2" ry="1.4"/><ellipse cx="96" cy="77" rx="2.2" ry="1.4"/><ellipse cx="85" cy="68" rx="2.2" ry="1.4"/><ellipse cx="110" cy="72" rx="2" ry="1.3"/></g>
+            <path d="M30 66 q6 -18 30 -14 q20 4 18 18 q-2 12 -24 10 q-26 -2 -24 -14z" fill="url(#gChk)"/>
+            <g stroke="#6B3A12" stroke-width="2.6" stroke-linecap="round" opacity=".85"><path d="M38 60 l12 18"/><path d="M48 56 l12 20"/><path d="M58 55 l10 18"/></g>
+            <path d="M0 112 C 40 104, 90 96, 140 70" stroke="#38E1C6" stroke-width="3" fill="none" opacity=".7"/>
+          </svg>
         </div>
-        <div class="card" style="margin-top:12px"><ul class="list" id="plate"></ul></div>
-        <div class="grid2" style="margin-top:12px"><button class="btn btn-secondary" id="saveFav"></button><button class="btn btn-secondary" id="toPauta"></button></div>
+        <div class="sect2"><span class="lbar"></span><h2>Mi plato</h2><span class="sp"></span><button class="lk" id="clearPlate" hidden style="color:var(--danger)">Vaciar</button></div>
+        <div class="card plist"><ul class="list" id="plate"></ul></div>
+        <div class="grid2" style="margin-top:10px"><button class="btn btn-secondary sm" id="saveFav"></button><button class="btn btn-secondary sm" id="toPauta"></button></div>
       </div>
       <div>
-        <div class="sect"><span>¡Tus comidas de siempre!</span><button class="lk" data-go="favoritos">Ver todas</button></div>
-        <div class="hscroll" id="favPrev"></div>
+        <div class="grid2 shortcuts">
+          <button class="sc lime" data-go="favoritos"><svg class="ico"><use href="#i-star"/></svg><span><b>Mis favoritos</b><small>¡Los de siempre!</small></span><svg class="ico s ch"><use href="#i-chev"/></svg></button>
+          <button class="sc teal" data-go="recetas"><svg class="ico"><use href="#i-chef"/></svg><span><b>Mis recetas</b><small>¡A crear algo rico!</small></span><svg class="ico s ch"><use href="#i-chev"/></svg></button>
+        </div>
       </div>
     </div>
   </section>
@@ -285,26 +428,25 @@ textarea.in{font-size:14px;min-height:90px;font-family:ui-monospace,Menlo,monosp
 
   <!-- 5. MI PAUTA -->
   <section class="screen" id="s-pauta" hidden>
-    <header class="top"><div><h1 class="h1">Mi pauta</h1><div class="hello">Revisemos con calma antes de inyectar</div></div><button class="avatar" data-go="perfil" aria-label="Perfil y configuración">D</button></header>
+    <header class="top"><div><h1 class="h1">Mi pauta</h1><div class="hello" id="pMeal"></div></div><button class="avatar" data-go="perfil" aria-label="Perfil y configuración">D</button></header>
     <div class="cols"><div>
-    <div class="card"><div class="step"><i>A</i>Resumen de comida</div>
-      <div class="row"><div class="sp"><div class="t2 small" id="pMeal"></div><div class="inp" style="margin-top:6px"><input id="pc" inputmode="decimal" autocomplete="off" aria-label="Carbohidratos de la comida"><span>g HC</span></div></div></div>
-      <button class="sect lk" id="syncPlate" style="margin:4px 0 0;padding:0;border:0;background:none;color:var(--accent-text);font-weight:700;min-height:40px">Usar total del plato</button>
+    <div class="card calcc">
+      <div class="grid2">
+        <div><label class="f" for="pc">Carbohidratos</label><div class="inp"><input id="pc" inputmode="decimal" autocomplete="off" placeholder="0"><span>g HC</span></div></div>
+        <div><label class="f" for="pg">Glicemia actual</label><div class="inp"><input id="pg" inputmode="decimal" autocomplete="off" placeholder="Ej. 150"><span>mg/dL</span></div></div>
+      </div>
+      <div class="row" style="margin-top:6px"><button class="lk" id="syncPlate" style="padding:0">Usar total del plato</button><span class="sp"></span><div class="seg" data-k="src" role="group" aria-label="Origen de la medición"><button data-v="sensor" aria-pressed="true">Sensor</button><button data-v="capilar" aria-pressed="false">Capilar</button></div></div>
+      <div class="dosebox" id="doseBox" aria-live="polite"></div>
+      <div id="gState"></div>
     </div>
-    <div class="card"><div class="step"><i>B</i>Glicemia actual</div>
-      <div class="inp"><input id="pg" inputmode="decimal" autocomplete="off" aria-label="Glicemia actual" placeholder="Ej. 150"><span>mg/dL</span></div>
-      <div class="row" style="margin-top:10px"><span class="t2 small sp">Medida con</span><div class="seg" data-k="src" role="group" aria-label="Origen de la medición"><button data-v="sensor" aria-pressed="true">Sensor</button><button data-v="capilar" aria-pressed="false">Capilar</button></div></div>
-      <div id="gState" style="margin-top:10px"></div>
-    </div>
-    <div class="card"><div class="step"><i>C</i>Parámetros vigentes</div><div id="params"></div><p class="muted small" style="margin:8px 0 0">Protegidos. Solo se cambian desde Perfil con confirmación.</p></div>
-    </div><div>
-    <div class="card"><div class="step"><i>D</i>Verificaciones de seguridad</div>
-      <div class="q"><span class="lb">¿Insulina rápida hace menos de 3 h?</span><div class="seg" data-k="recent"><button class="yes" data-v="1" aria-pressed="false">Sí</button><button data-v="0" aria-pressed="true">No</button></div></div>
+    <div class="card"><div class="q"><span class="lb">¿Insulina rápida hace menos de 3 h?</span><div class="seg" data-k="recent"><button class="yes" data-v="1" aria-pressed="false">Sí</button><button data-v="0" aria-pressed="true">No</button></div></div>
       <div class="q"><span class="lb">¿Síntomas de hipoglucemia o distintos al sensor?</span><div class="seg" data-k="sym"><button class="yes" data-v="1" aria-pressed="false">Sí</button><button data-v="0" aria-pressed="true">No</button></div></div>
       <div class="q"><span class="lb">¿Ejercicio próximo o reciente?</span><div class="seg" data-k="sport"><button class="yes" data-v="1" aria-pressed="false">Sí</button><button data-v="0" aria-pressed="true">No</button></div></div>
     </div>
-    <div class="card"><div class="step"><i>E</i>Resultado</div><div id="result" aria-live="polite"></div></div>
+    <div id="result" aria-live="polite" class="stack" style="margin-top:12px"></div>
+    </div><div>
     <div class="card"><div class="grid2"><div class="inp s"><input id="ap" inputmode="decimal" autocomplete="off" placeholder="Aplicadas" aria-label="Unidades aplicadas (opcional)"><span>U</span></div><button class="btn btn-primary" id="save"></button></div><p class="muted small" style="margin:8px 2px 0">Guarda la glicemia, los carbohidratos y lo que te pusiste, para tener tu historial al día.</p><button class="btn btn-ghost" data-go="historial" style="margin-top:10px" id="toHist"></button></div>
+    <div class="card"><div class="step"><i>i</i>Parámetros vigentes</div><div id="params"></div><p class="muted small" style="margin:8px 0 0">Se cambian desde Perfil, con confirmación.</p></div>
     <div class="note danger" style="margin-top:12px"><svg class="ico"><use href="#i-alert"/></svg><div><b>Es poco probable, pero si está inconsciente, convulsiona o no puede tragar:</b>no darle nada por la boca. Ponerlo de lado, usar glucagón si hay y llevarlo a la clínica. Si no puede trasladarlo de inmediato, llamar al 131 (SAMU).</div></div>
     </div></div>
   </section>
@@ -328,11 +470,11 @@ textarea.in{font-size:14px;min-height:90px;font-family:ui-monospace,Menlo,monosp
     </div>
     <div class="sect">Salud</div>
     <div class="card" style="padding-top:4px;padding-bottom:4px">
-      <button class="set" id="rulesB"><span class="ic"><svg class="ico s"><use href="#i-shield"/></svg></span><span class="tx"><b>Reglas clínicas</b><span id="rulesCount"></span></span><svg class="ico s muted"><use href="#i-chev"/></svg></button>
+      <button class="set" id="rulesB"><span class="ic"><svg class="ico s"><use href="#i-shield"/></svg></span><span class="tx"><b>Notas del equipo</b><span id="rulesCount"></span></span><svg class="ico s muted"><use href="#i-chev"/></svg></button>
       <button class="set" id="paramsB"><span class="ic"><svg class="ico s"><use href="#i-lock"/></svg></span><span class="tx"><b>Parámetros médicos</b><span id="paramsTxt"></span></span><svg class="ico s muted"><use href="#i-chev"/></svg></button>
       <button class="set" id="pautaB"><span class="ic"><svg class="ico s"><use href="#i-drop"/></svg></span><span class="tx"><b>Mi pauta completa</b><span>Insulinas, comidas y controles</span></span><svg class="ico s muted"><use href="#i-chev"/></svg></button>
     </div>
-    <p class="muted small" style="margin:14px 4px">diego. v4 · Midnight Energy ⚡ La app no envía tus datos a ningún servidor.</p>
+    <p class="muted small" style="margin:14px 4px">diego. v5 · Midnight Energy ⚡ La app no envía tus datos a ningún servidor.</p>
   </section>
 
   <!-- HISTORIAL -->
@@ -345,9 +487,9 @@ textarea.in{font-size:14px;min-height:90px;font-family:ui-monospace,Menlo,monosp
 
 <nav class="nav" aria-label="Secciones"><div class="in">
   <button data-go="inicio"><svg class="ico"><use href="#i-home"/></svg>Inicio<span class="dot" id="dot"></span></button>
-  <button data-go="alimentos"><svg class="ico"><use href="#i-search"/></svg>Alimentos</button>
+  <button data-go="alimentos"><svg class="ico"><use href="#i-apple"/></svg>Alimentos</button>
   <button data-go="recetas"><svg class="ico"><use href="#i-chef"/></svg>Recetas</button>
-  <button data-go="pauta"><svg class="ico"><use href="#i-drop"/></svg>Pauta</button>
+  <button data-go="pauta"><svg class="ico"><use href="#i-calendar"/></svg>Pauta</button>
 </div></nav>
 
 <div class="scrim" id="scrim"></div>
@@ -356,6 +498,14 @@ textarea.in{font-size:14px;min-height:90px;font-family:ui-monospace,Menlo,monosp
 
 <!-- Íconos Lucide (ISC License) -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></symbol>
+  <symbol id="i-utensils" viewBox="0 0 24 24"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></symbol>
+  <symbol id="i-calendar" viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></symbol>
+  <symbol id="i-coffee" viewBox="0 0 24 24"><path d="M10 2v2"/><path d="M14 2v2"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 1 1 0 8h-1"/><path d="M6 2v2"/></symbol>
+  <symbol id="i-cookie" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"/><path d="M8.5 8.5v.01"/><path d="M16 15.5v.01"/><path d="M12 12v.01"/><path d="M11 17v.01"/><path d="M7 14v.01"/></symbol>
+  <symbol id="i-salad" viewBox="0 0 24 24"><path d="M7 21h10"/><path d="M12 21a9 9 0 0 0 9-9H3a9 9 0 0 0 9 9Z"/><path d="M11.38 12a2.4 2.4 0 0 1-.4-4.77 2.4 2.4 0 0 1 3.2-2.77 2.4 2.4 0 0 1 3.47-.63 2.4 2.4 0 0 1 3.37 3.37 2.4 2.4 0 0 1-1.1 3.7 2.51 2.51 0 0 1 .03 1.1"/><path d="m13 12 4-4"/><path d="M10.9 7.25A3.99 3.99 0 0 0 4 10c0 .73.2 1.41.54 2"/></symbol>
+  <symbol id="i-cloche" viewBox="0 0 24 24"><path d="M3 20a1 1 0 0 1-1-1v-1a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v1a1 1 0 0 1-1 1Z"/><path d="M20 16a8 8 0 1 0-16 0"/><path d="M12 4v4"/><path d="M10 4h4"/></symbol>
   <symbol id="i-home" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
   <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
   <symbol id="i-chef" viewBox="0 0 24 24"><path d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z"/><path d="M6 17h12"/></symbol>

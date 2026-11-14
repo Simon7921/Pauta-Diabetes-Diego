@@ -52,8 +52,8 @@ Reglas: emojis con moderación (saludos y mensajes positivos); nunca felicitar p
 2. **Alimentos:** buscador fijo, filtros (Recientes, Favoritos ★, Mis alimentos, Recetas, categorías), etiqueta crudo/cocido y fuente en cada fila. El bottom sheet permite elegir unidades o gramos cuando existe peso por unidad.
 3. **Recetas:** constructor en 8 pasos (nombre, ingredientes, cantidades, peso final real, total, por 100 g, porción, guardar). Se pueden editar, duplicar y usar.
 4. **Favoritas:** tarjetas con alimentos, cantidades y g HC. "Usar" deja ajustar las cantidades antes de cargar. Nunca guardan glicemia ni dosis.
-5. **Mi pauta:** A comida, B glicemia (sensor o capilar), C parámetros, D verificaciones, E resultado. **El resultado de dosis queda bloqueado hasta que las 7 reglas clínicas estén confirmadas en Perfil.** La hipoglucemia y las alertas de seguridad se muestran siempre.
-6. **Perfil:** tema oscuro o claro, unidades, mis alimentos, historial, respaldo (exportar e importar con validación), reglas clínicas y parámetros médicos protegidos por confirmación.
+5. **Mi pauta:** carbohidratos y glicemia arriba; justo debajo, la dosis de la fórmula en grande y con 2 decimales (el redondeo lo hace el usuario según su equipo). Luego las verificaciones (bolo reciente, síntomas, ejercicio). Bajo 70 aparece "No inyectar". Las notas del equipo en Perfil son opcionales y no bloquean nada (decisión de la familia, v5).
+6. **Perfil:** tema oscuro o claro, unidades, mis alimentos, historial, respaldo (exportar e importar con validación), notas del equipo (opcionales) y parámetros médicos protegidos por confirmación.
 
 ## 4. Implementación en GitHub Pages
 
@@ -70,7 +70,7 @@ Reglas: emojis con moderación (saludos y mensajes positivos); nunca felicitar p
   - [ ] Crear alimento con etiqueta; aparece en Mis alimentos con su fuente.
   - [ ] Crear receta con peso final real; agregar una porción al plato; editar y duplicar.
   - [ ] Guardar favorita, ajustar cantidades y cargarla.
-  - [ ] Pauta: el resultado está bloqueado sin reglas; bajo 70 aparece "No inyectar".
+  - [ ] Pauta: con 214 mg/dL y 72 g aparece 8,08 U arriba; bajo 70 aparece "No inyectar".
   - [ ] Perfil: cambiar tema; exportar e importar respaldo; los parámetros piden confirmación.
   - [ ] Cerrar y abrir la app: el plato, las recetas y el historial siguen ahí.
   - [ ] Modo avión: la app abre y calcula.

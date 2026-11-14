@@ -85,33 +85,37 @@
   window.addEventListener("popstate", function () { closeSheet(); show((location.hash || "#inicio").slice(1), false); });
 
   /* ================= 1. INICIO / MI COMIDA ================= */
-  $("addFood").innerHTML = ico("plus") + "Agregar al plato";
+  
   $("saveFav").innerHTML = ico("heart", "s") + "Guardar favorita";
   $("toPauta").innerHTML = ico("drop", "s") + "Ver mi pauta";
+  var MEAL_ICON = { desayuno: "coffee", colacion: "cookie", almuerzo: "salad", once: "apple", cena: "cloche" };
+  // Miniatura por alimento (emoji como ilustración; el nombre siempre va en texto)
+  var THUMBS = [[/marraqueta|hallulla|pan /, "🍞"], [/pl[aá]tano/, "🍌"], [/manzana/, "🍎"], [/pi[nñ]a/, "🍍"], [/palta/, "🥑"], [/tomate/, "🍅"], [/huevo/, "🥚"], [/yogh|yogur|leche/, "🥛"], [/queso/, "🧀"], [/helado/, "🍦"], [/corn|cereal|avena/, "🥣"], [/galleta/, "🍪"], [/fideo|tallar/, "🍝"], [/papas fritas/, "🍟"], [/pur[eé]|papa/, "🥔"], [/jugo|n[eé]ctar|bebida/, "🧃"], [/naranja|mandarina/, "🍊"]];
+  function thumb(f) { var n = norm(f.name); if (String(f.fid || f.id || "").indexOf("r:") === 0) return "🍲"; for (var i = 0; i < THUMBS.length; i++) if (THUMBS[i][0].test(n)) return THUMBS[i][1]; return "🍽️"; }
   function renderInicio() {
     var d = new Date(), h = d.getHours();
-    $("hello").textContent = greeting(h) + " · " + d.toLocaleDateString("es-CL", { weekday: "long", day: "numeric", month: "short" });
-    $("meals").innerHTML = C.MEALS.map(function (m) { return '<button class="chip" data-m="' + m.id + '" aria-pressed="' + (plate.meal === m.id) + '">' + m.name + "</button>"; }).join("");
+    $("hiT").textContent = h >= 5 && h < 12 ? "¡Buenos días, Diego!" : h >= 20 || h < 5 ? "¡Buenas noches, Diego!" : "¡Hola, Diego!";
+    $("hello").textContent = "¡Vamos, Diego! ⚡";
+    $("meals").innerHTML = C.MEALS.map(function (m) { return '<button class="chip" data-m="' + m.id + '" aria-pressed="' + (plate.meal === m.id) + '">' + ico(MEAL_ICON[m.id]) + m.name + "</button>"; }).join("");
+    var sel = $("meals").querySelector('[aria-pressed="true"]'); if (sel && sel.scrollIntoView) { var mc = $("meals"); mc.scrollLeft = Math.max(0, sel.offsetLeft - (mc.clientWidth - sel.offsetWidth) / 2); }
     var m = meal(plate.meal), tot = plateTotal(), n = plate.items.length;
-    $("kicker").textContent = n ? "Tu plato de hoy · " + m.name : "¡Vamos, Diego! ⚡";
-    $("bigq").hidden = !!n; $("total").hidden = !n;
-    $("bigq").textContent = "¿Qué comeremos " + (m.id === "colacion" ? "de colación" : m.id === "once" ? "a la once" : "al " + m.name.toLowerCase()) + "?";
-    animateNum($("total"), tot, "<small>g HC</small>");
-    $("heroDesc").textContent = n ? ("¡Listo, Diego! Ya tenemos la cuenta. Vas con " + n + (n === 1 ? " alimento" : " alimentos") + "; la pauta considera " + m.hc + " g para esta comida.") : "¡Armemos algo rico! Elige tus alimentos y el total se calcula solo.";
+    animateNum($("total"), tot, " g HC");
+    $("heroDesc").textContent = n ? "¡Listo, Diego! Ya tenemos la cuenta." : "Agrega tus alimentos y hacemos la cuenta.";
+    $("heroPauta").textContent = n ? "Pauta " + (m.id === "once" ? "de la once" : m.id === "colacion" ? "de la colación" : "del " + m.name.toLowerCase()) + ": " + m.hc + " g" : "";
+    $("addFood").innerHTML = (n ? "Agregar más" : "¡Vamos a elegir!") + ico("arrow");
     $("plate").innerHTML = n ? plate.items.map(function (it, i) {
-      return '<li class="li" data-i="' + i + '"><button class="main" data-edit="' + i + '" aria-label="Editar cantidad de ' + esc(it.name) + '"><span class="nm">' + esc(it.name) + '</span><span class="mt">' + qtyTxt(it) + '</span></button><span class="hc">' + fmt(it.hc) + ' g</span><button class="ibtn" data-edit="' + i + '" aria-label="Editar ' + esc(it.name) + '">' + ico("pencil", "s") + '</button><button class="ibtn" data-rm="' + i + '" aria-label="Eliminar ' + esc(it.name) + '">' + ico("trash", "s") + "</button></li>";
-    }).join("") + '<li style="text-align:right"><button class="sect lk" id="clearPlate" style="margin:6px 0 0;display:inline-flex;color:var(--danger)">Vaciar plato</button></li>'
-      : '<li class="empty">' + ico("chef") + "<p>Tu plato está vacío por ahora.<br>¿Qué se te antoja?</p></li>";
+      return '<li class="li" data-i="' + i + '"><button class="main" data-edit="' + i + '" aria-label="' + esc(it.name) + ", " + qtyTxt(it) + ", " + fmt(it.hc) + ' gramos de carbohidratos. Editar o quitar"><span class="thumb" aria-hidden="true">' + thumb(it) + '</span><span style="flex:1;min-width:0"><span class="nm">' + esc(it.name.replace(/ \(unidad\)| \(sin cáscara\)| \(mitad\)/, "")) + " · " + qtyTxt(it) + '</span></span><span class="hcpill">' + fmt(it.hc) + ' g</span><svg class="ico s chev" aria-hidden="true"><use href="#i-chev"/></svg></button></li>';
+    }).join("") : '<li class="empty">' + ico("utensils") + "<p>Tu plato está vacío por ahora.<br>¿Qué se te antoja?</p></li>";
+    $("clearPlate").hidden = !n;
     $("dot").textContent = n || "";
-    $("favPrev").innerHTML = favs.length ? favs.slice(0, 6).map(favCard).join("") : '<div class="card empty" style="grid-column:1/-1">' + ico("heart") + "<p>¿Tienes un plato que repites? Guárdalo y lo armas en un toque.</p></div>";
   }
   $("meals").addEventListener("click", function (e) { var b = e.target.closest("[data-m]"); if (!b) return; plate.meal = b.dataset.m; savePlate(); renderInicio(); });
   $("plate").addEventListener("click", function (e) {
-    var r = e.target.closest("[data-rm]"), ed = e.target.closest("[data-edit]");
-    if (e.target.closest("#clearPlate")) { confirmModal({ title: "¿Vaciamos el plato?", text: "Se quitan todos los alimentos de " + meal(plate.meal).name.toLowerCase() + ".", ok: "Sí, vaciar", danger: true, onOk: function () { plate.items = []; savePlate(); renderInicio(); toast("Plato vacío. ¡A empezar de nuevo!", "trash"); } }); return; }
-    if (r) { var i = +r.dataset.rm, li = r.closest(".li"); var go = function () { var it = plate.items.splice(i, 1)[0]; savePlate(); renderInicio(); toast("Listo, quitamos " + it.name, "trash"); }; if (reduced) go(); else { li.classList.add("out"); setTimeout(go, 190); } return; }
-    if (ed) { var k = +ed.dataset.edit, x = plate.items[k]; var f = findFood(x.fid) || { id: x.fid, name: x.name, hc100: x.hc100, unit: x.unit, kind: "plate" }; qtySheet(f, k); }
+    var ed = e.target.closest("[data-edit]"); if (!ed) return;
+    var k = +ed.dataset.edit, x = plate.items[k]; var f = findFood(x.fid) || { id: x.fid, name: x.name, hc100: x.hc100, unit: x.unit, kind: "plate" }; qtySheet(f, k);
   });
+  function removeItem(i) { var it = plate.items.splice(i, 1)[0]; savePlate(); renderInicio(); toast("Listo, quitamos " + it.name, "trash"); }
+  $("clearPlate").addEventListener("click", function () { confirmModal({ title: "¿Vaciamos el plato?", text: "Se quitan todos los alimentos de " + meal(plate.meal).name.toLowerCase() + ".", ok: "Sí, vaciar", danger: true, onOk: function () { plate.items = []; savePlate(); renderInicio(); toast("Plato vacío. ¡A empezar de nuevo!", "trash"); } }); });
   $("toPauta").addEventListener("click", function () { pz.fromPlate = true; show("pauta"); });
 
   /* ================= 4. FAVORITAS ================= */
@@ -167,7 +171,7 @@
     var emptyMsg = { Recientes: "Lo último que agregues va a aparecer aquí.", Favoritos: "Marca con ★ lo que más comes y lo tendrás siempre a mano.", "Mis alimentos": "Aquí quedan los alimentos que crees con su etiqueta." }[ui.cat] || "No hay alimentos en esta categoría.";
     $("foods").innerHTML = list.length ? list.map(function (f) {
       var fav = favFoods.indexOf(f.id) >= 0;
-      return '<li class="li"><button class="main" data-f="' + esc(f.id) + '"><span class="nm">' + (fav ? '<span style="color:var(--warning)" aria-label="favorito">★</span> ' : "") + esc(f.name) + stateBadge(f) + '</span><span class="mt">' + metaTxt(f) + " · " + esc(srcTxt(f)) + '</span></button><button class="ibtn add" data-f="' + esc(f.id) + '" aria-label="Agregar ' + esc(f.name) + '">' + ico("plus") + "</button></li>";
+      return '<li class="li"><span class="thumb" aria-hidden="true" style="width:44px;height:44px;font-size:24px">' + thumb(f) + '</span><button class="main" data-f="' + esc(f.id) + '"><span class="nm">' + (fav ? '<span style="color:var(--warning)" aria-label="favorito">★</span> ' : "") + esc(f.name) + stateBadge(f) + '</span><span class="mt">' + metaTxt(f) + " · " + esc(srcTxt(f)) + '</span></button><button class="ibtn add" data-f="' + esc(f.id) + '" aria-label="Agregar ' + esc(f.name) + '">' + ico("plus") + "</button></li>";
     }).join("") : '<li class="empty">' + ico("search") + "<p>" + (q ? 'No encontramos "' + esc(ui.q) + '".<br>¿Lo creamos con los datos de su etiqueta?' : emptyMsg) + "</p></li>";
   }
   $("q").addEventListener("input", function () { ui.q = this.value; renderFoods(); });
@@ -181,7 +185,8 @@
     var mode = editing ? itemMode(it) : (food.unit && prefs.qty !== "g" ? "u" : "g");
     var fav = favFoods.indexOf(food.id) >= 0;
     var unitSeg = food.unit ? '<div class="seg full" id="qMode" role="group" aria-label="Unidad" style="margin-bottom:12px"><button data-v="u" aria-pressed="' + (mode === "u") + '">Unidades (' + fmt(food.unit, 0) + ' g c/u)</button><button data-v="g" aria-pressed="' + (mode === "g") + '">Gramos</button></div>' : "";
-    var extra = food.kind === "custom" ? '<div class="grid2" style="margin-top:10px"><button class="btn btn-secondary" id="qEd">' + ico("pencil", "s") + 'Editar</button><button class="btn btn-danger" id="qDel">' + ico("trash", "s") + "Eliminar</button></div>" : "";
+    var rmBtn = editing ? '<button class="btn btn-danger" id="qRm" style="margin-top:10px">' + ico("trash", "s") + "Quitar del plato</button>" : "";
+    var extra = rmBtn + (food.kind === "custom" ? '<div class="grid2" style="margin-top:10px"><button class="btn btn-secondary" id="qEd">' + ico("pencil", "s") + 'Editar</button><button class="btn btn-danger" id="qDel">' + ico("trash", "s") + "Eliminar</button></div>" : "");
     openSheet('<h3 id="shT">' + esc(food.name) + stateBadge(food) + '</h3><p class="t2 small" style="margin:0 0 14px">' + metaTxt(food) + "<br>Fuente: " + esc(srcTxt(food)) + "</p>" + unitSeg +
       '<label class="f" for="qQ" id="qL"></label><div class="inp"><input id="qQ" inputmode="decimal" autocomplete="off" value="' + (editing ? dec(it.qty) : "") + '"><span id="qU"></span></div><div class="quick" id="qk"></div>' +
       '<p class="t2 small" style="margin:8px 0 0;text-align:center">' + (editing ? "¿Un poquito más o menos? Ajusta y listo." : "") + '</p><div class="calc"><b id="qR">0</b>g HC</div><div class="row"><button class="ibtn' + (fav ? " on" : "") + '" id="qFav" aria-pressed="' + fav + '" aria-label="Marcar como favorito" style="border:1px solid var(--border2)">' + ico("star") + '</button><button class="btn btn-primary sp" id="qOk">' + (editing ? "Guardar cambios" : "Agregar al plato") + "</button></div>" + extra, function (b) {
@@ -202,6 +207,7 @@
         else { plate.items.push(o); recent = [food.id].concat(recent.filter(function (x) { return x !== food.id; })).slice(0, 12); S.saveList("recent", recent); usage[food.id] = (usage[food.id] || 0) + 1; S.saveUsage(usage); toast(addedMsg(food.name, o.hc), "plus"); }
         savePlate(); closeSheet(); if (ui.screen === "inicio") renderInicio(); else { $("dot").textContent = plate.items.length || ""; if (ui.screen === "alimentos") renderFoods(); }
       };
+      var rmb = b.querySelector("#qRm"); if (rmb) rmb.onclick = function () { closeSheet(); removeItem(editIdx); };
       var ed = b.querySelector("#qEd"); if (ed) ed.onclick = function () { foodSheet(food); };
       var dl = b.querySelector("#qDel"); if (dl) dl.onclick = function () { confirmModal({ title: "¿Borramos " + food.name + "?", text: "Se quita de Mis alimentos. Los platos que ya armaste no cambian.", ok: "Sí, borrar", danger: true, onOk: function () { custom = custom.filter(function (f) { return f.id !== food.id; }); S.saveCustom(custom); renderFoods(); toast("Alimento borrado", "trash"); } }); };
     });
@@ -321,7 +327,7 @@
   });
   var NOTES = {
     "bolo-reciente": function (r) { return ["danger", "Puede haber insulina activa", "Hubo insulina rápida hace menos de 3 horas. Sumar otra corrección aumenta el riesgo de hipoglucemia. Consulta al equipo."]; },
-    "bajo-objetivo": function () { return ["warn", "Glicemia bajo el objetivo", "La pauta no define si se resta la corrección. Pendiente de validar."]; },
+    "bajo-objetivo": function (r) { return ["warn", "Glicemia bajo el objetivo", "La corrección resta " + dec2(-r.corr) + " U. Sin restarla serían " + dec2(r.food) + " U. Confirma con tu equipo cuál usar."]; },
     "deporte": function () { return ["warn", "Ejercicio próximo o reciente", "Puede bajar la glucosa durante y horas después, incluso de noche. El ajuste lo indica el equipo."]; },
     "cetonas": function () { return ["warn", "Glicemia sobre 250", "Mide cetonas si tienes cómo, sobre todo con náuseas, vómitos, dolor de estómago o enfermedad. Con cetonas o malestar, llama al equipo o consulta en urgencias."]; },
     "dosis-alta": function () { return ["danger", "Resultado alto", "Supera 15 U. Revisa la glicemia y los gramos."]; },
@@ -329,35 +335,30 @@
     "sintomas": function () { return ["warn", "Síntomas distintos a la lectura", "Confirma con glucómetro capilar antes de decidir."]; }
   };
   var LAST = null;
+  function dec2(x) { return (Math.round(x * 100) / 100).toLocaleString("es-CL", { minimumFractionDigits: 1, maximumFractionDigits: 2 }); }
   function note(kind, title, txt) { return '<div class="note ' + kind + '">' + ico(kind === "info" ? "info" : "alert") + "<div><b>" + esc(title) + "</b>" + txt + "</div></div>"; }
   function compute() {
     var g = C.num($("pg").value), c = C.num($("pc").value);
-    var r = C.dose({ g: g, c: c, P: P, recent: pz.recent, sport: pz.sport, sym: pz.sym });
-    var rs = C.rulesStatus(rules), out = [];
-    // Estado de glicemia: texto + ícono, nunca solo color. 70–180 es neutro.
+    var r = C.dose({ g: g, c: c, P: P, recent: pz.recent, sport: pz.sport, sym: pz.sym }), out = [];
     var st = "";
     if (r.range) { var lb = { low: "Baja · menos de 70", ok: "Entre 70 y 180", high: "Alta · 181 a 250", vhigh: "Muy alta · sobre 250" }[r.range.id]; st = '<span class="pill ' + r.range.id + '">' + (r.range.id === "ok" ? ico("info", "s") : ico("alert", "s")) + g + " mg/dL · " + lb + "</span>"; }
     if (pz.src === "sensor" && pz.sym) st += '<div style="margin-top:8px">' + note("warn", "Sensor y síntomas no coinciden", "Mide en el dedo (capilar) y usa ese valor.") + "</div>";
     $("gState").innerHTML = st;
-    if (!r.valid) { LAST = null; out.push('<p class="t2" style="margin:0">Ingresa la glicemia para revisar.</p>'); }
+    var box = "";
+    if (!r.valid) { LAST = null; box = '<div class="lab">Dosis según la fórmula</div><div class="dv">—<small>U</small></div><div class="brk">Ingresa la glicemia</div>'; }
     else if (r.hypo) {
       LAST = { g: g, c: c || 0, dose: 0, hypo: 1 };
-      out.push('<div class="note danger">' + ico("alert") + "<div><b>Hipoglucemia: no inyectar</b>15 g de azúcar rápida (jugo, tabletas o azúcar en agua). Medir de nuevo a los 15 minutos y repetir si sigue bajo 70. Al recuperarse, volver a revisar la comida.</div></div>");
-    } else if (!rs.complete) {
-      LAST = { g: g, c: c || 0, dose: null, blocked: 1, recent: pz.recent, sport: pz.sport };
-      var miss = C.CLINICAL_RULES.filter(function (x) { return !(rules[x.id] && rules[x.id].ok && String(rules[x.id].answer || "").trim()); });
-      out.push('<div class="lock">' + ico("lock") + '<h3 style="margin:6px 0 4px;font-size:19px">Resultado de dosis bloqueado</h3><p class="t2" style="margin:0 0 10px">Faltan <b class="progress-text">' + miss.length + " de " + rs.total + "</b> reglas confirmadas por el equipo clínico. Hasta completarlas, la app no muestra unidades para que un número no se confunda con una indicación.</p></div>" +
-        '<ul class="t2 small" style="margin:0 0 12px;padding-left:18px">' + miss.slice(0, 3).map(function (x) { return "<li>" + esc(x.q) + "</li>"; }).join("") + (miss.length > 3 ? "<li>y " + (miss.length - 3) + " más</li>" : "") + '</ul><button class="btn btn-secondary" id="goRules">' + ico("shield", "s") + "Revisar reglas clínicas</button>");
+      box = '<div class="lab">Hipoglucemia</div><div class="dv stop">No inyectar</div><div class="brk">Primero hay que tratar la hipoglucemia</div>';
+      out.push('<div class="note danger">' + ico("alert") + "<div><b>Qué hacer ahora</b>15 g de azúcar rápida (jugo, tabletas o azúcar en agua). Medir de nuevo a los 15 minutos y repetir si sigue bajo 70. Al recuperarse, volver a revisar la comida.</div></div>");
     } else {
       LAST = { g: g, c: c || 0, dose: r.main, corr: r.corr, food: r.food, recent: pz.recent, sport: pz.sport };
-      out.push('<div class="t2 small" style="text-align:center">' + (r.mode === "food-only" ? "Solo la parte de la comida" : "Resultado de la fórmula de la pauta") + '</div><div class="dose">' + fmt(r.main) + " <small>U</small></div>" +
-        '<div class="t2" style="text-align:center">' + (r.mode === "food-only" ? "Comida " + fmt(r.food) + " · corrección no sumada" : "Corrección " + fmt(r.corr) + " + Comida " + fmt(r.food) + " = " + fmt(r.total) + " U") + "</div>" +
-        '<div class="kv" style="margin-top:10px"><span>Redondeo (equipo)</span><b>' + esc(rules.redondeo.answer) + '</b></div><div class="kv"><span>Insulina activa (equipo)</span><b>' + esc(rules["insulina-activa"].answer) + "</b></div>" +
-        note("info", "No es una instrucción automática", "Aplica lo que indique tu equipo médico."));
+      box = '<div class="lab">' + (r.mode === "food-only" ? "Dosis: solo la parte de la comida" : "Dosis según la fórmula") + '</div><div class="dv">' + dec2(r.main) + "<small>U</small></div>" +
+        '<div class="brk">' + (r.mode === "food-only" ? "Comida <b>" + fmt(r.food) + "</b> · corrección no sumada" : "Corrección <b>" + fmt(r.corr) + "</b> + Comida <b>" + fmt(r.food) + "</b>") + "</div>" +
+        '<div class="rnd">Con decimales. El redondeo lo haces tú, según tu equipo.</div>';
     }
+    $("doseBox").innerHTML = box;
     r.warnings.forEach(function (w) { if (w === "hipo") return; if (NOTES[w]) { var n = NOTES[w](r); out.push(note(n[0], n[1], n[2])); } });
     $("result").innerHTML = out.join("");
-    var gr = $("goRules"); if (gr) gr.onclick = rulesSheet;
   }
   $("save").addEventListener("click", function () {
     if (!LAST) { toast("Primero ingresa la glicemia", "info"); $("pg").focus(); return; }
@@ -368,11 +369,11 @@
 
   /* ================= 6. PERFIL / CONFIGURACIÓN ================= */
   function renderPerfil() {
-    var th = document.documentElement.getAttribute("data-theme");
+    var th = document.documentElement.getAttribute("data-mode");
     $("themeSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === th)); });
     $("qtySeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === (prefs.qty === "g" ? "g" : "auto"))); });
     $("mngCount").textContent = custom.length ? custom.length + (custom.length === 1 ? " alimento creado por ti" : " alimentos creados por ti") : "Todavía no creas alimentos";
-    var rs = C.rulesStatus(rules); $("rulesCount").textContent = rs.done + " de " + rs.total + " confirmadas" + (rs.complete ? " · resultado habilitado" : " · resultado bloqueado");
+    var rs = C.rulesStatus(rules); $("rulesCount").textContent = "Opcional · " + rs.done + " de " + rs.total + " anotadas";
     var d = C.PAUTA_DEFAULT; $("paramsTxt").textContent = (P.t === d.t && P.f === d.f && P.r === d.r ? "Pauta de la epicrisis" : "Modificados") + " · protegidos";
   }
   $("themeSeg").addEventListener("click", function (e) { var b = e.target.closest("[data-v]"); if (!b) return; S.set(S.KEYS.theme, b.dataset.v); applyTheme(); renderPerfil(); toast(b.dataset.v === "light" ? "Modo claro activado ☀️" : "Modo Midnight activado ⚡"); });
@@ -385,7 +386,7 @@
   });
   function rulesSheet() {
     var rs = C.rulesStatus(rules);
-    openSheet('<h3 id="shT">Reglas clínicas</h3><p class="t2 small" style="margin:0 0 6px">Anota lo que indique el equipo. El resultado de dosis se habilita solo cuando las ' + rs.total + ' estén confirmadas. Esto no cambia la fórmula.</p><p style="margin:0 0 6px;font-weight:800">' + rs.done + " de " + rs.total + ' confirmadas</p><div>' +
+    openSheet('<h3 id="shT">Notas del equipo</h3><p class="t2 small" style="margin:0 0 6px">Opcional. Anota lo que indique el equipo para tenerlo a mano. No cambia la fórmula ni bloquea nada.</p><p style="margin:0 0 6px;font-weight:800">' + rs.done + " de " + rs.total + ' confirmadas</p><div>' +
       C.CLINICAL_RULES.map(function (x) { var v = rules[x.id] || {}; var ok = v.ok && String(v.answer || "").trim(); return '<button class="rule set' + (ok ? " ok" : "") + '" data-rule="' + x.id + '" style="min-height:56px"><span class="st">' + (ok ? ico("check", "s") : "") + '</span><span class="tx"><b style="font-weight:650">' + esc(x.q) + '</b><span class="ans">' + (ok ? esc(v.answer) : "Pendiente") + "</span></span></button>"; }).join("") + "</div>", function (b) {
       b.addEventListener("click", function (e) { var x = e.target.closest("[data-rule]"); if (x) ruleSheet(x.dataset.rule); });
     });
@@ -453,7 +454,7 @@
 
   /* ================= HISTORIAL ================= */
   function fdt(t) { var d = new Date(t); return d.toLocaleDateString("es-CL", { weekday: "short", day: "2-digit", month: "2-digit" }) + " " + d.toLocaleTimeString("es-CL", { hour: "2-digit", minute: "2-digit", hourCycle: "h23" }); }
-  function line(h) { return (h.meal ? h.meal + " · " : "") + "Glicemia " + h.g + (h.src === "capilar" ? " (capilar)" : "") + " · HC " + fmt(h.c) + " g · " + (h.hypo ? "Hipoglucemia, sin dosis" : h.dose == null ? "Resultado bloqueado" : "Fórmula " + fmt(h.dose) + " U") + (h.ap != null ? " · Aplicada " + dec(h.ap) + " U" : "") + (h.recent ? " · bolo <3 h" : "") + (h.sport ? " · ejercicio" : ""); }
+  function line(h) { return (h.meal ? h.meal + " · " : "") + "Glicemia " + h.g + (h.src === "capilar" ? " (capilar)" : "") + " · HC " + fmt(h.c) + " g · " + (h.hypo ? "Hipoglucemia, sin dosis" : h.dose == null ? "Resultado bloqueado" : "Fórmula " + dec2(h.dose) + " U") + (h.ap != null ? " · Aplicada " + dec(h.ap) + " U" : "") + (h.recent ? " · bolo <3 h" : "") + (h.sport ? " · ejercicio" : ""); }
   function renderHist() {
     hist = S.loadHistory();
     $("hist").innerHTML = hist.length ? hist.map(function (h, i) { var rg = C.glucoseRange(+h.g), id = rg ? rg.id : ""; var bc = id === "low" ? "var(--danger)" : (id === "high" || id === "vhigh") ? "var(--warning)" : "var(--border2)"; return '<li class="li"><div class="main" style="border-left:3px solid ' + bc + ';padding-left:10px"><span class="mt">' + fdt(h.t) + (rg ? " · " + rg.label : "") + '</span><span style="display:block">' + esc(line(h)) + '</span></div><button class="ibtn" data-hd="' + i + '" aria-label="Borrar registro">' + ico("trash", "s") + "</button></li>"; }).join("") : '<li class="empty">' + ico("clock") + '<p>Aún no hay registros.<br>Cuando guardes uno en Pauta, aparece aquí.</p></li>';
@@ -466,7 +467,7 @@
   /* ================= Tema ================= */
   function applyTheme() {
     var t = S.get(S.KEYS.theme, null) || "dark";
-    document.documentElement.setAttribute("data-theme", t === "light" ? "light" : "dark");
+    document.documentElement.setAttribute("data-mode", t === "light" ? "light" : "dark");
     var m = document.querySelector('meta[name="theme-color"]'); if (m) m.content = t === "light" ? "#F3F5F9" : "#0B1020";
   }
 
