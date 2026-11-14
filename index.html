@@ -156,7 +156,7 @@ select{font:inherit;font-size:16px;padding:10px 12px;border:1.5px solid var(--li
 <ul class="items" id="items"></ul>
 <div class="tot"><span>Total del plato</span><span id="hcTot">0 g</span></div>
 <button class="btn sec" id="use">Usar este total en la calculadora ↑</button>
-<p class="foot">Valores aproximados por cada 100 g (o 100 ml) de alimento, según tablas de composición (USDA). Los productos envasados varían: si tiene etiqueta, elige "Otro" y usa el dato de "Hidratos de carbono disponibles" por 100 g. Los alimentos que agregues con "Otro" quedan guardados en "Mis alimentos", solo en este teléfono. Fruta pesada sin cáscara ni pepas. Arroz, fideos y papas se pesan ya cocidos; los tallarines sin cocer se pesan secos, antes de hervirlos.</p>
+<p class="foot">Valores aproximados por cada 100 g (o 100 ml) de alimento, según tablas de composición (USDA). Los productos envasados varían: si tiene etiqueta, elige "Otro" y usa el dato de "Hidratos de carbono disponibles" por 100 g. Los alimentos que agregues con "Otro" quedan guardados en "Mis alimentos", solo en este teléfono. Fruta pesada sin cáscara ni pepas. Fideos y papas se pesan ya cocidos; los tallarines sin cocer se pesan secos, antes de hervirlos.</p>
 </section>
 
 <section class="ficha" id="ficha">
@@ -167,7 +167,7 @@ select{font:inherit;font-size:16px;padding:10px 12px;border:1.5px solid var(--li
 <table class="tb">
 <thead><tr><th>Insulina</th><th>Cuándo</th></tr></thead>
 <tbody>
-<tr><td><b>Tresiba</b><br><span class="lab">basal (lenta)</span></td><td><b>15 U a las 20:00</b>, todos los días</td></tr>
+<tr><td><b>Tresiba</b><br><span class="lab">basal (lenta)</span></td><td><b>14 U a las 20:00</b>, todos los días<br><span class="lab">Ajustada por el equipo médico (antes 15 U)</span></td></tr>
 <tr><td><b>NovoRapid o Fiasp</b><br><span class="lab">rápida</span></td><td>Antes de cada comida, según la fórmula de arriba</td></tr>
 </tbody></table>
 
@@ -279,11 +279,11 @@ function calc(){
   $("alerts").innerHTML=A.join("");
 }
 
-const FOODS={"Frutas":[["Manzana",13.8],["Plátano",22.8],["Naranja",11.8],["Mandarina",13.3],["Piña",13.1],["Mango",15],["Frambuesa",11.9],["Palta",8.5]],
-"Verduras":[["Tomate cherry",3.9]],
-"Lácteos":[["Yoghito vainilla sin azúcar (120 g)",7.4],["Queso mantecoso / gauda",1],["Helado de crema",23.6],["Manjar",55.4]],
+const FOODS={"Frutas":[["Manzana",13.8],["Plátano",22.8],["Naranja",11.8],["Mandarina",13.3],["Piña",13.1],["Palta",8.5]],
+"Verduras":[["Tomate",3.9],["Tomate cherry",3.9]],
+"Lácteos":[["Yoghito vainilla sin azúcar (120 g)",7.4],["Queso mantecoso / gauda",1],["Helado de crema",23.6]],
 "Panes y cereales":[["Marraqueta",58],["Hallulla",55],["Pan de molde blanco",49],["Corn flakes",84],["Galletas de soda",71]],
-"Acompañamientos":[["Arroz cocido",28],["Fideos cocidos",31],["Tallarines sin cocer (aprox.)",74],["Papa cocida",20],["Puré de papas",16],["Papas fritas",41]],
+"Acompañamientos":[["Fideos cocidos",31],["Tallarines sin cocer (aprox.)",74],["Papa cocida",20],["Puré de papas",16],["Papas fritas",41]],
 "Bebidas":[["Jugo de naranja natural",10.4],["Néctar de fruta (aprox.)",12]]};
 const ALL=[];let MY=[];
 try{MY=JSON.parse(localStorage.getItem("diegoAlimentos")||"[]")||[]}catch(e){MY=[]}
