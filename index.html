@@ -423,6 +423,17 @@ html[data-mode=light] .ph-ref{--refc-def:#3F6212}
 .mast-art .fig-ball{display:none}
 html.fig-ball .mast-art .fig-ball{display:inline}
 html.fig-ball .mast-art .fig-bike{display:none}
+/* Foto de Diego en el encabezado (tal cual, sin filtros) */
+.mast-photo{display:none}
+html.fig-photo .mast2 .mast-art{display:none}
+html.fig-photo .mast2{display:grid;grid-template-columns:1fr auto;align-items:end;column-gap:4px}
+html.fig-photo .mast-photo{display:block;position:relative;grid-column:2;grid-row:1;height:clamp(118px,37vw,160px);width:auto;margin:-4px -14px 0 0;pointer-events:none}
+html.fig-photo .mast2 .mast-row{grid-column:1;grid-row:1;align-self:center}
+html.fig-photo .mast2 .ava{display:none}
+html.fig-photo .mast2 .mast-row>div{padding-right:0}
+html.fig-photo .mast2 .hi{white-space:normal;line-height:1.08}
+html.fig-photo .mast2 .nextbar{grid-column:1/-1;grid-row:2;margin-top:6px}
+@media (max-height:720px){html.fig-photo .mast-photo{height:min(31vw,112px)}html.fig-photo .mast2 .nextbar{margin-top:4px}}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 </style>
 </head>
@@ -516,6 +527,7 @@ html.fig-ball .mast-art .fig-bike{display:none}
           <g stroke-linecap="round"><path d="M202 112 h34" stroke="#B8FF3B" stroke-width="2.6" opacity=".85"/><path d="M208 128 h28" stroke="#38E1C6" stroke-width="2" opacity=".8"/><path d="M198 96 h22" stroke="#38E1C6" stroke-width="1.6" opacity=".6"/></g>
         </g>
       </svg>
+      <img class="mast-photo" src="diego.png" alt="" aria-hidden="true" width="440" height="405" decoding="async">
       <div class="mast-row">
         <button class="ava" data-go="perfil" aria-label="Perfil y configuración"><svg class="ico"><use href="#i-user"/></svg></button>
         <div><h1 class="hi" id="hiT">¡Hola, Diego!</h1><div class="hi2" id="hello">¡Vamos, Diego! ⚡</div></div>
@@ -600,7 +612,7 @@ html.fig-ball .mast-art .fig-bike{display:none}
     <header class="top"><div class="row"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg class="ico"><use href="#i-back"/></svg></button><div><h1 class="h1">Perfil</h1><div class="hello">Tu app, a tu manera</div></div></div></header>
     <div class="card hero row"><div class="avatar" style="width:56px;height:56px;font-size:22px" aria-hidden="true">D</div><div><b style="font-size:19px">Diego</b><div class="t2 small">Tus datos se quedan en este teléfono 🔒</div></div></div>
     <div class="sect">Apariencia</div>
-    <div class="card"><div class="seg full" id="themeSeg" role="group" aria-label="Tema"><button data-v="dark">Midnight oscuro</button><button data-v="light">Claro</button></div><div class="t2 small" style="margin:12px 2px 6px">Figura del encabezado</div><div class="seg full" id="figSeg" role="group" aria-label="Figura del encabezado"><button data-v="bike">🚴 Ciclista</button><button data-v="ball">⚽ Pelota</button></div></div>
+    <div class="card"><div class="seg full" id="themeSeg" role="group" aria-label="Tema"><button data-v="dark">Midnight oscuro</button><button data-v="light">Claro</button></div><div class="t2 small" style="margin:12px 2px 6px">Figura del encabezado</div><div class="seg full" id="figSeg" role="group" aria-label="Figura del encabezado"><button data-v="photo">📸 Diego</button><button data-v="ball">⚽ Pelota</button><button data-v="bike">🚴 Ciclista</button></div></div>
     <div class="sect">Unidades de medida</div>
     <div class="card"><div class="kv"><span>Carbohidratos</span><b>gramos (g HC)</b></div><div class="kv"><span>Glicemia</span><b>mg/dL</b></div>
       <div class="row" style="margin-top:8px"><span class="sp">Cantidad al agregar alimentos con unidad</span></div>

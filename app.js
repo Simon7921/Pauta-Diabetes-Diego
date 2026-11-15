@@ -423,7 +423,7 @@
   function renderPerfil() {
     var th = document.documentElement.getAttribute("data-mode");
     $("themeSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === th)); });
-    $("figSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === (prefs.fig === "bike" ? "bike" : "ball"))); });
+    $("figSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === figNow())); });
     $("qtySeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === (prefs.qty === "g" ? "g" : "auto"))); });
     $("mngCount").textContent = custom.length ? custom.length + (custom.length === 1 ? " alimento creado por ti" : " alimentos creados por ti") : "Todavía no creas alimentos";
     var rs = C.rulesStatus(rules); $("rulesCount").textContent = "Opcional · " + rs.done + " de " + rs.total + " anotadas";
@@ -568,8 +568,9 @@
   $("clrH").addEventListener("click", function () { if (!hist.length) return; confirmModal({ title: "¿Borramos todo el historial?", text: "Se eliminan " + hist.length + " registros de este teléfono. No se puede deshacer.", ok: "Sí, borrar todo", danger: true, onOk: function () { hist = []; S.saveHistory(hist); renderHist(); toast("Historial borrado", "trash"); } }); });
 
   /* ================= Tema ================= */
-  function applyFig() { document.documentElement.classList.toggle("fig-ball", prefs.fig !== "bike"); }
-  $("figSeg").addEventListener("click", function (e) { var b = e.target.closest("[data-v]"); if (!b) return; prefs.fig = b.dataset.v; S.savePrefs(prefs); applyFig(); renderPerfil(); toast(b.dataset.v === "ball" ? "Pelota activada ⚽" : "Ciclista activado 🚴"); });
+  function figNow() { return prefs.fig === "bike" || prefs.fig === "ball" ? prefs.fig : "photo"; }
+  function applyFig() { var f = figNow(), r = document.documentElement.classList; r.toggle("fig-ball", f === "ball"); r.toggle("fig-photo", f === "photo"); }
+  $("figSeg").addEventListener("click", function (e) { var b = e.target.closest("[data-v]"); if (!b) return; prefs.fig = b.dataset.v; S.savePrefs(prefs); applyFig(); renderPerfil(); toast(b.dataset.v === "ball" ? "Pelota activada ⚽" : b.dataset.v === "bike" ? "Ciclista activado 🚴" : "Foto activada 📸"); });
   function applyTheme() {
     var t = S.get(S.KEYS.theme, null) || "dark";
     document.documentElement.setAttribute("data-mode", t === "light" ? "light" : "dark");

@@ -1,6 +1,6 @@
 // Service worker: red primero (para recibir cambios), caché si no hay internet.
-const C="pauta-diego-v7l";
-const F=["./","index.html","calc.js","store.js","app.js","manifest.json","icon-180.png","icon-192.png","icon-512.png"];
+const C="pauta-diego-v7m";
+const F=["./","index.html","calc.js","store.js","app.js","manifest.json","icon-180.png","icon-192.png","icon-512.png","diego.png"];
 self.addEventListener("install",e=>{e.waitUntil(caches.open(C).then(c=>c.addAll(F)));self.skipWaiting()});
 self.addEventListener("activate",e=>{e.waitUntil(caches.keys().then(k=>Promise.all(k.filter(x=>x!==C).map(x=>caches.delete(x)))));self.clients.claim()});
 self.addEventListener("fetch",e=>{if(e.request.method!=="GET")return;
