@@ -9,7 +9,7 @@ PWA estática para GitHub Pages. Sin servidor, sin APIs externas, sin dependenci
 | Archivos | `index.html` (vista + estilos), `app.js` (interfaz), `calc.js` (lógica pura), `store.js` (persistencia), `sw.js`, `manifest.json`, íconos, `tests/` | Se mantiene la misma arquitectura. Se reescriben vista y estilos; se extienden `calc.js` y `store.js` sin cambiar la fórmula. |
 | Datos de alimentos | Una sola base en `calc.js` (27 alimentos) + alimentos propios + recetas | Misma base. Se agregan estado (crudo/cocido) y fuente sin tocar los valores. |
 | Almacenamiento | `diegoPauta`, `diegoHistorial`, `diegoAlimentos` (v1) y `diego.v2.*` | Se conservan todas las claves. Solo se agregan `diego.v3.*` (recientes, favoritos de alimentos, reglas clínicas, preferencias). |
-| Cálculos | `Calc.dose()`, `hcFor()`, `recipe()` | Fórmula idéntica: objetivo 110, sensibilidad 50, ratio 12. `hcFor` acepta ahora gramos o unidades. |
+| Cálculos | `Calc.dose()`, `hcFor()`, `recipe()` | Fórmula idéntica: objetivo 110, sensibilidad 50, ratio 14 (cambiado desde 12 por la Dra. el 15/11/2026). `hcFor` acepta ahora gramos o unidades. |
 | Navegación | 5 pestañas abajo, rutas por `#hash` | 4 pestañas (Inicio, Alimentos, Recetas, Pauta); Favoritas, Perfil e Historial desde Inicio, Perfil o Pauta. |
 | PWA | Service worker "red primero, caché sin conexión" | Se mantiene la estrategia (evita servir versiones antiguas) y se renueva la caché a `pauta-diego-v3`. |
 

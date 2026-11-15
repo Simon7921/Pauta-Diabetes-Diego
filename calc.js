@@ -7,8 +7,8 @@
 })(typeof self !== "undefined" ? self : this, function () {
   "use strict";
 
-  // Pauta confirmada en la epicrisis (12/11/2026). t = objetivo, f = sensibilidad, r = ratio.
-  var PAUTA_DEFAULT = Object.freeze({ t: 110, f: 50, r: 12 });
+  // Pauta: epicrisis 12/11/2026; ratio cambiado de 12 a 14 por la Dra. el 15/11/2026. t = objetivo, f = sensibilidad, r = ratio.
+  var PAUTA_DEFAULT = Object.freeze({ t: 110, f: 50, r: 14 });
 
   // Carbohidratos objetivo por comida según la pauta (g).
   var MEALS = Object.freeze([
@@ -25,15 +25,15 @@
     "Frutas": [["Manzana", 13.8], ["Plátano pesado (sin cáscara)", 22.8], ["Medio plátano (mitad)", 22.8, 59], ["Naranja", 11.8], ["Mandarina", 13.3], ["Piña", 13.1], ["Palta", 8.5]],
     "Verduras": [["Tomate", 3.9], ["Tomate mediano (unidad)", 3.9, 123], ["Tomate cherry", 3.9]],
     "Huevos": [["Huevo (unidad)", 0.7, 50]],
-    "Lácteos": [["Yoghito vainilla sin azúcar (120 g)", 7.4], ["Queso mantecoso / gauda", 1], ["Helado de crema", 23.6]],
+    "Lácteos": [["Yoghito vainilla sin azúcar (120 g)", 7.4, 120], ["Queso mantecoso / gauda", 1], ["Helado de crema", 23.6]],
     "Panes y cereales": [["Marraqueta", 58], ["Hallulla", 55], ["Pan de molde blanco", 49], ["Corn flakes", 84], ["Galletas de soda", 71]],
     "Acompañamientos": [["Fideos cocidos", 31], ["Tallarines sin cocer (aprox.)", 74], ["Papa cocida", 20], ["Puré de papas", 16], ["Puré mamá", 17.3], ["Papas fritas", 41]],
-    "Bebidas": [["Jugo de naranja natural", 10.4], ["Néctar de fruta (aprox.)", 12]]
+    "Bebidas": [["Jugo Vivo (190 ml)", 0, 190], ["Jugo Del Valle (400 ml)", 4.9, 400], ["Jugo de naranja natural", 10.4], ["Néctar de fruta (aprox.)", 12]]
   };
 
   // Estado y fuente de cada alimento base (no cambia los valores).
   var STATE = { "Fideos cocidos": "cocido", "Tallarines sin cocer (aprox.)": "crudo", "Papa cocida": "cocido", "Puré de papas": "preparado", "Puré mamá": "preparado", "Papas fritas": "preparado" };
-  var SOURCE = { "Yoghito vainilla sin azúcar (120 g)": "Etiqueta Soprole", "Puré mamá": "Receta casera calculada (820 g)" };
+  var SOURCE = { "Yoghito vainilla sin azúcar (120 g)": "Etiqueta Soprole", "Puré mamá": "Receta casera calculada (820 g)", "Jugo Vivo (190 ml)": "Indicado por la familia (0 g HC)", "Jugo Del Valle (400 ml)": "Etiqueta Del Valle (19,6 g/botella)" };
   var DEFAULT_SOURCE = "Tabla USDA (aprox.)";
 
   // Reglas que el equipo clínico debe confirmar antes de mostrar un resultado de dosis.
@@ -81,9 +81,9 @@
       var t = p(Math.floor(mm / 60)) + p(mm % 60) + "00";
       L.push("BEGIN:VEVENT", "UID:diego-" + x.id + "-" + i + "-" + t + "@pauta", "DTSTAMP:" + stamp, "DTSTART:" + day + "T" + t, "DURATION:PT15M", "RRULE:FREQ=DAILY",
         "SUMMARY:" + (x.basal ? "Tresiba (insulina basal) · diego." : x.label + " · diego."),
-        "DESCRIPTION:" + (x.basal ? "Dosis basal según tu pauta." : "Mide la glicemia y calcula en la app antes de comer."),
+        "DESCRIPTION:" + (x.basal ? "Dosis basal según tu pauta." : "Mide la glicemia y calcula en la app antes de comer." + (x.id === "desayuno" ? " Toma tus 5 gotitas de vitamina D." : "")),
         "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:" + x.label, "TRIGGER:-PT10M", "END:VALARM",
-        "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:" + x.label, "TRIGGER:PT0M", "END:VALARM", "END:VEVENT");
+        "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:" + x.label + (x.id === "desayuno" ? " + gotitas de vitamina D" : ""), "TRIGGER:PT0M", "END:VALARM", "END:VEVENT");
     });
     L.push("END:VCALENDAR");
     return L.join("\r\n");

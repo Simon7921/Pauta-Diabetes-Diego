@@ -11,6 +11,13 @@
 
   /* ---------------- Estado (todo persistido localmente) ---------------- */
   var P = S.loadPauta(C.PAUTA_DEFAULT);
+  // Migración única (15/11/2026): la Dra. cambió el ratio de 12 a 14. Solo si estaba guardada la pauta antigua sin cambios.
+  try {
+    if (!localStorage.getItem("diego.v3.ratio14")) {
+      if (P.t === 110 && P.f === 50 && P.r === 12) { P = Object.assign({}, C.PAUTA_DEFAULT); S.savePauta(P); }
+      localStorage.setItem("diego.v3.ratio14", "1");
+    }
+  } catch (e) {}
   var custom = S.loadCustom(), recipes = S.loadRecipes(), favs = S.loadFavs(), plate = S.loadPlate();
   var usage = S.loadUsage(), hist = S.loadHistory(), rules = S.loadRules(), prefs = S.loadPrefs();
   var recent = S.loadList("recent"), favFoods = S.loadList("favFoods");
@@ -91,16 +98,42 @@
   // Miniatura por alimento (emoji como ilustración; el nombre siempre va en texto)
   var THUMBS = [[/marraqueta|hallulla|pan /, "🍞"], [/pl[aá]tano/, "🍌"], [/manzana/, "🍎"], [/pi[nñ]a/, "🍍"], [/palta/, "🥑"], [/tomate/, "🍅"], [/huevo/, "🥚"], [/yogh|yogur|leche/, "🥛"], [/queso/, "🧀"], [/helado/, "🍦"], [/corn|cereal|avena/, "🥣"], [/galleta/, "🍪"], [/fideo|tallar/, "🍝"], [/papas fritas/, "🍟"], [/pur[eé]|papa/, "🥔"], [/jugo|n[eé]ctar|bebida/, "🧃"], [/naranja|mandarina/, "🍊"]];
   function thumb(f) { var n = norm(f.name); if (String(f.fid || f.id || "").indexOf("r:") === 0) return "🍲"; for (var i = 0; i < THUMBS.length; i++) if (THUMBS[i][0].test(n)) return THUMBS[i][1]; return "🍽️"; }
+  // Color de la referencia: verde hasta la pauta; de +0 a +15 g pasa por amarillo y naranjo hasta rojo
+  function refColor(el, dif) {
+    var light = document.documentElement.getAttribute("data-mode") === "light";
+    if (dif <= 0) { el.style.setProperty("--refc", light ? "#3F6212" : "#B8FF3B"); return; }
+    var stops = light ? [[0, [161, 98, 7]], [7.5, [194, 65, 12]], [15, [217, 45, 32]]] : [[0, [250, 230, 80]], [7.5, [255, 150, 60]], [15, [255, 90, 95]]];
+    var x = Math.min(dif, 15), i = x <= 7.5 ? 0 : 1, a = stops[i], b = stops[i + 1], t = (x - a[0]) / (b[0] - a[0]);
+    var rgb = a[1].map(function (v, k) { return Math.round(v + (b[1][k] - v) * t); });
+    el.style.setProperty("--refc", "rgb(" + rgb.join(",") + ")");
+  }
+  // Recordatorio de vitamina D (5 gotas con el desayuno, según la ficha). Se muestra de 5:00 a 11:59 hasta marcarlo.
+  function todayKey() { var d = new Date(); return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate(); }
+  function dropsDone() { try { return localStorage.getItem("diego.v3.drops") === todayKey(); } catch (e) { return false; } }
+  function renderDrops(h) {
+    var el = $("hello"), morning = h >= 5 && h < 12, pending = morning && !dropsDone();
+    el.classList.toggle("drops", pending);
+    el.setAttribute("role", pending ? "button" : "text"); el.setAttribute("aria-label", pending ? "¿Tomaste tus 5 gotitas de vitamina D? Toca para marcar" : el.textContent); el.tabIndex = pending ? 0 : -1;
+    el.textContent = pending ? "💧 ¿Tomaste tus gotitas?" : morning ? "✓ Gotitas listas" : "¡Vamos, Diego! ⚡";
+  }
+  function markDrops() {
+    if (!$("hello").classList.contains("drops")) return;
+    try { localStorage.setItem("diego.v3.drops", todayKey()); } catch (e) {}
+    renderDrops(new Date().getHours()); toast("¡Listo! Gotitas tomadas 💧", "check");
+  }
+  $("hello").addEventListener("click", markDrops);
+  $("hello").addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); markDrops(); } });
   function renderInicio() {
     var d = new Date(), h = d.getHours();
     $("hiT").textContent = h >= 5 && h < 12 ? "¡Buenos días, Diego!" : h >= 20 || h < 5 ? "¡Buenas noches, Diego!" : "¡Hola, Diego!";
-    $("hello").textContent = "¡Vamos, Diego! ⚡";
+    renderDrops(h);
     $("meals").innerHTML = C.MEALS.map(function (m) { return '<button class="chip" data-m="' + m.id + '" aria-pressed="' + (plate.meal === m.id) + '">' + ico(MEAL_ICON[m.id]) + m.name + "</button>"; }).join("");
     var m = meal(plate.meal), tot = plateTotal(), n = plate.items.length;
     animateNum($("total"), tot, " g HC");
     $("refHC").textContent = m.hc + " g HC";
     var dif = C.round1(tot - m.hc), df = $("diff");
     df.hidden = !n;
+    refColor($("phRef"), n ? dif : 0);
     if (n) { df.textContent = dif === 0 ? "= referencia" : (dif > 0 ? "+" : "−") + fmt(Math.abs(dif)) + " g"; df.setAttribute("aria-label", dif === 0 ? "Igual a la referencia" : fmt(Math.abs(dif)) + " gramos " + (dif > 0 ? "más" : "menos") + " que la referencia"); }
     $("plateCount").textContent = n ? "(" + n + (n === 1 ? " alimento)" : " alimentos)") : "";
     $("addFood").innerHTML = n ? ico("plus") + "Agregar" : "¡Vamos a elegir!" + ico("arrow");
@@ -170,15 +203,22 @@
 
   /* ================= 2. EXPLORADOR DE ALIMENTOS ================= */
   $("newFood").innerHTML = ico("plus", "s") + "¿No está? Créalo con su etiqueta";
+  // Desayuno y once: se ocultan almuerzos (papas, fideos, carnes, helado...). La búsqueda y "Ver todo" muestran todo.
+  var NOT_BREAKFAST = /helado|carne|pollo|vacuno|cerdo|pescado|ensalada|arroz|fideo|tallar|papa|pur[eé]|lenteja|porot|garbanzo|cazuela|pastel|lasa|pizza|hamburg|empanada|sopa|charquic|zapall|choclo|salchicha|vienesa|lomo|bistec|filete|chuleta|merluza|salmon|at[uú]n/;
+  function breakfastMode() { return (plate.meal === "desayuno" || plate.meal === "once") && !ui.showAll; }
+  function okBreakfast(f) { return f.cat !== "Acompañamientos" && !NOT_BREAKFAST.test(norm(f.name)); }
   function renderFoods() {
     $("addingTo").textContent = "¡Vamos a elegir! Agregando a: " + meal(plate.meal).name;
-    var cats = ["Todos", "Recientes", "Favoritos", "Mis alimentos"]; if (recipes.length) cats.push("Recetas"); cats = cats.concat(Object.keys(C.FOODS));
+    var bm = breakfastMode(), canFilter = plate.meal === "desayuno" || plate.meal === "once";
+    var cats = ["Todos", "Recientes", "Favoritos", "Mis alimentos"]; if (recipes.length) cats.push("Recetas"); cats = cats.concat(Object.keys(C.FOODS).filter(function (c) { return !bm || c !== "Acompañamientos"; }));
     if (cats.indexOf(ui.cat) < 0) ui.cat = "Todos";
-    $("cats").innerHTML = cats.map(function (c) { return '<button class="chip" data-cat="' + esc(c) + '" aria-pressed="' + (ui.cat === c) + '">' + (c === "Favoritos" ? "★ " : "") + esc(c) + "</button>"; }).join("");
+    $("cats").innerHTML = (canFilter ? '<button class="chip" id="showAll" aria-pressed="false">' + (ui.showAll ? "Solo " + meal(plate.meal).name.toLowerCase() : "Ver todo") + "</button>" : "") + cats.map(function (c) { return '<button class="chip" data-cat="' + esc(c) + '" aria-pressed="' + (ui.cat === c) + '">' + (c === "Favoritos" ? "★ " : "") + esc(c) + "</button>"; }).join("");
+    if (bm) $("addingTo").textContent = "Agregando a: " + meal(plate.meal).name + " · solo lo de " + meal(plate.meal).name.toLowerCase();
     var list = allFoods(), q = norm(ui.q.trim());
     if (ui.cat === "Recientes") list = recent.map(findFood).filter(Boolean);
     else if (ui.cat === "Favoritos") list = list.filter(function (f) { return favFoods.indexOf(f.id) >= 0; });
     else if (ui.cat !== "Todos") list = list.filter(function (f) { return f.cat === ui.cat; });
+    if (bm && !q) list = list.filter(okBreakfast);
     if (q) list = list.filter(function (f) { return norm(f.name).indexOf(q) >= 0; });
     var emptyMsg = { Recientes: "Lo último que agregues va a aparecer aquí.", Favoritos: "Marca con ★ lo que más comes y lo tendrás siempre a mano.", "Mis alimentos": "Aquí quedan los alimentos que crees con su etiqueta." }[ui.cat] || "No hay alimentos en esta categoría.";
     $("foods").innerHTML = list.length ? list.map(function (f) {
@@ -187,7 +227,7 @@
     }).join("") : '<li class="empty">' + ico("search") + "<p>" + (q ? 'No encontramos "' + esc(ui.q) + '".<br>¿Lo creamos con los datos de su etiqueta?' : emptyMsg) + "</p></li>";
   }
   $("q").addEventListener("input", function () { ui.q = this.value; renderFoods(); });
-  $("cats").addEventListener("click", function (e) { var b = e.target.closest("[data-cat]"); if (!b) return; ui.cat = b.dataset.cat; renderFoods(); });
+  $("cats").addEventListener("click", function (e) { if (e.target.closest("#showAll")) { ui.showAll = !ui.showAll; renderFoods(); return; } var b = e.target.closest("[data-cat]"); if (!b) return; ui.cat = b.dataset.cat; renderFoods(); });
   $("foods").addEventListener("click", function (e) { var b = e.target.closest("[data-f]"); if (!b) return; var f = findFood(b.dataset.f); if (f) qtySheet(f, null); });
   $("newFood").addEventListener("click", function () { foodSheet(null); });
 
@@ -324,7 +364,7 @@
   $("toHist").innerHTML = ico("clock", "s") + "Ver mi historial";
   function renderParams() {
     var d = C.PAUTA_DEFAULT, mod = !(P.t === d.t && P.f === d.f && P.r === d.r);
-    $("params").innerHTML = '<div class="kv"><span>Ratio insulina/HC</span><b>1 U × ' + dec(P.r) + ' g</b></div><div class="kv"><span>Factor de sensibilidad</span><b>' + dec(P.f) + ' mg/dL</b></div><div class="kv"><span>Glucosa objetivo</span><b>' + dec(P.t) + ' mg/dL</b></div><div class="kv"><span>Basal (Tresiba)</span><b>14 U · 20:00</b></div>' + (mod ? '<div class="note warn" style="margin-top:8px">' + ico("alert") + "<div><b>Parámetros modificados</b>Distintos a la epicrisis. Revísalos en Perfil.</div></div>" : "");
+    $("params").innerHTML = '<div class="kv"><span>Ratio insulina/HC</span><b>1 U × ' + dec(P.r) + ' g</b></div><div class="kv"><span>Factor de sensibilidad</span><b>' + dec(P.f) + ' mg/dL</b></div><div class="kv"><span>Glucosa objetivo</span><b>' + dec(P.t) + ' mg/dL</b></div><div class="kv"><span>Basal (Tresiba)</span><b>14 U · 20:00</b></div>' + (mod ? '<div class="note warn" style="margin-top:8px">' + ico("alert") + "<div><b>Parámetros modificados</b>Distintos a la pauta indicada por la Dra. Revísalos en Perfil.</div></div>" : "");
   }
   function enterPauta() {
     var nI = plate.items.length; $("pMeal").textContent = meal(plate.meal).name + " · " + (nI ? nI + (nI === 1 ? " alimento" : " alimentos") + " en el plato" : "plato vacío");
@@ -437,11 +477,22 @@
       var rs = b.querySelector("#pReset"); if (rs) rs.onclick = function () { P = Object.assign({}, C.PAUTA_DEFAULT); try { localStorage.removeItem(S.KEYS.pauta); } catch (e) {} closeSheet(); renderPerfil(); renderParams(); toast("Pauta de la epicrisis restaurada", "lock"); };
     });
   }
-  $("pautaB").addEventListener("click", function () {
-    openSheet('<h3 id="shT">Mi pauta completa</h3><div class="kv"><span>Tresiba (basal)</span><b>14 U · 20:00</b></div><div class="kv"><span>NovoRapid o Fiasp</span><b>antes de cada comida</b></div><div class="kv"><span>Ratio</span><b>1 U × ' + dec(P.r) + ' g</b></div><div class="kv"><span>Sensibilidad</span><b>' + dec(P.f) + ' mg/dL</b></div><div class="kv"><span>Objetivo</span><b>' + dec(P.t) + " mg/dL</b></div>" +
-      '<p class="t2 small" style="margin:12px 0 4px">Fórmula: (glicemia − objetivo) ÷ sensibilidad + HC ÷ ratio</p><div class="sect" style="margin-top:14px">Carbohidratos por comida</div>' + C.MEALS.map(function (m) { return '<div class="kv"><span>' + m.name + "</span><b>" + m.hc + " g</b></div>"; }).join("") +
-      '<div class="sect" style="margin-top:14px">Controles de glicemia</div><p class="t2" style="margin:0">Antes de desayuno, almuerzo, once y cena; 2 h después de cada una; y a las 02:00.</p><div class="sect" style="margin-top:14px">Hipoglucemia</div>' + note("warn", "Consciente y puede tragar", "15 g de azúcar rápida; medir a los 15 min y repetir si sigue bajo 70. Regla general ISPAD/ADA hasta el protocolo escrito del equipo."));
-  });
+  function fichaSheet() {
+    var kv = function (k, v) { return '<div class="kv"><span>' + k + "</span><b>" + v + "</b></div>"; }, sect = function (t) { return '<div class="sect" style="margin-top:16px">' + t + "</div>"; };
+    openSheet('<h3 id="shT">Mi ficha de tratamiento</h3><p class="t2 small" style="margin:0 0 4px">Diabetes tipo 1. Lo que indica tu equipo médico; si te cambian algo, manda lo que diga el equipo.</p>' +
+      sect("Insulinas") + kv("Tresiba (basal)", "14 U · 20:00 todos los días") + kv("NovoRapid o Fiasp (rápida)", "antes de cada comida") +
+      sect("Parámetros de cálculo") + kv("Ratio", "1 U × " + dec(P.r) + " g HC") + kv("Sensibilidad", "1 U baja ~" + dec(P.f) + " mg/dL") + kv("Glucosa objetivo", dec(P.t) + " mg/dL") +
+      '<p class="t2 small" style="margin:8px 0 0">Dosis = (glicemia − ' + dec(P.t) + ") ÷ " + dec(P.f) + " + HC ÷ " + dec(P.r) + "</p>" +
+      sect("Carbohidratos por comida") + C.MEALS.map(function (m) { return kv(m.name, m.hc + " g · " + C.fmt(m.hc / P.r, 1) + " U teórica"); }).join("") +
+      '<p class="t2 small" style="margin:6px 0 0">La U teórica es solo por los carbohidratos; la app suma la corrección según la glicemia.</p>' +
+      sect("Controles de glicemia") + '<p class="t2" style="margin:0">Antes de desayuno, almuerzo, once y cena; 2 h después de cada una; y a las 02:00.</p>' +
+      sect("Otros") + kv("Vitamina D", "5 gotas al día, con el desayuno") +
+      sect("Cambios indicados por el equipo") + kv("14-11-2026", "Tresiba de 15 a 14 U") + kv("15-11-2026", "Ratio de 12 a 14 g") +
+      sect("Hipoglucemia (bajo 70)") + note("warn", "Consciente y puede tragar", "15 g de azúcar rápida (jugo o bebida normal, 1 cda. de azúcar en agua). Medir a los 15 min y repetir si sigue bajo 70. Luego algo con carbohidrato lento. Si el sensor no coincide con cómo se siente, confirmar con capilar.") +
+      note("danger", "Inconsciente, convulsiona o no puede tragar", "No darle nada por la boca. Ponerlo de lado, usar glucagón si hay y llevarlo a la clínica o llamar al 131 (SAMU)."));
+  }
+  $("pautaB").addEventListener("click", fichaSheet);
+  if ($("fichaB2")) $("fichaB2").addEventListener("click", fichaSheet);
   // Respaldo
   $("exportB").addEventListener("click", function () {
     var data = JSON.stringify(S.exportAll(), null, 1);
@@ -476,7 +527,7 @@
     var key = n.item.t + n.item.id;
     if (lastNext && lastNext !== key) { // pasó la hora del evento anterior mientras la app estaba abierta
       var prev = sched().filter(function (x) { return x.t + x.id === lastNext; })[0];
-      if (prev) { toast(prev.basal ? "Hora de la Tresiba (basal)" : "¡Hora " + (prev.id === "once" ? "de la once" : prev.id === "colacion" ? "de la colación" : "del " + prev.label.toLowerCase()) + ", Diego! 🍽️", "clock"); try { navigator.vibrate && navigator.vibrate([200, 100, 200]); } catch (e) {} }
+      if (prev) { toast(prev.basal ? "Hora de la Tresiba (basal)" : "¡Hora " + (prev.id === "once" ? "de la once" : prev.id === "colacion" ? "de la colación" : "del " + prev.label.toLowerCase()) + ", Diego! 🍽️" + (prev.id === "desayuno" ? " Y tus gotitas 💧" : ""), "clock"); if (prev.id === "desayuno") renderInicio(); try { navigator.vibrate && navigator.vibrate([200, 100, 200]); } catch (e) {} }
     }
     lastNext = key;
   }
