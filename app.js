@@ -578,6 +578,15 @@
   }
 
   applyTheme(); applyFig();
-  show((location.hash || "#inicio").slice(1), false);
+  // Siempre parte en Inicio (aunque Safari o el ícono guarden #pauta u otra pantalla)
+  try { history.replaceState(null, "", location.pathname + location.search + "#inicio"); } catch (e) {}
+  show("inicio", false);
+  // Si la app vuelve después de más de 15 min en segundo plano, también vuelve a Inicio
+  var hiddenAt = 0;
+  document.addEventListener("visibilitychange", function () {
+    if (document.hidden) { hiddenAt = Date.now(); return; }
+    if (hiddenAt && Date.now() - hiddenAt > 15 * 60 * 1000 && ui.screen !== "inicio") { closeSheet(); show("inicio"); }
+    hiddenAt = 0;
+  });
   if ("serviceWorker" in navigator && location.protocol.indexOf("http") === 0) navigator.serviceWorker.register("sw.js").catch(function () {});
 })();
