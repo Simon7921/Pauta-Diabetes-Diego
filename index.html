@@ -486,6 +486,7 @@ html.fig-ball .mast-art .fig-bike{display:none}
   <path d="M150 94 L122 112" stroke-width="15"/><path d="M122 112 L122 148" stroke-width="10"/>
   <path d="M112 151 Q120 146 131 151 L131 156 L112 156 Z" stroke-width="2" fill="currentColor"/>
 </g>
+          <radialGradient id="gBall" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".6" stop-color="#E9ECF2"/><stop offset="1" stop-color="#9AA2B1"/></radialGradient><radialGradient id="gShade" cx="35%" cy="30%" r="80%"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#0A1222" stop-opacity=".45"/></radialGradient><clipPath id="cBall"><circle r="50"/></clipPath><g id="ball"><circle r="50" fill="url(#gBall)"/><g clip-path="url(#cBall)" fill="#1C2233"><path d="M-3.0 -21.0 L13.2 -9.3 L7.0 9.8 L-13.0 9.8 L-19.2 -9.3Z"/><path d="M-3.0 -35.7 L-17.3 -42.1 L-11.8 -52.5 L5.8 -52.5 L11.3 -42.1Z"/><path d="M27.1 -13.8 L28.9 -29.3 L40.4 -27.4 L45.9 -10.6 L37.7 -2.2Z"/><path d="M15.6 21.6 L31.0 18.5 L32.7 30.1 L18.4 40.4 L7.9 35.2Z"/><path d="M-21.6 21.6 L-13.9 35.2 L-24.4 40.4 L-38.7 30.1 L-37.0 18.5Z"/><path d="M-33.1 -13.8 L-43.7 -2.2 L-51.9 -10.6 L-46.4 -27.4 L-34.9 -29.3Z"/></g><g clip-path="url(#cBall)" stroke="#9AA3B2" stroke-width="1.4" fill="none"><path d="M-3.0 -21.0 L-3.0 -35.7"/><path d="M13.2 -9.3 L27.1 -13.8"/><path d="M7.0 9.8 L15.6 21.6"/><path d="M-13.0 9.8 L-21.6 21.6"/><path d="M-19.2 -9.3 L-33.1 -13.8"/><path d="M11.3 -42.1 L28.9 -29.3"/><path d="M37.7 -2.2 L31.0 18.5"/><path d="M7.9 35.2 L-13.9 35.2"/><path d="M-37.0 18.5 L-43.7 -2.2"/><path d="M-34.9 -29.3 L-17.3 -42.1"/></g><circle r="50" fill="url(#gShade)"/></g>
         </defs>
         <ellipse cx="160" cy="100" rx="105" ry="95" fill="url(#gHalo)"/>
         <path d="M-20 214 C 50 196, 120 176, 250 84" stroke="url(#gSw1)" stroke-width="12" fill="none" filter="url(#fBlur)"/>
@@ -493,15 +494,12 @@ html.fig-ball .mast-art .fig-bike{display:none}
         <path d="M10 222 C 90 206, 170 180, 250 128" stroke="url(#gSw2)" stroke-width="8" fill="none" filter="url(#fBlur)"/>
         <path d="M10 222 C 90 206, 170 180, 250 128" stroke="url(#gSw2)" stroke-width="2" fill="none"/>
         <g class="spark" fill="#B8FF3B"><circle cx="58" cy="198" r="1.8"/><circle cx="96" cy="186" r="1.2"/><circle cx="206" cy="128" r="1.5"/><circle cx="226" cy="102" r="1.1"/><circle cx="120" cy="196" r="1"/></g>
-        <g class="fig-ball"><use href="#player" stroke="#38E1C6" fill="#38E1C6" filter="url(#fRim)" opacity=".95"/>
-        <use href="#player" stroke="#38E1C6" fill="#38E1C6" transform="translate(1.4 -1.2)" opacity=".85"/>
-        <use href="#player" stroke="#0A1222" fill="#0A1222"/>
-        <g fill="none" stroke="#38E1C6" stroke-width="1.4" stroke-linecap="round" opacity=".55"><path d="M158 54 Q166 58 175 52"/><path d="M153 99 Q166 103 181 101"/><path d="M128 114 L130 126"/><path d="M164 151 L174 150"/></g>
-        <circle cx="70" cy="96" r="13" fill="#0E1A2E" stroke="#38E1C6" stroke-width="1.8"/>
-        <path d="M70 88 l6 4.3 -2.3 7 h-7.4 l-2.3 -7 z" fill="#38E1C6" opacity=".75"/>
-        <circle cx="70" cy="96" r="19" fill="#38E1C6" opacity=".14" filter="url(#fBlur)"/>
-        <g fill="#38E1C6" opacity=".8"><circle cx="214" cy="182" r="1.6"/><circle cx="222" cy="176" r="1.2"/><circle cx="218" cy="190" r="1"/></g>
-      </g>
+        <g class="fig-ball">
+          <circle cx="184" cy="76" r="54" fill="#38E1C6" opacity=".16" filter="url(#fBlur)"/>
+          <circle cx="184" cy="76" r="42.5" fill="none" stroke="#38E1C6" stroke-width="2" opacity=".85" filter="url(#fRim)"/>
+          <use href="#ball" transform="translate(184 76) rotate(-14) scale(.8)"/>
+          <g stroke-linecap="round"><path d="M118 70 h18" stroke="#B8FF3B" stroke-width="2.6" opacity=".85"/><path d="M110 86 h22" stroke="#38E1C6" stroke-width="2" opacity=".75"/><path d="M124 102 h12" stroke="#38E1C6" stroke-width="1.6" opacity=".55"/></g>
+        </g>
         <g class="fig-bike" transform="translate(80 -6) scale(.66)">
           <g stroke="#38E1C6" color="#38E1C6" opacity=".9"><use href="#rider" filter="url(#fRim)"/></g>
           <g stroke="#38E1C6" color="#38E1C6"><use href="#rider" transform="translate(1.2 -1)"/></g>
@@ -593,7 +591,7 @@ html.fig-ball .mast-art .fig-bike{display:none}
     <header class="top"><div class="row"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg class="ico"><use href="#i-back"/></svg></button><div><h1 class="h1">Perfil</h1><div class="hello">Tu app, a tu manera</div></div></div></header>
     <div class="card hero row"><div class="avatar" style="width:56px;height:56px;font-size:22px" aria-hidden="true">D</div><div><b style="font-size:19px">Diego</b><div class="t2 small">Tus datos se quedan en este teléfono 🔒</div></div></div>
     <div class="sect">Apariencia</div>
-    <div class="card"><div class="seg full" id="themeSeg" role="group" aria-label="Tema"><button data-v="dark">Midnight oscuro</button><button data-v="light">Claro</button></div><div class="t2 small" style="margin:12px 2px 6px">Figura del encabezado</div><div class="seg full" id="figSeg" role="group" aria-label="Figura del encabezado"><button data-v="bike">🚴 Ciclista</button><button data-v="ball">⚽ Futbolista</button></div></div>
+    <div class="card"><div class="seg full" id="themeSeg" role="group" aria-label="Tema"><button data-v="dark">Midnight oscuro</button><button data-v="light">Claro</button></div><div class="t2 small" style="margin:12px 2px 6px">Figura del encabezado</div><div class="seg full" id="figSeg" role="group" aria-label="Figura del encabezado"><button data-v="bike">🚴 Ciclista</button><button data-v="ball">⚽ Pelota</button></div></div>
     <div class="sect">Unidades de medida</div>
     <div class="card"><div class="kv"><span>Carbohidratos</span><b>gramos (g HC)</b></div><div class="kv"><span>Glicemia</span><b>mg/dL</b></div>
       <div class="row" style="margin-top:8px"><span class="sp">Cantidad al agregar alimentos con unidad</span></div>
