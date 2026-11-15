@@ -28,12 +28,12 @@
     "Lácteos": [["Yoghito vainilla sin azúcar (120 g)", 7.4, 120], ["Queso mantecoso / gauda", 1], ["Helado de crema", 23.6]],
     "Panes y cereales": [["Marraqueta", 58], ["Hallulla", 55], ["Pan de molde blanco", 49], ["Corn flakes", 84], ["Galletas de soda", 71]],
     "Acompañamientos": [["Fideos cocidos", 31], ["Tallarines sin cocer (aprox.)", 74], ["Papa cocida", 20], ["Puré de papas", 16], ["Puré mamá", 17.3], ["Papas fritas", 41]],
-    "Bebidas": [["Jugo Vivo (190 ml)", 0, 190], ["Jugo Del Valle (400 ml)", 4.9, 400], ["Jugo de naranja natural", 10.4], ["Néctar de fruta (aprox.)", 12]]
+    "Bebidas": [["Jugo Vivo (190 ml)", 6.4 / 1.9, 190], ["Jugo Del Valle (400 ml)", 4.9, 400], ["Jugo de naranja natural", 10.4], ["Néctar de fruta (aprox.)", 12]]
   };
 
   // Estado y fuente de cada alimento base (no cambia los valores).
   var STATE = { "Fideos cocidos": "cocido", "Tallarines sin cocer (aprox.)": "crudo", "Papa cocida": "cocido", "Puré de papas": "preparado", "Puré mamá": "preparado", "Papas fritas": "preparado" };
-  var SOURCE = { "Yoghito vainilla sin azúcar (120 g)": "Etiqueta Soprole", "Puré mamá": "Receta casera calculada (820 g)", "Jugo Vivo (190 ml)": "Indicado por la familia (0 g HC)", "Jugo Del Valle (400 ml)": "Etiqueta Del Valle (19,6 g/botella)" };
+  var SOURCE = { "Yoghito vainilla sin azúcar (120 g)": "Etiqueta Soprole", "Puré mamá": "Receta casera calculada (820 g)", "Jugo Vivo (190 ml)": "Néctar de piña Vivo: 6,4 g por 190 ml", "Jugo Del Valle (400 ml)": "Etiqueta Del Valle (19,6 g/botella)" };
   var DEFAULT_SOURCE = "Tabla USDA (aprox.)";
 
   // Reglas que el equipo clínico debe confirmar antes de mostrar un resultado de dosis.
