@@ -307,53 +307,6 @@ body{background:radial-gradient(120% 60% at 85% -10%,rgba(56,225,198,.10),transp
 .dosebox .brk{font-size:15px;color:var(--text2)}.dosebox .brk b{color:var(--text)}
 .dosebox .rnd{font-size:13px;color:var(--muted);margin-top:6px}
 
-/* ===== Inicio sin scroll: todo cabe en la pantalla ===== */
-.hbtn{display:inline-flex;align-items:center;gap:6px;min-height:44px;min-width:44px;padding:0 12px;border-radius:12px;border:1px solid var(--border2);background:var(--surface);color:var(--text);font-weight:700;font-size:14px}
-.hbtn .ico{width:18px;height:18px}.hbtn.red{color:var(--danger);padding:0 10px}
-.shortcuts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
-.sc{flex-direction:column;align-items:flex-start;justify-content:center;gap:4px;min-height:64px;padding:10px 12px}
-.sc>.ico:first-child{width:22px;height:22px}
-.sc b{font-size:14px}.sc small{font-size:11.5px}
-.sc:not(.lime):not(.teal){border-color:var(--border2)}.sc:not(.lime):not(.teal)>.ico{color:var(--accent)}
-@media (max-width:899px){
-  html.fit,html.fit body{height:100%;overflow:hidden}
-  html.fit .wrap{height:100dvh;display:flex;flex-direction:column;padding-bottom:calc(84px + env(safe-area-inset-bottom))}
-  html.fit #s-inicio{flex:1;min-height:0;display:flex;flex-direction:column}
-  #s-inicio .cols{flex:1;min-height:0;display:flex;flex-direction:column}
-  #s-inicio .cols>div:first-child{flex:1;min-height:0;display:flex;flex-direction:column}
-  #s-inicio .plist{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
-  #s-inicio .mast{min-height:0;height:clamp(108px,18.5dvh,220px);margin-bottom:2px;flex:none}
-  #s-inicio .mast-art{height:112%;width:auto;max-width:72%}
-  #s-inicio .mast-row{margin-top:clamp(2px,1dvh,10px)}
-  #s-inicio .ava{width:clamp(44px,7dvh,58px);height:clamp(44px,7dvh,58px)}
-  #s-inicio .hi{font-size:clamp(22px,min(7.6vw,4.2dvh),32px)}
-  #s-inicio .hi2{font-size:clamp(14px,2.2dvh,17px)}
-  #s-inicio .q1{margin-top:clamp(6px,3.6dvh,48px);font-size:clamp(21px,min(7.2vw,3.9dvh),30px)}
-  #s-inicio .mchips{padding:2px 2px clamp(6px,1.4dvh,14px);flex:none}
-  #s-inicio .mchips .chip{min-height:44px}
-  #s-inicio .plateh{padding:clamp(10px,1.8dvh,18px) 12px clamp(10px,1.8dvh,18px) 16px;flex:none}
-  #s-inicio .ph-title{font-size:clamp(15px,2.3dvh,19px)}
-  #s-inicio .ph-total{font-size:clamp(28px,min(10.5vw,6.2dvh),52px);margin:clamp(2px,1dvh,12px) 0 clamp(2px,.6dvh,6px)}
-  #s-inicio .plateh p{margin-bottom:clamp(4px,1dvh,14px);font-size:clamp(13px,1.9dvh,15px)}
-  #s-inicio #heroPauta{margin:-2px 0 clamp(6px,1.2dvh,14px)!important}
-  #s-inicio .btn.go{min-height:44px}
-  #s-inicio .bowl{width:min(40%,20dvh);margin-top:6px}
-  #s-inicio .sect2{margin:clamp(6px,1.4dvh,20px) 2px clamp(4px,.8dvh,10px);flex:none}
-  #s-inicio .sect2 h2{font-size:clamp(17px,2.6dvh,22px)}
-  #s-inicio .plist .li{padding:4px 0}
-  #s-inicio .thumb{width:clamp(36px,5dvh,48px);height:clamp(36px,5dvh,48px);font-size:clamp(20px,2.8dvh,26px)}
-  #s-inicio .plist .main{min-height:44px;padding:2px 0}
-  #s-inicio .plist .empty{padding:8px}
-  #s-inicio .plist .empty .ico{width:clamp(22px,4dvh,44px);height:clamp(22px,4dvh,44px)}
-  #s-inicio .plist .empty p{margin:4px 0}
-  #s-inicio .shortcuts{margin-top:clamp(6px,1.2dvh,12px);flex:none}
-  #s-inicio .sc{min-height:50px;padding:6px 8px;flex-direction:row;align-items:center;justify-content:center;gap:6px}
-  #s-inicio .sc b{font-size:13.5px}
-  #s-inicio .sc small{display:none}
-  #s-inicio .plateh p{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-}
-@media (max-width:899px) and (min-height:900px){#s-inicio .sc{flex-direction:column;align-items:flex-start;min-height:64px}#s-inicio .sc small{display:block}}
-@media (max-width:899px) and (max-height:620px){#s-inicio .plateh p#heroDesc{display:none}}
 
 /* Contador a la próxima comida o dosis */
 .nextp{display:inline-flex;align-items:center;gap:6px;margin-top:6px;min-height:40px;padding:0 12px;border-radius:999px;border:1px solid rgba(56,225,198,.45);background:rgba(56,225,198,.12);color:var(--text);font-size:13.5px;font-weight:700;white-space:nowrap;position:relative}
@@ -383,17 +336,84 @@ body{background:radial-gradient(120% 60% at 85% -10%,rgba(56,225,198,.10),transp
 :root[data-mode=light] .nextp.soon{background:var(--accent)}
 :root[data-mode=light] .nextp.soon b,:root[data-mode=light] .nextp.soon .ico{color:var(--on-accent)}
 
-/* Tarjeta "Tu plato de hoy" compacta: más espacio para la lista */
+
+/* ===================== Inicio optimizado (v7) ===================== */
+.mast2{position:relative;margin:-4px -16px 0;padding:6px 16px 0;overflow:hidden}
+.mast2 .mast-art{position:absolute;right:-6px;top:-8px;height:150px;width:auto;max-width:58%;-webkit-mask-image:linear-gradient(to bottom,#000 78%,transparent),linear-gradient(to right,transparent,#000 22%);-webkit-mask-composite:source-in;mask-image:linear-gradient(to bottom,#000 78%,transparent),linear-gradient(to right,transparent,#000 22%);mask-composite:intersect;pointer-events:none}
+.mast2 .mast-row{margin-top:4px}
+.mast2 .ava{width:52px;height:52px}.mast2 .ava .ico{width:26px;height:26px}
+.mast2 .hi{font-size:clamp(24px,7vw,30px)}
+.mast2 .hi2{font-size:16px}
+.nextbar{position:relative;z-index:1;display:flex;align-items:center;gap:8px;width:100%;margin-top:10px;min-height:44px;padding:0 14px 0 12px;border-radius:999px;border:1.5px solid var(--accent);background:linear-gradient(90deg,rgba(184,255,59,.16),rgba(56,225,198,.12)),var(--bg2);color:var(--text);font-size:15px;font-weight:700;text-align:left;box-shadow:0 0 0 3px rgba(184,255,59,.06)}
+.nextbar .ico{width:20px;height:20px;color:var(--accent);flex:none}
+.nextbar .nx{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nextbar .nx b{font-weight:800}
+.nextbar .cd{font-weight:900;color:var(--accent);white-space:nowrap;font-size:16px}
+.nextbar.soon{background:var(--accent);color:var(--on-accent);animation:pulse 1.8s ease-in-out infinite}
+.nextbar.soon .ico,.nextbar.soon .cd{color:var(--on-accent)}
+:root[data-mode=light] .nextbar{background:#F1FFDB;border-color:#65A30D}
+:root[data-mode=light] .nextbar .ico,:root[data-mode=light] .nextbar .cd{color:#3F6212}
+.q1{position:relative;z-index:1;font-size:clamp(19px,5.6vw,22px)!important;margin:12px 0 8px!important;text-shadow:none!important}
+.mgrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-bottom:12px}
+.mgrid .chip{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:58px;padding:4px 2px;border-radius:16px;font-size:clamp(11.5px,3.2vw,13.5px);letter-spacing:-.01em;color:var(--text);background:var(--surface);border:1px solid var(--border2);white-space:nowrap}
+.mgrid .chip .ico{width:22px;height:22px}
+.mgrid .chip[aria-pressed=true]{background:var(--accent);color:var(--on-accent);border-color:var(--accent);box-shadow:var(--glow)}
+.plateh2{padding:12px 14px;background:radial-gradient(90% 120% at 100% 100%,rgba(56,225,198,.16),transparent 60%),linear-gradient(160deg,var(--elev),var(--surface));border-color:var(--border2)}
+.plateh2 .ph-title{display:flex;align-items:center;gap:8px;font-size:18px;font-weight:800}
+.plateh2 .bowl{width:44px;height:auto;flex:none;margin:-4px 0 -4px -4px;filter:drop-shadow(0 4px 8px rgba(0,0,0,.4))}
+.ph-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:2px 0 8px}
+.plateh2 .ph-total{font-size:clamp(34px,10.5vw,48px);margin:0;white-space:nowrap}
+.plateh2 .btn.go{width:auto;min-height:46px;padding:0 16px;border-radius:999px;font-size:16px;flex:none}
+.ph-ref{display:flex;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid var(--border2);padding-top:8px;font-size:14px}
+.ph-ref b{color:var(--text)}
+.diff{font-weight:800;font-size:14px;padding:4px 12px;border-radius:999px;border:1px solid var(--border2);background:var(--bg2);color:var(--text);white-space:nowrap;font-variant-numeric:tabular-nums}
+.sect2 .cnt{color:var(--text2);font-size:15px;font-weight:600}
+.hbtn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;min-width:44px;border-radius:14px;border:1px solid var(--border2);background:var(--surface);color:var(--text)}
+.hbtn.ic{padding:0;width:44px;justify-content:center;border-radius:14px}
+.hbtn.ic .ico{width:22px;height:22px}
+.plist{padding:2px 12px}
+.plist .li{padding:0}
+.plist .main{display:flex;align-items:center;gap:12px;min-height:58px;padding:6px 0}
+.plist .thumb{width:42px;height:42px;border-radius:50%;font-size:22px}
+.plist .tx{flex:1;min-width:0}
+.plist .nm2{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-weight:700;font-size:15.5px;line-height:1.2}
+.plist .qt{display:block;font-size:13px;color:var(--text2);margin-top:1px}
+.savebar{display:flex;align-items:center;gap:12px;width:100%;min-height:52px;margin-top:10px;padding:0 16px;border-radius:18px;border:1.5px solid var(--border2);background:var(--surface);color:var(--text);font-weight:800;font-size:16px;text-align:left}
+.savebar .ico:first-child{color:var(--accent);width:22px;height:22px}
+.savebar span{flex:1}.savebar .ico.s{color:var(--text2)}
+.dot{display:none!important}
+/* Barra inferior compacta */
+.nav button{min-height:54px;font-size:12px}
+.nav .ico{width:24px;height:24px}
+.nav .in{padding:6px 8px calc(4px + env(safe-area-inset-bottom))}
 @media (max-width:899px){
-  #s-inicio .plateh{display:block;position:relative;padding:12px 14px 12px 16px}
-  #s-inicio .bowl{position:absolute;left:10px;top:4px;width:clamp(46px,6.4dvh,56px);margin:0;filter:drop-shadow(0 4px 8px rgba(0,0,0,.45))}
-  #s-inicio .ph-title .lbar,#s-inicio .ph-title>.ico{display:none}
-  #s-inicio .ph-txt{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;column-gap:10px}
-  #s-inicio .ph-title{grid-column:1/-1;padding-left:clamp(44px,6dvh,52px);min-height:clamp(34px,4.8dvh,42px)}
-  #s-inicio .ph-total{grid-column:1;font-size:clamp(28px,min(9vw,5dvh),44px);margin:4px 0 2px}
-  #s-inicio .btn.go{grid-column:2;grid-row:2;min-height:44px;padding:0 14px;font-size:15px}
-  #s-inicio .plateh p#heroDesc{grid-column:1/-1;margin:2px 0 0;font-size:13px;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  html.fit,html.fit body{height:100%;overflow:hidden}
+  html.fit .wrap{height:100dvh;display:flex;flex-direction:column;padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+  html.fit #s-inicio{flex:1;min-height:0;display:flex;flex-direction:column}
+  #s-inicio>*{flex:none}
+  #s-inicio .plist{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch}
+  #s-inicio .sect2{margin:clamp(6px,1.2dvh,12px) 2px 4px}
+  #s-inicio .mast-row{margin-top:clamp(0px,.6dvh,6px)}
+  #s-inicio .nextbar{margin-top:clamp(6px,1.2dvh,10px)}
+  #s-inicio .q1{margin:clamp(4px,1.1dvh,10px) 0 clamp(4px,.8dvh,6px)!important}
+  #s-inicio .mgrid{margin-bottom:clamp(6px,1.4dvh,12px)}
+  #s-inicio .mgrid .chip{min-height:clamp(46px,6.2dvh,54px);gap:2px}
+  #s-inicio .mgrid .chip .ico{width:20px;height:20px}
+  #s-inicio .plateh2{padding:10px 14px}
+  #s-inicio .ph-row{margin:0 0 6px}
+  #s-inicio .plateh2 .ph-total{font-size:clamp(30px,min(9.5vw,5.4dvh),44px)}
+  #s-inicio .plist .main{min-height:54px;padding:4px 0}
+  #s-inicio .savebar{min-height:46px;margin-top:clamp(6px,1dvh,8px)}
+  #s-inicio .plist .empty{padding:10px}
+  #s-inicio .plist .empty p{margin:4px 0}
 }
+@media (max-width:899px) and (max-height:620px){#s-inicio .q1{display:none}#s-inicio .mgrid .chip .ico{display:none}#s-inicio .mgrid .chip{min-height:44px}}
+@media (min-width:900px){#s-inicio{max-width:640px;margin:0 auto}}
+
+/* Figura del encabezado: ciclista (por defecto) o futbolista */
+.mast-art .fig-ball{display:none}
+html.fig-ball .mast-art .fig-ball{display:inline}
+html.fig-ball .mast-art .fig-bike{display:none}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 </style>
 </head>
@@ -403,8 +423,7 @@ body{background:radial-gradient(120% 60% at 85% -10%,rgba(56,225,198,.10),transp
 
   <!-- 1. INICIO / MI COMIDA -->
   <section class="screen" id="s-inicio" hidden aria-labelledby="hiT">
-    <header class="mast">
-      <!-- Arte del encabezado: SVG propio (futbolista + estelas de luz), adaptable y decorativo -->
+    <header class="mast2">
       <svg class="mast-art" viewBox="0 0 240 220" preserveAspectRatio="xMaxYMin meet" aria-hidden="true" focusable="false">
         <defs>
           <linearGradient id="gSw1" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#B8FF3B" stop-opacity="0"/><stop offset=".5" stop-color="#B8FF3B" stop-opacity=".95"/><stop offset="1" stop-color="#38E1C6" stop-opacity=".1"/></linearGradient>
@@ -431,6 +450,23 @@ body{background:radial-gradient(120% 60% at 85% -10%,rgba(56,225,198,.10),transp
             <path d="M169 151 Q180 160 193 165" fill="none" stroke-width="12"/>
             <path d="M190 160 Q201 160 206 170 Q201 176 189 170 Z" stroke-width="2.5"/>
           </g>
+        <g id="rider" stroke-linecap="round" stroke-linejoin="round" fill="none">
+            <circle cx="86" cy="150" r="30" stroke-width="5"/>
+            <circle cx="180" cy="150" r="30" stroke-width="5"/>
+            <path d="M180 150 L140 152 L158 104 Z" stroke-width="4.5"/>
+            <path d="M158 104 L108 100 L140 152" stroke-width="4.5"/>
+            <path d="M108 100 L86 150" stroke-width="4.5"/>
+            <path d="M106 96 L100 92 Q94 92 94 99" stroke-width="4"/>
+            <path d="M150 100 L166 99" stroke-width="5"/>
+            <path d="M158 96 Q138 80 118 77" stroke-width="17"/>
+            <path d="M93 63 Q100 52 114 58 Q120 62 118 68 L96 68 Z" stroke-width="1.5"/>
+            <path d="M118 80 L108 92 L98 96" stroke-width="7.5"/>
+            <path d="M157 98 L142 122" stroke-width="13"/>
+            <path d="M142 122 L134 156" stroke-width="9"/>
+            <path d="M128 158 L142 157" stroke-width="5"/>
+            <path d="M159 100 L160 128" stroke-width="12"/>
+            <path d="M160 128 L147 142" stroke-width="8.5"/>
+          </g>
         </defs>
         <ellipse cx="160" cy="100" rx="105" ry="95" fill="url(#gHalo)"/>
         <path d="M-20 214 C 50 196, 120 176, 250 84" stroke="url(#gSw1)" stroke-width="12" fill="none" filter="url(#fBlur)"/>
@@ -438,7 +474,7 @@ body{background:radial-gradient(120% 60% at 85% -10%,rgba(56,225,198,.10),transp
         <path d="M10 222 C 90 206, 170 180, 250 128" stroke="url(#gSw2)" stroke-width="8" fill="none" filter="url(#fBlur)"/>
         <path d="M10 222 C 90 206, 170 180, 250 128" stroke="url(#gSw2)" stroke-width="2" fill="none"/>
         <g class="spark" fill="#B8FF3B"><circle cx="58" cy="198" r="1.8"/><circle cx="96" cy="186" r="1.2"/><circle cx="206" cy="128" r="1.5"/><circle cx="226" cy="102" r="1.1"/><circle cx="120" cy="196" r="1"/></g>
-        <use href="#player" stroke="#38E1C6" fill="#38E1C6" filter="url(#fRim)" opacity=".95"/>
+        <g class="fig-ball"><use href="#player" stroke="#38E1C6" fill="#38E1C6" filter="url(#fRim)" opacity=".95"/>
         <use href="#player" stroke="#38E1C6" fill="#38E1C6" transform="translate(1.4 -1.2)" opacity=".85"/>
         <use href="#player" stroke="#0A1222" fill="#0A1222"/>
         <g fill="none" stroke="#38E1C6" stroke-width="1.4" stroke-linecap="round" opacity=".55"><path d="M158 54 Q166 58 175 52"/><path d="M153 99 Q166 103 181 101"/><path d="M128 114 L130 126"/><path d="M164 151 L174 150"/></g>
@@ -446,24 +482,25 @@ body{background:radial-gradient(120% 60% at 85% -10%,rgba(56,225,198,.10),transp
         <path d="M70 88 l6 4.3 -2.3 7 h-7.4 l-2.3 -7 z" fill="#38E1C6" opacity=".75"/>
         <circle cx="70" cy="96" r="19" fill="#38E1C6" opacity=".14" filter="url(#fBlur)"/>
         <g fill="#38E1C6" opacity=".8"><circle cx="214" cy="182" r="1.6"/><circle cx="222" cy="176" r="1.2"/><circle cx="218" cy="190" r="1"/></g>
+      </g>
+        <g class="fig-bike" transform="translate(50 -30) scale(.8)">
+          <g stroke="#38E1C6" opacity=".9"><use href="#rider" filter="url(#fRim)"/></g>
+          <g stroke="#38E1C6"><use href="#rider" transform="translate(1.2 -1)"/></g>
+          <g stroke="#0A1222" fill="#0A1222"><use href="#rider"/></g>
+          <circle cx="104" cy="66" r="9.5" fill="#0A1222" stroke="#38E1C6" stroke-width="1"/>
+          <g stroke-linecap="round"><path d="M202 112 h34" stroke="#B8FF3B" stroke-width="2.6" opacity=".85"/><path d="M208 128 h28" stroke="#38E1C6" stroke-width="2" opacity=".8"/><path d="M198 96 h22" stroke="#38E1C6" stroke-width="1.6" opacity=".6"/></g>
+        </g>
       </svg>
       <div class="mast-row">
         <button class="ava" data-go="perfil" aria-label="Perfil y configuración"><svg class="ico"><use href="#i-user"/></svg></button>
-        <div><h1 class="hi" id="hiT">¡Hola, Diego!</h1><div class="hi2" id="hello">¡Vamos, Diego! ⚡</div><button class="nextp" id="nextPill" aria-label="Ver horarios"></button></div>
+        <div><h1 class="hi" id="hiT">¡Hola, Diego!</h1><div class="hi2" id="hello">¡Vamos, Diego! ⚡</div></div>
       </div>
-      <p class="q1">¿Qué comeremos hoy?</p>
+      <button class="nextbar" id="nextPill" aria-label="Ver horarios"></button>
     </header>
-    <div class="mchips" id="meals" role="group" aria-label="Comida"></div>
-    <div class="cols">
-      <div>
-        <div class="card plateh">
-          <div class="ph-txt">
-            <div class="ph-title"><span class="lbar"></span><svg class="ico"><use href="#i-utensils"/></svg>Tu plato de hoy</div>
-            <div class="ph-total" id="total" aria-live="polite">0 g HC</div>
-            <p class="t2" id="heroDesc"></p><p class="muted small" id="heroPauta" hidden></p>
-            <button class="btn btn-primary go" data-go="alimentos" id="addFood"></button>
-          </div>
-          <svg class="bowl" viewBox="0 0 140 120" aria-hidden="true" focusable="false">
+    <p class="q1">¿Qué comeremos hoy?</p>
+    <div class="mgrid" id="meals" role="group" aria-label="Comida"></div>
+    <div class="card plateh2">
+      <div class="ph-title"><svg class="bowl" viewBox="0 0 140 120" aria-hidden="true" focusable="false">
             <defs><radialGradient id="gBowl" cx=".5" cy=".3" r=".8"><stop offset="0" stop-color="#2A3650"/><stop offset="1" stop-color="#121A2B"/></radialGradient>
             <linearGradient id="gChk" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F2C27A"/><stop offset="1" stop-color="#C47A2C"/></linearGradient></defs>
             <g stroke="#B8FF3B" stroke-width="4" stroke-linecap="round"><path d="M112 10 l6 -9"/><path d="M121 20 l9 -5"/><path d="M124 31 l9 0"/></g>
@@ -476,19 +513,13 @@ body{background:radial-gradient(120% 60% at 85% -10%,rgba(56,225,198,.10),transp
             <path d="M30 66 q6 -18 30 -14 q20 4 18 18 q-2 12 -24 10 q-26 -2 -24 -14z" fill="url(#gChk)"/>
             <g stroke="#6B3A12" stroke-width="2.6" stroke-linecap="round" opacity=".85"><path d="M38 60 l12 18"/><path d="M48 56 l12 20"/><path d="M58 55 l10 18"/></g>
             <path d="M0 112 C 40 104, 90 96, 140 70" stroke="#38E1C6" stroke-width="3" fill="none" opacity=".7"/>
-          </svg>
-        </div>
-        <div class="sect2"><span class="lbar"></span><h2>Mi plato</h2><span class="sp"></span><button class="hbtn" id="saveFav" aria-label="Guardar plato como favorita"></button><button class="hbtn red" id="clearPlate" hidden aria-label="Vaciar plato"></button></div>
-        <div class="card plist"><ul class="list" id="plate"></ul></div>
-      </div>
-      <div>
-        <div class="shortcuts">
-          <button class="sc lime" data-go="favoritos"><svg class="ico"><use href="#i-star"/></svg><span><b>Favoritos</b><small>¡Los de siempre!</small></span></button>
-          <button class="sc teal" data-go="recetas"><svg class="ico"><use href="#i-chef"/></svg><span><b>Recetas</b><small>¡A crear algo rico!</small></span></button>
-          <button class="sc" id="toPauta"><svg class="ico"><use href="#i-drop"/></svg><span><b>Mi pauta</b><small>Calcular dosis</small></span></button>
-        </div>
-      </div>
+          </svg><span>Tu plato de hoy</span></div>
+      <div class="ph-row"><div class="ph-total" id="total" aria-live="polite">0 g HC</div><button class="btn btn-primary go" data-go="alimentos" id="addFood"></button></div>
+      <div class="ph-ref"><span class="t2">Pauta de referencia: <b id="refHC">60 g HC</b></span><span class="diff" id="diff" hidden></span></div>
     </div>
+    <div class="sect2"><span class="lbar"></span><h2>Mi plato</h2><span class="cnt" id="plateCount"></span><span class="sp"></span><button class="hbtn ic" id="favBtn" data-go="favoritos" aria-label="Mis comidas guardadas"><svg class="ico"><use href="#i-heart"/></svg></button><button class="hbtn ic" id="moreBtn" aria-label="Más opciones del plato"><svg class="ico"><use href="#i-more"/></svg></button></div>
+    <div class="card plist"><ul class="list" id="plate"></ul></div>
+    <button class="savebar" id="saveFav"><svg class="ico"><use href="#i-bookmark"/></svg><span>Guardar esta comida</span><svg class="ico s"><use href="#i-chev"/></svg></button>
   </section>
 
   <!-- 2. EXPLORADOR DE ALIMENTOS -->
@@ -544,7 +575,7 @@ body{background:radial-gradient(120% 60% at 85% -10%,rgba(56,225,198,.10),transp
     <header class="top"><div class="row"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg class="ico"><use href="#i-back"/></svg></button><div><h1 class="h1">Perfil</h1><div class="hello">Tu app, a tu manera</div></div></div></header>
     <div class="card hero row"><div class="avatar" style="width:56px;height:56px;font-size:22px" aria-hidden="true">D</div><div><b style="font-size:19px">Diego</b><div class="t2 small">Tus datos se quedan en este teléfono 🔒</div></div></div>
     <div class="sect">Apariencia</div>
-    <div class="card"><div class="seg full" id="themeSeg" role="group" aria-label="Tema"><button data-v="dark">Midnight oscuro</button><button data-v="light">Claro</button></div></div>
+    <div class="card"><div class="seg full" id="themeSeg" role="group" aria-label="Tema"><button data-v="dark">Midnight oscuro</button><button data-v="light">Claro</button></div><div class="t2 small" style="margin:12px 2px 6px">Figura del encabezado</div><div class="seg full" id="figSeg" role="group" aria-label="Figura del encabezado"><button data-v="bike">🚴 Ciclista</button><button data-v="ball">⚽ Futbolista</button></div></div>
     <div class="sect">Unidades de medida</div>
     <div class="card"><div class="kv"><span>Carbohidratos</span><b>gramos (g HC)</b></div><div class="kv"><span>Glicemia</span><b>mg/dL</b></div>
       <div class="row" style="margin-top:8px"><span class="sp">Cantidad al agregar alimentos con unidad</span></div>
@@ -563,7 +594,7 @@ body{background:radial-gradient(120% 60% at 85% -10%,rgba(56,225,198,.10),transp
       <button class="set" id="schedB"><span class="ic"><svg class="ico s"><use href="#i-clock"/></svg></span><span class="tx"><b>Horarios y alarmas</b><span id="schedTxt">Comidas y Tresiba</span></span><svg class="ico s muted"><use href="#i-chev"/></svg></button>
       <button class="set" id="pautaB"><span class="ic"><svg class="ico s"><use href="#i-drop"/></svg></span><span class="tx"><b>Mi pauta completa</b><span>Insulinas, comidas y controles</span></span><svg class="ico s muted"><use href="#i-chev"/></svg></button>
     </div>
-    <p class="muted small" style="margin:14px 4px">diego. v5 · Midnight Energy ⚡ La app no envía tus datos a ningún servidor.</p>
+    <p class="muted small" style="margin:14px 4px">diego. v7 · Midnight Energy ⚡ La app no envía tus datos a ningún servidor.</p>
   </section>
 
   <!-- HISTORIAL -->
@@ -575,7 +606,7 @@ body{background:radial-gradient(120% 60% at 85% -10%,rgba(56,225,198,.10),transp
 </div>
 
 <nav class="nav" aria-label="Secciones"><div class="in">
-  <button data-go="inicio"><svg class="ico"><use href="#i-home"/></svg>Inicio<span class="dot" id="dot"></span></button>
+  <button data-go="inicio"><svg class="ico"><use href="#i-home"/></svg>Inicio<span class="dot" id="dot" hidden></span></button>
   <button data-go="alimentos"><svg class="ico"><use href="#i-apple"/></svg>Alimentos</button>
   <button data-go="recetas"><svg class="ico"><use href="#i-chef"/></svg>Recetas</button>
   <button data-go="pauta"><svg class="ico"><use href="#i-calendar"/></svg>Pauta</button>
@@ -595,6 +626,8 @@ body{background:radial-gradient(120% 60% at 85% -10%,rgba(56,225,198,.10),transp
   <symbol id="i-cookie" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5"/><path d="M8.5 8.5v.01"/><path d="M16 15.5v.01"/><path d="M12 12v.01"/><path d="M11 17v.01"/><path d="M7 14v.01"/></symbol>
   <symbol id="i-salad" viewBox="0 0 24 24"><path d="M7 21h10"/><path d="M12 21a9 9 0 0 0 9-9H3a9 9 0 0 0 9 9Z"/><path d="M11.38 12a2.4 2.4 0 0 1-.4-4.77 2.4 2.4 0 0 1 3.2-2.77 2.4 2.4 0 0 1 3.47-.63 2.4 2.4 0 0 1 3.37 3.37 2.4 2.4 0 0 1-1.1 3.7 2.51 2.51 0 0 1 .03 1.1"/><path d="m13 12 4-4"/><path d="M10.9 7.25A3.99 3.99 0 0 0 4 10c0 .73.2 1.41.54 2"/></symbol>
   <symbol id="i-cloche" viewBox="0 0 24 24"><path d="M3 20a1 1 0 0 1-1-1v-1a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v1a1 1 0 0 1-1 1Z"/><path d="M20 16a8 8 0 1 0-16 0"/><path d="M12 4v4"/><path d="M10 4h4"/></symbol>
+  <symbol id="i-bookmark" viewBox="0 0 24 24"><path d="m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"/></symbol>
+  <symbol id="i-more" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/><circle cx="5" cy="12" r="1.2"/></symbol>
   <symbol id="i-home" viewBox="0 0 24 24"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"/><path d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></symbol>
   <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
   <symbol id="i-chef" viewBox="0 0 24 24"><path d="M17 21a1 1 0 0 0 1-1v-5.35c0-.457.316-.844.727-1.041a4 4 0 0 0-2.134-7.589 5 5 0 0 0-9.186 0 4 4 0 0 0-2.134 7.588c.411.198.727.585.727 1.041V20a1 1 0 0 0 1 1Z"/><path d="M6 17h12"/></symbol>

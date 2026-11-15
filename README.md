@@ -48,7 +48,7 @@ Reglas: emojis con moderación (saludos y mensajes positivos); nunca felicitar p
 
 ## 3. Pantallas
 
-1. **Inicio / Mi comida:** comida del día, "Tu plato de hoy" con total en g HC (animado, sin barras de progreso), lista con editar y eliminar, guardar favorito, consultar pauta, vista previa de favoritas.
+1. **Inicio / Mi comida (v7):** encabezado compacto con futbolista, barra "Próxima" con cuenta regresiva, selector de 5 comidas sin recortes, total del plato con referencia de pauta y diferencia neutral, filas compactas (nombre en 2 líneas), menú ⋯ (guardar, favoritas, pauta, vaciar con confirmación) y "Guardar esta comida". Cabe sin scroll; la lista se desliza por dentro. Versión anterior:  comida del día, "Tu plato de hoy" con total en g HC (animado, sin barras de progreso), lista con editar y eliminar, guardar favorito, consultar pauta, vista previa de favoritas.
 2. **Alimentos:** buscador fijo, filtros (Recientes, Favoritos ★, Mis alimentos, Recetas, categorías), etiqueta crudo/cocido y fuente en cada fila. El bottom sheet permite elegir unidades o gramos cuando existe peso por unidad.
 3. **Recetas:** constructor en 8 pasos (nombre, ingredientes, cantidades, peso final real, total, por 100 g, porción, guardar). Se pueden editar, duplicar y usar.
 4. **Favoritas:** tarjetas con alimentos, cantidades y g HC. "Usar" deja ajustar las cantidades antes de cargar. Nunca guardan glicemia ni dosis.

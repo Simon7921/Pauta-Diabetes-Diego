@@ -32,8 +32,9 @@
   // Saludo según la hora local del teléfono
   function greeting(h) { return h >= 5 && h < 12 ? "¡Buenos días, Diego! ☀️" : h >= 12 && h < 20 ? "¡Buenas tardes, Diego!" : "¡Buenas noches, Diego! 🌙"; }
   // Mensajes al agregar: celebran la acción de organizar, nunca valores de glucosa, carbohidratos ni dosis
-  var ADDED = ["¡Bien! {n} al plato", "¡Agregado! {n}", "¡Listo! Sumamos {n}", "{n} va al plato ⚡"];
-  function addedMsg(n, hc) { return ADDED[Math.floor(Math.random() * ADDED.length)].replace("{n}", n) + " · " + fmt(hc) + " g HC"; }
+  // Reconoce la acción (agregar), nunca el valor de carbohidratos
+  var ADDED = ["¡Listo! Agregaste {n}", "{n} quedó en tu plato", "¡Bien organizado! {n} agregado"];
+  function addedMsg(n) { return ADDED[Math.floor(Math.random() * ADDED.length)].replace("{n}", n.replace(/ \(.*\)/, "")); }
 
   /* ---------------- Componentes: toast, sheet, confirmación ---------------- */
   var tT;
@@ -86,8 +87,6 @@
 
   /* ================= 1. INICIO / MI COMIDA ================= */
   
-  $("saveFav").innerHTML = ico("heart", "s") + "Guardar";
-  $("clearPlate").innerHTML = ico("trash", "s");
   var MEAL_ICON = { desayuno: "coffee", colacion: "cookie", almuerzo: "salad", once: "apple", cena: "cloche" };
   // Miniatura por alimento (emoji como ilustración; el nombre siempre va en texto)
   var THUMBS = [[/marraqueta|hallulla|pan /, "🍞"], [/pl[aá]tano/, "🍌"], [/manzana/, "🍎"], [/pi[nñ]a/, "🍍"], [/palta/, "🥑"], [/tomate/, "🍅"], [/huevo/, "🥚"], [/yogh|yogur|leche/, "🥛"], [/queso/, "🧀"], [/helado/, "🍦"], [/corn|cereal|avena/, "🥣"], [/galleta/, "🍪"], [/fideo|tallar/, "🍝"], [/papas fritas/, "🍟"], [/pur[eé]|papa/, "🥔"], [/jugo|n[eé]ctar|bebida/, "🧃"], [/naranja|mandarina/, "🍊"]];
@@ -97,16 +96,17 @@
     $("hiT").textContent = h >= 5 && h < 12 ? "¡Buenos días, Diego!" : h >= 20 || h < 5 ? "¡Buenas noches, Diego!" : "¡Hola, Diego!";
     $("hello").textContent = "¡Vamos, Diego! ⚡";
     $("meals").innerHTML = C.MEALS.map(function (m) { return '<button class="chip" data-m="' + m.id + '" aria-pressed="' + (plate.meal === m.id) + '">' + ico(MEAL_ICON[m.id]) + m.name + "</button>"; }).join("");
-    var sel = $("meals").querySelector('[aria-pressed="true"]'); if (sel && sel.scrollIntoView) { var mc = $("meals"); mc.scrollLeft = Math.max(0, sel.offsetLeft - (mc.clientWidth - sel.offsetWidth) / 2); }
     var m = meal(plate.meal), tot = plateTotal(), n = plate.items.length;
     animateNum($("total"), tot, " g HC");
-    $("heroDesc").textContent = n ? "¡Listo, Diego! Ya tenemos la cuenta · pauta: " + m.hc + " g" : "Agrega tus alimentos y hacemos la cuenta.";
-    $("heroPauta").textContent = "";
-    $("addFood").innerHTML = (n ? "Agregar" : "¡Vamos a elegir!") + ico("arrow");
+    $("refHC").textContent = m.hc + " g HC";
+    var dif = C.round1(tot - m.hc), df = $("diff");
+    df.hidden = !n;
+    if (n) { df.textContent = dif === 0 ? "= referencia" : (dif > 0 ? "+" : "−") + fmt(Math.abs(dif)) + " g"; df.setAttribute("aria-label", dif === 0 ? "Igual a la referencia" : fmt(Math.abs(dif)) + " gramos " + (dif > 0 ? "más" : "menos") + " que la referencia"); }
+    $("plateCount").textContent = n ? "(" + n + (n === 1 ? " alimento)" : " alimentos)") : "";
+    $("addFood").innerHTML = n ? ico("plus") + "Agregar" : "¡Vamos a elegir!" + ico("arrow");
     $("plate").innerHTML = n ? plate.items.map(function (it, i) {
-      return '<li class="li" data-i="' + i + '"><button class="main" data-edit="' + i + '" aria-label="' + esc(it.name) + ", " + qtyTxt(it) + ", " + fmt(it.hc) + ' gramos de carbohidratos. Editar o quitar"><span class="thumb" aria-hidden="true">' + thumb(it) + '</span><span style="flex:1;min-width:0"><span class="nm">' + esc(it.name.replace(/ \(unidad\)| \(sin cáscara\)| \(mitad\)/, "")) + " · " + qtyTxt(it) + '</span></span><span class="hcpill">' + fmt(it.hc) + ' g</span><svg class="ico s chev" aria-hidden="true"><use href="#i-chev"/></svg></button></li>';
+      return '<li class="li" data-i="' + i + '"><button class="main" data-edit="' + i + '" aria-label="' + esc(it.name) + ", " + qtyTxt(it) + ", " + fmt(it.hc) + ' gramos de carbohidratos. Editar cantidad o quitar"><span class="thumb" aria-hidden="true">' + thumb(it) + '</span><span class="tx"><span class="nm2">' + esc(it.name.replace(/ \(unidad\)| \(sin cáscara\)| \(mitad\)/, "")) + '</span><span class="qt">' + qtyTxt(it) + '</span></span><span class="hcpill">' + fmt(it.hc) + ' g</span><svg class="ico s chev" aria-hidden="true"><use href="#i-chev"/></svg></button></li>';
     }).join("") : '<li class="empty">' + ico("utensils") + "<p>Tu plato está vacío por ahora.<br>¿Qué se te antoja?</p></li>";
-    $("clearPlate").hidden = !n;
     $("dot").textContent = n || "";
     renderNext();
   }
@@ -116,8 +116,19 @@
     var k = +ed.dataset.edit, x = plate.items[k]; var f = findFood(x.fid) || { id: x.fid, name: x.name, hc100: x.hc100, unit: x.unit, kind: "plate" }; qtySheet(f, k);
   });
   function removeItem(i) { var it = plate.items.splice(i, 1)[0]; savePlate(); renderInicio(); toast("Listo, quitamos " + it.name, "trash"); }
-  $("clearPlate").addEventListener("click", function () { confirmModal({ title: "¿Vaciamos el plato?", text: "Se quitan todos los alimentos de " + meal(plate.meal).name.toLowerCase() + ".", ok: "Sí, vaciar", danger: true, onOk: function () { plate.items = []; savePlate(); renderInicio(); toast("Plato vacío. ¡A empezar de nuevo!", "trash"); } }); });
-  $("toPauta").addEventListener("click", function () { pz.fromPlate = true; show("pauta"); });
+  function clearPlate() { if (!plate.items.length) { toast("El plato ya está vacío", "info"); return; } confirmModal({ title: "¿Vaciamos el plato?", text: "Se quitan todos los alimentos de " + meal(plate.meal).name.toLowerCase() + ".", ok: "Sí, vaciar", danger: true, onOk: function () { plate.items = []; savePlate(); renderInicio(); toast("Plato vacío", "trash"); } }); }
+  $("moreBtn").addEventListener("click", function () {
+    openSheet('<h3 id="shT">Opciones del plato</h3><div style="margin-top:8px">' +
+      '<button class="set" id="mSave"><span class="ic">' + ico("bookmark", "s") + '</span><span class="tx"><b>Guardar esta comida</b><span>Para repetirla en un toque</span></span></button>' +
+      '<button class="set" id="mFavs"><span class="ic">' + ico("heart", "s") + '</span><span class="tx"><b>Mis comidas guardadas</b><span>Elige una y ajusta cantidades</span></span></button>' +
+      '<button class="set" id="mPauta"><span class="ic">' + ico("drop", "s") + '</span><span class="tx"><b>Calcular en mi pauta</b><span>Con el total de este plato</span></span></button>' +
+      '<button class="set" id="mClear"><span class="ic" style="color:var(--danger)">' + ico("trash", "s") + '</span><span class="tx"><b style="color:var(--danger)">Vaciar plato</b><span>Pide confirmación</span></span></button></div>', function (b) {
+      b.querySelector("#mSave").onclick = function () { closeSheet(); setTimeout(function () { $("saveFav").click(); }, 260); };
+      b.querySelector("#mFavs").onclick = function () { closeSheet(); show("favoritos"); };
+      b.querySelector("#mPauta").onclick = function () { closeSheet(); pz.fromPlate = true; show("pauta"); };
+      b.querySelector("#mClear").onclick = function () { clearPlate(); };
+    });
+  });
 
   /* ================= 4. FAVORITAS ================= */
   function favTotal(f) { return C.plateTotal(f.items.map(function (it) { return { hc: C.hcFor(it, it.qty, itemMode(it)) }; })); }
@@ -205,7 +216,7 @@
         var q = C.num(inp.value); if (!(q > 0)) { inp.setAttribute("aria-invalid", "true"); toast("Escribe una cantidad mayor que 0", "info"); inp.focus(); return; }
         var o = { fid: food.id, name: food.name, qty: q, unit: food.unit || null, hc100: food.hc100, mode: mode, hc: C.hcFor(food, q, mode) };
         if (editing) { plate.items[editIdx] = o; toast("Listo, actualizamos " + food.name); }
-        else { plate.items.push(o); recent = [food.id].concat(recent.filter(function (x) { return x !== food.id; })).slice(0, 12); S.saveList("recent", recent); usage[food.id] = (usage[food.id] || 0) + 1; S.saveUsage(usage); toast(addedMsg(food.name, o.hc), "plus"); }
+        else { plate.items.push(o); recent = [food.id].concat(recent.filter(function (x) { return x !== food.id; })).slice(0, 12); S.saveList("recent", recent); usage[food.id] = (usage[food.id] || 0) + 1; S.saveUsage(usage); toast(addedMsg(food.name), "plus"); }
         savePlate(); closeSheet(); if (ui.screen === "inicio") renderInicio(); else { $("dot").textContent = plate.items.length || ""; if (ui.screen === "alimentos") renderFoods(); }
       };
       var rmb = b.querySelector("#qRm"); if (rmb) rmb.onclick = function () { closeSheet(); removeItem(editIdx); };
@@ -372,6 +383,7 @@
   function renderPerfil() {
     var th = document.documentElement.getAttribute("data-mode");
     $("themeSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === th)); });
+    $("figSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === (prefs.fig === "ball" ? "ball" : "bike"))); });
     $("qtySeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === (prefs.qty === "g" ? "g" : "auto"))); });
     $("mngCount").textContent = custom.length ? custom.length + (custom.length === 1 ? " alimento creado por ti" : " alimentos creados por ti") : "Todavía no creas alimentos";
     var rs = C.rulesStatus(rules); $("rulesCount").textContent = "Opcional · " + rs.done + " de " + rs.total + " anotadas";
@@ -458,7 +470,7 @@
   var lastNext = null;
   function renderNext() {
     var n = C.nextEvent(new Date(), sched()); if (!n) { $("nextPill").innerHTML = ""; return; }
-    $("nextPill").innerHTML = ico(n.item.basal ? "drop" : "clock") + '<span class="lbl">' + esc(n.item.label.replace(" (basal)", "")) + " " + n.item.t + "</span><b>" + (n.minutes <= 1 ? "¡ahora!" : "en " + C.fmtDur(n.minutes)) + "</b>";
+    $("nextPill").innerHTML = ico(n.item.basal ? "drop" : "clock") + '<span class="nx">Próxima: <b>' + esc(n.item.label.replace(" (basal)", "")) + " · " + n.item.t + '</b></span><span class="cd">' + (n.minutes <= 1 ? "¡ahora!" : "en " + C.fmtDur(n.minutes)) + "</span>";
     $("nextPill").classList.toggle("soon", n.minutes <= 30);
     $("nextPill").setAttribute("aria-label", "Próximo: " + n.item.label + " a las " + n.item.t + ", en " + C.fmtDur(n.minutes) + ". Ver horarios");
     var key = n.item.t + n.item.id;
@@ -505,13 +517,15 @@
   $("clrH").addEventListener("click", function () { if (!hist.length) return; confirmModal({ title: "¿Borramos todo el historial?", text: "Se eliminan " + hist.length + " registros de este teléfono. No se puede deshacer.", ok: "Sí, borrar todo", danger: true, onOk: function () { hist = []; S.saveHistory(hist); renderHist(); toast("Historial borrado", "trash"); } }); });
 
   /* ================= Tema ================= */
+  function applyFig() { document.documentElement.classList.toggle("fig-ball", prefs.fig === "ball"); }
+  $("figSeg").addEventListener("click", function (e) { var b = e.target.closest("[data-v]"); if (!b) return; prefs.fig = b.dataset.v; S.savePrefs(prefs); applyFig(); renderPerfil(); toast(b.dataset.v === "ball" ? "Futbolista activado ⚽" : "Ciclista activado 🚴"); });
   function applyTheme() {
     var t = S.get(S.KEYS.theme, null) || "dark";
     document.documentElement.setAttribute("data-mode", t === "light" ? "light" : "dark");
     var m = document.querySelector('meta[name="theme-color"]'); if (m) m.content = t === "light" ? "#F3F5F9" : "#0B1020";
   }
 
-  applyTheme();
+  applyTheme(); applyFig();
   show((location.hash || "#inicio").slice(1), false);
   if ("serviceWorker" in navigator && location.protocol.indexOf("http") === 0) navigator.serviceWorker.register("sw.js").catch(function () {});
 })();
