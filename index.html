@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="es" data-mode="dark">
+<html lang="es" data-mode="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>diego. · ¡Vamos!</title>
+<title>Diego · Soft 3D Dashboard</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="diego.">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="theme-color" content="#0B1020">
+<meta name="theme-color" content="#EEF4EE">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-180.png">
 <link rel="icon" href="icon-192.png">
@@ -27,14 +27,14 @@
 --shadow:0 1px 0 rgba(255,255,255,.03) inset,0 8px 24px rgba(0,0,0,.25);
 --glow:0 0 0 1px rgba(184,255,59,.25),0 8px 30px rgba(184,255,59,.12)}
 :root[data-mode=light]{color-scheme:light;
---bg:#F3F5F9;--bg2:#E9EDF4;--surface:#FFFFFF;--elev:#F5F7FB;
---accent:#B8FF3B;--accent-soft:#D8FF8A;--accent2:#0F766E;--on-accent:#0B1020;--accent-text:#3F6212;
---text:#0B1020;--text2:#3E4A5E;--muted:#5B677B;
---success:#15803D;--warning:#B45309;--danger:#DC2626;--info:#0369A1;
---warning-bg:#FFF4E0;--danger-bg:#FDECEC;--info-bg:#E6F4FB;--accent-bg:#F1FFDB;
---border:rgba(11,16,32,.09);--border2:rgba(11,16,32,.22);
---shadow:0 1px 2px rgba(11,16,32,.05),0 6px 18px rgba(11,16,32,.06);
---glow:0 0 0 1px rgba(63,98,18,.2),0 8px 24px rgba(132,204,22,.18)}
+--bg:#EEF4EE;--bg2:#F8F2EA;--surface:rgba(255,250,243,.88);--elev:#FFFFFF;
+--accent:#D8FF3B;--accent-soft:#ECFF95;--accent2:#7BC8B2;--on-accent:#263218;--accent-text:#5A7A00;
+--text:#463123;--text2:#7A665A;--muted:#9A877B;
+--success:#2E8B57;--warning:#D98E2F;--danger:#D85B55;--info:#51A9D9;
+--warning-bg:#FFF0DA;--danger-bg:#FEE8E6;--info-bg:#EAF7FB;--accent-bg:#F1FFD0;
+--border:rgba(125,106,92,.14);--border2:rgba(125,106,92,.22);
+--shadow:0 16px 32px rgba(160,140,120,.14), 0 4px 10px rgba(255,255,255,.65) inset, 0 -6px 18px rgba(220,208,198,.28) inset;
+--glow:0 0 0 1px rgba(216,255,59,.26),0 10px 28px rgba(216,255,59,.2)}
 :root{--r-card:20px;--r-btn:15px;--r-chip:999px;--fs-display:clamp(42px,12vw,52px);--fs-title:26px;--fs-sub:19px;--fs-body:15px;--fs-label:12.5px;--t:200ms}
 
 /* ===================== Base ===================== */
@@ -423,120 +423,283 @@ html[data-mode=light] .ph-ref{--refc-def:#3F6212}
 .mast-art .fig-ball{display:none}
 html.fig-ball .mast-art .fig-ball{display:inline}
 html.fig-ball .mast-art .fig-bike{display:none}
-/* Foto de Diego en el encabezado (tal cual, sin filtros) */
-.mast-photo{display:none}
-html.fig-photo .mast2 .mast-art{display:none}
-html.fig-photo .mast2{display:grid;grid-template-columns:1fr auto;align-items:end;column-gap:4px}
-html.fig-photo .mast-photo{display:block;position:relative;grid-column:2;grid-row:1;height:clamp(118px,37vw,160px);width:auto;margin:-4px -14px 0 0;pointer-events:none}
-html.fig-photo .mast2 .mast-row{grid-column:1;grid-row:1;align-self:center}
-html.fig-photo .mast2 .ava{display:none}
-html.fig-photo .mast2 .mast-row>div{padding-right:0}
-html.fig-photo .mast2 .hi{white-space:normal;line-height:1.08}
-html.fig-photo .mast2 .nextbar{grid-column:1/-1;grid-row:2;margin-top:6px}
-@media (max-height:720px){html.fig-photo .mast-photo{height:min(31vw,112px)}html.fig-photo .mast2 .nextbar{margin-top:4px}}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ==== Soft Pastel 3D hero upgrade ==== */
+:root[data-mode=light] body{background:radial-gradient(120% 80% at 10% 0%,rgba(129,208,183,.23),transparent 42%),radial-gradient(100% 60% at 85% 8%,rgba(250,199,171,.28),transparent 45%),linear-gradient(180deg,#EEF4EE 0%,#F7F1E7 100%)}
+:root[data-mode=light] .card,:root[data-mode=light] .plateh2,:root[data-mode=light] .set,:root[data-mode=light] .nav .in{box-shadow:var(--shadow)}
+:root[data-mode=light] .mast2{background:linear-gradient(180deg,rgba(201,233,221,.76),rgba(255,247,238,.2));border-radius:0 0 28px 28px;margin-bottom:8px;padding-bottom:10px}
+:root[data-mode=light] .mast2 .mast-art{right:-18px;top:-6px;height:170px;opacity:.14;filter:saturate(.8)}
+.mast-player{display:block;position:absolute;right:-13px;top:-2px;height:180px;width:auto;z-index:1;pointer-events:none;filter:drop-shadow(0 14px 14px rgba(87,72,61,.18))}
+html.fig-ball .mast-player{display:block}
+:root[data-mode=light] .mast-player{filter:drop-shadow(0 16px 18px rgba(87,72,61,.18))}
+.mast2 .mast-row,.nextbar,.q1,.mgrid,.plateh2{position:relative;z-index:2}
+:root[data-mode=light] .mast2 .hi{color:#2F241D;text-shadow:none}
+:root[data-mode=light] .mast2 .hi2{color:#6BB7A5;font-weight:800}
+:root[data-mode=light] .mast2 .ava{background:rgba(255,255,255,.65);border-color:rgba(108,160,145,.35);color:#6BB7A5;box-shadow:0 10px 20px rgba(160,140,120,.12), inset 0 2px 8px rgba(255,255,255,.7)}
+:root[data-mode=light] .nextbar{background:rgba(255,252,248,.82);border-color:rgba(123,200,178,.45);box-shadow:0 12px 24px rgba(154,135,123,.12), inset 0 2px 10px rgba(255,255,255,.7)}
+:root[data-mode=light] .nextbar .ico,:root[data-mode=light] .nextbar .cd{color:#6AAE3C}
+:root[data-mode=light] .mgrid .chip,:root[data-mode=light] .chip,:root[data-mode=light] .hbtn,:root[data-mode=light] .savebar,:root[data-mode=light] .btn-secondary,:root[data-mode=light] .btn-ghost,.inp input,:root[data-mode=light] select.in,:root[data-mode=light] textarea.in{background:rgba(255,250,243,.86);box-shadow:0 10px 20px rgba(166,145,124,.09), inset 0 2px 10px rgba(255,255,255,.82)}
+:root[data-mode=light] .mgrid .chip[aria-pressed=true],:root[data-mode=light] .chip[aria-pressed=true],:root[data-mode=light] .nav button[aria-current=page],:root[data-mode=light] .btn-primary{background:linear-gradient(180deg,#E8FF6E,#D7FF3A);color:#364118;border-color:rgba(171,204,44,.5);box-shadow:0 12px 24px rgba(180,214,59,.22), inset 0 1px 0 rgba(255,255,255,.75)}
+:root[data-mode=light] .plateh2{background:linear-gradient(180deg,rgba(234,245,240,.95),rgba(255,250,244,.96));border-color:rgba(123,200,178,.28)}
+:root[data-mode=light] .plateh2 .ph-total{color:#2C6B5A}
+:root[data-mode=light] .nav .in{background:rgba(255,250,243,.78);border-color:rgba(125,106,92,.16)}
+:root[data-mode=light] .search .inp input::placeholder{color:#b19f92}
+
+
+/* ============================================================
+   DIEGO SOFT PASTEL 3D · REDISEÑO ESTRUCTURAL V4
+   UI ONLY. Sin cambios en calc.js, store.js ni app.js.
+   ============================================================ */
+:root[data-mode="dark"],:root[data-mode="light"]{
+ color-scheme:light;
+ --bg:#F7EFE4;--bg2:#FDF7EE;--surface:#FFFAF3;--elev:#FFFDF9;
+ --accent:#D5FA68;--accent-soft:#E8FFAF;--accent2:#289F8D;--on-accent:#243B27;--accent-text:#327B60;
+ --text:#3D302B;--text2:#655951;--muted:#776C63;
+ --success:#247A52;--warning:#A86519;--danger:#BF4148;--info:#20678E;
+ --warning-bg:#FFF2DA;--danger-bg:#FDEBEA;--info-bg:#EAF6FE;--accent-bg:#ECF8D4;
+ --border:rgba(136,113,90,.16);--border2:rgba(136,113,90,.23);
+ --shadow:0 11px 22px rgba(121,91,71,.11),0 2px 0 rgba(255,255,255,.85) inset;
+ --glow:0 8px 18px rgba(138,177,58,.17),inset 0 2px rgba(255,255,255,.72);
+ --r-card:24px;--r-btn:18px
+}
+html[data-mode] body{background:radial-gradient(circle at 0 2%,#DDF1E6 0,transparent 39%),radial-gradient(circle at 100% 75%,#F6DFD1 0,transparent 38%),#F7EFE4;background-attachment:fixed}
+html[data-mode] .wrap{max-width:640px;padding:calc(env(safe-area-inset-top) + 14px) 15px calc(110px + env(safe-area-inset-bottom))}
+html[data-mode] .card{border-radius:24px;background:#FFFAF3;border:1px solid rgba(255,255,255,.95);box-shadow:0 12px 25px rgba(121,91,71,.12),inset 0 2px #fff}
+html[data-mode] .btn-primary{background:linear-gradient(180deg,#EBFF92,#C2F057);border:1px solid #EDFFBE;color:#273820;box-shadow:0 8px 18px #A7CE6840,inset 0 2px #fff9}
+html[data-mode] .btn-secondary,html[data-mode] .btn-ghost{background:linear-gradient(160deg,#fffdf8,#f8eddf);border:1px solid #fff;color:#46695b;box-shadow:0 6px 14px #B59A7D27,inset 0 1px #fff}
+html[data-mode] .h1{font-size:27px;letter-spacing:-.035em;color:#3F332C}
+html[data-mode] .hello{color:#7A675D;font-size:13px}
+html[data-mode] .eyebrow{font-weight:850;color:#298A75;font-size:10px;letter-spacing:.17em;margin-bottom:7px}
+html[data-mode] .top{margin:12px 2px 16px;align-items:flex-start}
+html[data-mode] .avatar{background:#FCF5E9;color:#397D70;border:1px solid #fff;box-shadow:0 6px 12px #BDA88D44}
+/* Real illustration-led hero: no old SVG silhouette visible */
+html[data-mode] #s-inicio .mast2{position:relative;isolation:isolate;min-height:220px;overflow:hidden;margin:0 -3px 0;padding:17px 18px 10px;border-radius:30px;background:linear-gradient(130deg,#DDF4E9 0%,#BDE9D9 57%,#A5DDCA 100%);border:2px solid rgba(255,255,255,.9);box-shadow:0 16px 26px #8CB8A245,inset 0 2px #fff}
+html[data-mode] .hero-brand{position:relative;z-index:4;display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:900;letter-spacing:-.04em;color:#316757}
+.hero-brand small{font-size:9px;letter-spacing:.15em;color:#548878;margin-left:4px}
+.brand-mark{display:grid;place-items:center;width:33px;height:33px;border-radius:12px;background:linear-gradient(155deg,#2D9D87,#18685E);color:#DFFC7A;font-style:italic;font-size:24px;box-shadow:0 7px 15px #418E7950,inset 0 2px #ffffff77}
+.brand-dot{color:#86BA29}
+html[data-mode] #s-inicio .mast2 .mast-art{display:none!important}
+html[data-mode] #s-inicio .mast2 .mast-player{position:absolute;right:-12px;top:2px;height:229px;width:auto;max-width:none;z-index:1;object-fit:contain;filter:drop-shadow(0 14px 14px #3D877B48)}
+html[data-mode] #s-inicio .mast2::after{content:"";position:absolute;right:-34px;bottom:-85px;width:245px;height:190px;border-radius:50%;background:rgba(255,255,255,.25);z-index:0}
+html[data-mode] #s-inicio .mast2 .mast-row{margin-top:30px;position:relative;z-index:3;align-items:flex-start;max-width:57%}
+html[data-mode] #s-inicio .mast2 .ava{display:none}
+html[data-mode] #s-inicio .mast2 .mast-row>div{padding:0!important}
+html[data-mode] #s-inicio .mast2 .hi{white-space:normal;font-size:clamp(27px,7.5vw,33px);line-height:1.05;color:#2C4B41;text-shadow:none;letter-spacing:-.05em}
+html[data-mode] #s-inicio .mast2 .hi2{font-size:16px;color:#1A8C77;font-style:normal;font-weight:800;margin-top:8px;line-height:1.2}
+html[data-mode] .nextbar-shell{margin:10px 0 17px}
+html[data-mode] .nextbar{width:100%;min-height:44px;margin:0;background:#FFFBF3!important;border:1px solid #fff!important;box-shadow:0 7px 15px #A68E742A!important;color:#534C43!important;border-radius:16px}
+html[data-mode] .nextbar .ico,html[data-mode] .nextbar .cd{color:#278975!important}
+html[data-mode] .section-intro{display:flex;justify-content:space-between;align-items:center;margin:0 3px 10px}
+html[data-mode] .section-intro .q1{margin:0!important;color:#40372F;font-size:23px!important;line-height:1.15}
+html[data-mode] .intro-spark{font-size:26px;color:#EAB96F}
+html[data-mode] .mgrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;margin-bottom:18px}
+html[data-mode] .mgrid .chip{min-height:66px;display:flex;flex-direction:column;gap:5px;border:1px solid #fff;border-radius:18px;background:linear-gradient(150deg,#fffdfa,#f4e8db);box-shadow:0 6px 12px #BAA08835;color:#65564B;font-size:clamp(10px,2.8vw,13px);padding:5px 1px}
+html[data-mode] .mgrid .chip .ico{width:23px;height:23px;color:#378C79}
+html[data-mode] .mgrid .chip[aria-pressed=true]{background:linear-gradient(160deg,#DFFF83,#B9EF5A);color:#28422E;box-shadow:0 7px 17px #A6CD6145,inset 0 2px #fff9}
+html[data-mode] .mgrid .chip[aria-pressed=true] .ico{color:#28422E}
+/* Food hero deliberately larger, with clear primary call to action */
+html[data-mode] .plateh2{border-radius:28px;padding:20px 18px;background:linear-gradient(135deg,#DDF4EA,#BDE9DC 82%)!important;border:2px solid #fff!important;box-shadow:0 14px 25px #83BBA85C,inset 0 2px #fff}
+html[data-mode] .plateh2 .ph-title{font-size:17px;color:#3D6657}
+html[data-mode] .plateh2 .bowl{width:44px}
+html[data-mode] .plateh2 .ph-total{font-size:clamp(36px,10vw,50px);color:#216A58!important;font-weight:900;letter-spacing:-.055em}
+html[data-mode] .plateh2 .ph-row{margin:6px 0 14px;gap:8px}
+html[data-mode] .plateh2 .btn.go{border-radius:20px;min-height:50px;padding:0 14px}
+html[data-mode] .plateh2 .ph-ref{font-size:13px;border-top:1px solid #6DAB9160}
+html[data-mode] .plateh2 .ph-ref .diff{border-radius:999px;background:#F7FFF1!important;color:#436754!important;border-color:#fff!important}
+html[data-mode] .sect2{margin-top:22px;margin-bottom:10px}
+html[data-mode] .sect2 h2{font-size:22px;color:#43372F}
+html[data-mode] .sect2 .lbar{background:#83BD71}
+html[data-mode] .hbtn{background:#FFFAF3;border:1px solid #fff;box-shadow:0 5px 13px #B89E8540;border-radius:16px}
+html[data-mode] .plist{padding:6px 14px}
+html[data-mode] .plist .li{padding:8px 0}
+html[data-mode] .plist .main{min-height:59px}
+html[data-mode] .plist .thumb{border:1px solid #fff;border-radius:16px;background:#F9F0E5;box-shadow:0 4px 10px #B5A18930}
+html[data-mode] .plist .nm2{font-size:15px;color:#43392F}
+html[data-mode] .plist .hcpill{background:#E1F4B8;color:#386735;border:1px solid #E9FFC3;border-radius:15px}
+html[data-mode] .savebar{margin-top:13px;background:#FFF9EF;border:1px solid #fff;color:#44695C;border-radius:20px;box-shadow:0 9px 17px #B3987D30}
+/* Foods: mini modular header and warm raised chips + separated rows */
+html[data-mode] .food-intro{display:flex;align-items:center;gap:16px;min-height:102px;padding:14px 18px;margin-bottom:16px;border:2px solid #fff;border-radius:25px;background:linear-gradient(120deg,#FFE4D1,#F7F1D9 75%);box-shadow:0 10px 20px #D1B1983B}
+.food-illus{white-space:nowrap;font-size:34px;letter-spacing:-6px;text-shadow:0 6px 8px #BA91745E;flex:none}
+.food-illus span{position:relative;top:9px;font-size:27px}
+.food-intro b,.food-intro small{display:block}
+.food-intro b{font-size:20px;color:#70513C;line-height:1.1}
+.food-intro small{font-size:12px;color:#826D60;margin-top:5px}
+html[data-mode] .search{margin:0 0 14px}
+html[data-mode] .search .inp{border-radius:17px}
+html[data-mode] .chips{gap:8px;margin:0 0 8px;padding:5px 2px 13px}
+html[data-mode] .chips .chip{background:#FFFAF2;border:1px solid #fff;border-radius:16px;box-shadow:0 6px 13px #B59B7F33;color:#685C4F;font-size:13px}
+html[data-mode] .chips .chip[aria-pressed=true]{background:linear-gradient(180deg,#DCFA90,#C0ED70);color:#2F4C29}
+html[data-mode] .food-list-head{display:flex;align-items:center;justify-content:space-between;margin:6px 4px 9px;color:#4B3E34}
+.food-list-head strong{font-size:18px}.food-list-head span{font-size:11px;color:#8E7868}
+html[data-mode] .food-panel{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}
+html[data-mode] .food-panel .li{border:1px solid #fff;background:#FFFAF2;border-radius:19px;padding:9px 10px;margin:0 0 9px;box-shadow:0 7px 13px #B99E8330}
+html[data-mode] .food-panel .li .thumb{border-radius:14px;background:#FFF2E4;display:grid;place-items:center;box-shadow:inset 0 2px #fff}
+html[data-mode] .food-panel .li .nm{color:#4B3D35;white-space:normal;line-height:1.3;font-size:14px}
+html[data-mode] .food-panel .li .mt{font-size:11px;color:#807468;max-height:2.7em;overflow:hidden}
+html[data-mode] .ibtn.add{border-radius:13px;background:#D9F98D;color:#305932;box-shadow:0 5px 9px #A7C36A50}
+/* Recipes: actual content cards inside illustrated recipe section */
+html[data-mode] .recipe-intro{display:flex;position:relative;align-items:center;justify-content:space-between;overflow:hidden;min-height:146px;background:linear-gradient(125deg,#FFE4D3,#F6F0DF);border:2px solid #fff;border-radius:27px;padding:22px;margin:0 0 22px;box-shadow:0 11px 20px #D8B69A40}
+.recipe-intro-copy{position:relative;z-index:1;max-width:66%}
+.recipe-intro-copy span{font-size:10px;font-weight:850;letter-spacing:.09em;color:#AF7350;display:block;margin-bottom:8px}
+.recipe-intro-copy strong{display:block;font-size:24px;line-height:1.1;color:#674632}
+.recipe-intro-copy small{display:block;font-size:12px;color:#8E6C58;margin-top:8px}
+.recipe-visual{position:absolute;right:10px;top:9px;font-size:94px;filter:drop-shadow(0 13px 8px #B79A8059)}
+.recipe-list-title{font-size:19px;font-weight:850;color:#4C3D33;margin:0 4px 12px}
+html[data-mode] .recipe-cards>.card{border-radius:25px;min-height:143px;margin-bottom:14px!important;background:linear-gradient(160deg,#fffdf9,#fff5e9);padding:18px;box-shadow:0 11px 20px #B59B8230}
+html[data-mode] .recipe-cards .tag{background:#DDF4D0;color:#3B7A59;border-radius:12px}
+/* Pauta: clinical reading, simple and high contrast */
+html[data-mode] .pauta-intro{display:flex;align-items:center;gap:14px;border:2px solid #fff;background:linear-gradient(125deg,#E5F2F8,#DEF1EA);border-radius:23px;padding:17px;margin:0 0 18px;box-shadow:0 10px 19px #89B1A435}
+.pauta-intro-icon{font-size:31px;background:#fff9;border-radius:15px;padding:8px}
+.pauta-intro strong{display:block;color:#345E58;font-size:18px}
+.pauta-intro small{display:block;color:#5B7772;font-size:12px;line-height:1.5;margin-top:4px}
+html[data-mode] #s-pauta .card{background:#FFFCF8!important;border:1px solid #D6C8B8!important;box-shadow:0 8px 17px #B6A18B21!important}
+html[data-mode] #s-pauta .dosebox{background:#F6F1E9!important;box-shadow:none!important;border:1px solid #CDBDAB!important}
+html[data-mode] #s-pauta .dosebox .dv{color:#355F56;text-shadow:none}
+html[data-mode] #s-pauta .dosebox .dv.stop{color:#BE333A}
+/* real bottom nav with a white floating bar */
+html[data-mode] .nav{padding:0 11px calc(9px + env(safe-area-inset-bottom))}
+html[data-mode] .nav .in{background:#FFF8F0;border:2px solid #fff;box-shadow:0 0 0 1px #E2D9CC,0 14px 24px #90785F32;border-radius:25px;padding:6px}
+html[data-mode] .nav button{color:#7D726A;border-radius:18px;font-size:11px}
+html[data-mode] .nav button[aria-current=page]{background:linear-gradient(160deg,#E5FD92,#C8F174);color:#355E3C;box-shadow:0 6px 11px #AAC56A40}
+/* Form focus and contrast */
+html[data-mode] .in,html[data-mode] .inp input,html[data-mode] select.in,html[data-mode] textarea.in{background:#FFFDF8;border:1.5px solid #CDBDAB;color:#3B332D;box-shadow:inset 0 2px 5px #C2A38820}
+html[data-mode] .sheet{background:#FFF6EA;color:#3D332B}
+html[data-mode] .note.danger{background:#FFF0EE!important;border:2px solid #C64B54!important;color:#663136!important}
+html[data-mode] .note.warn{background:#FFF1DD!important;border:2px solid #B87A26!important;color:#6B4A2B!important}
+html[data-mode] .toast{background:#FFFCF5;color:#43362F}
+@media (min-width:600px){html[data-mode] #s-inicio .mast2{min-height:255px}html[data-mode] #s-inicio .mast2 .mast-player{height:270px;right:6px}html[data-mode] #s-inicio .mast2 .mast-row{margin-top:40px}}
+@media (max-width:360px){html[data-mode] #s-inicio .mast2{min-height:202px}html[data-mode] #s-inicio .mast2 .mast-player{height:205px;right:-25px}html[data-mode] #s-inicio .mast2 .hi{font-size:25px}html[data-mode] .food-illus{font-size:28px}html[data-mode] .recipe-visual{font-size:75px}}
+
+
+/* V5: NEW COMPONENT LAYOUT - source-independent visual signature */
+:root[data-mode="dark"],:root[data-mode="light"]{--bg:#F5F0E8;--bg2:#FFF8EE;--surface:#FFF9EF;--elev:#FFFDF8;--text:#3A3129;--text2:#746559;--accent:#C9F762;--accent-text:#356F50;--border:#EADFD3;--border2:#DCCBBB}
+html[data-mode] body{background:linear-gradient(145deg,#E6F4EB 0%,#FFF8ED 48%,#FFECE1 100%);background-attachment:fixed}
+html[data-mode] .wrap{padding-top:12px;}
+html[data-mode] #s-inicio .mast2{min-height:250px;background:linear-gradient(140deg,#E9FAF1 0%,#B6E8D5 100%)!important;border:3px solid #fff!important;border-radius:32px!important;box-shadow:0 14px 28px #92BDA74D, inset 0 2px #fff!important;}
+html[data-mode] #s-inicio .mast2 .mast-player{display:block!important;top:5px!important;right:-18px!important;height:256px!important;opacity:1!important;filter:drop-shadow(0 12px 12px rgba(46,107,87,.2))!important;}
+html[data-mode] #s-inicio .mast2 .mast-row{margin-top:36px!important;max-width:57%!important;}
+html[data-mode] #s-inicio .mast2 .hi{font-size:clamp(30px,8.2vw,37px)!important;color:#245346!important;line-height:1.04!important;white-space:normal!important;}
+html[data-mode] #s-inicio .mast2 .hi2{font-size:16px!important;color:#268878!important}
+html[data-mode] .hero-brand small{background:#FFFDF8;color:#427865;padding:5px 8px;border-radius:50px;letter-spacing:.06em;font-size:9px;box-shadow:0 2px 6px #79B59F33}
+html[data-mode] .section-intro{margin-top:10px}
+html[data-mode] .mgrid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+html[data-mode] .mgrid .chip{min-height:72px;border-radius:22px;box-shadow:0 10px 16px #BDA58E25,inset 0 2px #fff;padding:6px 1px;font-size:11.5px}
+html[data-mode] .mgrid .chip[aria-pressed=true]{background:linear-gradient(#DFFF94,#BBED66)}
+html[data-mode] .mgrid .chip .ico{width:24px;height:24px}
+html[data-mode] #s-inicio .plateh2{position:relative;min-height:172px;background:linear-gradient(120deg,#D6F4E8 0%,#AEE5D4 100%)!important;border-radius:29px!important;padding:22px 18px!important;box-shadow:0 15px 22px #7EAB9844!important}
+html[data-mode] #s-inicio .plateh2 .ph-total{font-size:clamp(40px,11vw,54px)!important;color:#226C58!important}
+html[data-mode] #s-inicio .plateh2 .ph-title{color:#286652!important}
+html[data-mode] #s-inicio .plateh2 .btn.go{border-radius:22px!important}
+html[data-mode] .pastel-shortcuts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:16px 0 8px}
+html[data-mode] .pastel-shortcut{min-height:82px;border-radius:22px;border:2px solid #fff;background:linear-gradient(150deg,#FFFDF9,#F8ECDE);box-shadow:0 10px 18px #A88E792F,inset 0 2px #fff;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:4px;color:#55695C;font-weight:750;font-size:12px}
+html[data-mode] .pastel-shortcut .sc-symbol{display:grid;place-items:center;width:35px;height:35px;border-radius:13px;background:#E2F4E8;color:#2C9981;font-size:25px;font-weight:600;box-shadow:inset 0 2px #fff,0 4px 7px #739E8B22}
+html[data-mode] .pastel-shortcut:nth-child(2) .sc-symbol{background:#FFEAD8;color:#D58B5F}
+html[data-mode] .pastel-shortcut:nth-child(3) .sc-symbol{background:#E4E6FA;color:#7375BE}
+html[data-mode] .nav .in{background:rgba(255,249,241,.97)!important}
+@media(max-width:360px){html[data-mode] #s-inicio .mast2 .mast-player{height:218px!important;right:-30px!important}html[data-mode] #s-inicio .mast2{min-height:219px}html[data-mode] #s-inicio .mast2 .hi{font-size:27px!important}}
+
+
+/* UX V7: horarios editables y selección de comida accionable */
+.schedule-control{display:flex!important;align-items:center;gap:10px;flex-wrap:wrap}
+.schedule-control .nextbar{flex:1 1 235px;min-width:0;margin:0}
+.schedule-edit{flex:0 0 auto;min-height:46px;padding:0 17px;border:1px solid #9FC9B3;border-radius:15px;background:#F8FFFA;color:#2E654E;font-weight:800;display:inline-flex;align-items:center;gap:6px;box-shadow:0 5px 14px #4B80631A}
+.schedule-edit:focus-visible,.mgrid .chip:focus-visible{outline:3px solid #407F68;outline-offset:2px}
+.meal-helper{font-size:14px;color:#657A6C;line-height:1.4;margin:6px 0 0;max-width:480px;font-weight:500}
+#s-inicio .mgrid .chip{position:relative;min-height:78px;padding:9px 3px 19px;white-space:normal;gap:5px;box-shadow:0 5px 13px #597F6320}
+#s-inicio .mgrid .chip:after{content:"Armar →";display:block;position:absolute;bottom:5px;left:0;right:0;text-align:center;font-size:10.5px;line-height:1.2;font-weight:800;opacity:.8}
+#s-inicio .mgrid .chip[aria-pressed=true]:after{content:"Elegir +"}
+.meal-selection-status{font-size:13px;color:#526B5A;font-weight:700;padding:1px 3px 10px}
+@media(max-width:580px){.schedule-control{gap:7px}.schedule-control .nextbar{flex-basis:100%}.schedule-edit{margin-left:auto;min-height:42px}.meal-helper{font-size:13px}#s-inicio .mgrid{grid-template-columns:repeat(3,minmax(0,1fr))}#s-inicio .mgrid .chip{min-height:76px}}
+@media(max-width:360px){#s-inicio .mgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
 </style>
-</head>
+<link rel="stylesheet" href="sage-dashboard.css?v=16">
+<style>
+/* Navegación y flujo de alimentos - versión V6 */
+.food-walkthrough{border:1px solid #D7E3D3;border-radius:22px;padding:16px;background:linear-gradient(120deg,#E5F2E6,#FFF9EC);box-shadow:0 8px 20px #8A9C8A18;margin:12px 0 16px;color:#42675B}
+.food-walkthrough>strong{display:block;font-size:18px;margin-bottom:10px;color:#3A695B}
+.food-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+.food-steps span{border-radius:13px;background:#FFFDF6;padding:10px 8px;font-size:12px;line-height:1.3;color:#705D52;font-weight:650}
+.food-steps b{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#CCDFCD;color:#386451;margin-bottom:6px}
+.food-walkthrough p{margin:10px 0 0;font-size:13px;color:#6B7467}
+.food-finish{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px;border-radius:20px;background:#E4F0EA;border:1px solid #CCDCCF;margin:14px 0}
+.food-finish b,.food-finish small{display:block;color:#3E6154}.food-finish small{font-size:12px;margin-top:4px}.food-finish .btn{min-height:48px;width:auto;white-space:nowrap;flex:none;padding:0 15px;font-size:14px;background:#BBD8C5!important;color:#264838!important}
+@media(max-width:820px){
+  #mobileMenuButton{position:fixed!important;z-index:100!important;display:flex!important;align-items:center;visibility:visible!important;pointer-events:auto!important}
+  #mainSidebar{z-index:102!important}
+  #mobileMenuScrim:not([hidden]){z-index:101!important}
+  .food-steps{grid-template-columns:1fr;gap:6px}.food-steps span{display:flex;align-items:center;gap:10px;padding:7px 10px}.food-steps b{margin:0;flex:none;width:24px;height:24px}
+  .food-finish{position:sticky;bottom:calc(82px + env(safe-area-inset-bottom));z-index:15;box-shadow:0 8px 25px #56827322}
+}
+@media(max-width:380px){.food-finish{flex-direction:column;align-items:stretch}.food-finish .btn{width:100%}}
+
+/* UX V7: horarios editables y selección de comida accionable */
+.schedule-control{display:flex!important;align-items:center;gap:10px;flex-wrap:wrap}
+.schedule-control .nextbar{flex:1 1 235px;min-width:0;margin:0}
+.schedule-edit{flex:0 0 auto;min-height:46px;padding:0 17px;border:1px solid #9FC9B3;border-radius:15px;background:#F8FFFA;color:#2E654E;font-weight:800;display:inline-flex;align-items:center;gap:6px;box-shadow:0 5px 14px #4B80631A}
+.schedule-edit:focus-visible,.mgrid .chip:focus-visible{outline:3px solid #407F68;outline-offset:2px}
+.meal-helper{font-size:14px;color:#657A6C;line-height:1.4;margin:6px 0 0;max-width:480px;font-weight:500}
+#s-inicio .mgrid .chip{position:relative;min-height:78px;padding:9px 3px 19px;white-space:normal;gap:5px;box-shadow:0 5px 13px #597F6320}
+#s-inicio .mgrid .chip:after{content:"Armar →";display:block;position:absolute;bottom:5px;left:0;right:0;text-align:center;font-size:10.5px;line-height:1.2;font-weight:800;opacity:.8}
+#s-inicio .mgrid .chip[aria-pressed=true]:after{content:"Elegir +"}
+.meal-selection-status{font-size:13px;color:#526B5A;font-weight:700;padding:1px 3px 10px}
+@media(max-width:580px){.schedule-control{gap:7px}.schedule-control .nextbar{flex-basis:100%}.schedule-edit{margin-left:auto;min-height:42px}.meal-helper{font-size:13px}#s-inicio .mgrid{grid-template-columns:repeat(3,minmax(0,1fr))}#s-inicio .mgrid .chip{min-height:76px}}
+@media(max-width:360px){#s-inicio .mgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+</style></head>
 <body>
+<button type="button" id="mobileMenuButton" class="mobile-menu-button" aria-label="Abrir menú con todas las secciones" aria-controls="mainSidebar" aria-expanded="false"><span aria-hidden="true">☰</span><span>Menú</span></button>
+<div id="mobileMenuScrim" class="mobile-menu-scrim" hidden></div>
+<aside class="dashboard-sidebar" id="mainSidebar" aria-label="Navegación principal">
+  <button type="button" class="mobile-menu-close" id="mobileMenuClose" aria-label="Cerrar menú">✕</button><div class="side-brand"><span class="side-logo">D<span>●</span></span><div><strong>Diego</strong><small>Mi espacio</small></div></div>
+  <div class="side-avatar"><img src="player-soft-pastel.webp" alt="Futbolista de Diego" /></div>
+  <div class="side-greet"><strong>¡Hola, Diego! 👋</strong><small>Tu día, a tu manera</small></div>
+  <nav class="sidebar-nav" aria-label="Menú principal">
+    <button data-go="inicio"><span>⌂</span> Inicio</button>
+    <button data-go="alimentos"><span>♧</span> Alimentos</button>
+    <button data-go="recetas"><span>♨</span> Recetas</button>
+    <button data-go="favoritos"><span>♡</span> Favoritos</button>
+    <button data-go="pauta"><span>▤</span> Mi pauta</button>
+    <button data-go="historial"><span>◷</span> Historial</button>
+    <button data-go="perfil"><span>⚙</span> Ajustes</button>
+  </nav>
+  <div class="sidebar-bottom"><span class="side-ball">⚽</span><strong>¡Sigue tu ritmo!</strong><small>Alimentación simple, hecha para ti.</small></div>
+</aside>
+
 <div class="wrap">
+  <div class="desktop-topbar"><div><span class="soft-kicker">DIEGO · MI DÍA</span><h1 id="pageTitle">Dashboard</h1></div><div class="topbar-actions"><button data-go="alimentos" class="top-search"><svg class="ico s"><use href="#i-search"/></svg> Buscar alimento...</button><button class="top-avatar" data-go="perfil" aria-label="Abrir perfil">D</button></div></div>
   <div id="boot"><div class="sk" style="height:48px;width:60%"></div><div class="sk" style="height:180px"></div><div class="sk"></div><div class="sk"></div></div>
 
   <!-- 1. INICIO / MI COMIDA -->
-  <section class="screen" id="s-inicio" hidden aria-labelledby="hiT">
-    <header class="mast2">
-      <svg class="mast-art" viewBox="0 0 240 220" preserveAspectRatio="xMaxYMin meet" aria-hidden="true" focusable="false">
-        <defs>
-          <linearGradient id="gSw1" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#B8FF3B" stop-opacity="0"/><stop offset=".5" stop-color="#B8FF3B" stop-opacity=".95"/><stop offset="1" stop-color="#38E1C6" stop-opacity=".1"/></linearGradient>
-          <linearGradient id="gSw2" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#38E1C6" stop-opacity="0"/><stop offset=".55" stop-color="#38E1C6" stop-opacity=".95"/><stop offset="1" stop-color="#38E1C6" stop-opacity="0"/></linearGradient>
-          <radialGradient id="gHalo" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#38E1C6" stop-opacity=".55"/><stop offset=".5" stop-color="#1A6B80" stop-opacity=".22"/><stop offset="1" stop-color="#0B1020" stop-opacity="0"/></radialGradient>
-          <filter id="fBlur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="4"/></filter>
-          <filter id="fRim" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="2.2"/></filter>
-          <g id="player" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="167" cy="33" r="11" stroke-width="0"/>
-            <path d="M156 34 Q156 20 170 19 Q184 19 186 31 Q181 29 178 32 Q172 28 166 30 Q160 31 156 34Z" stroke-width="1"/>
-            <path d="M163 42 L167 52" fill="none" stroke-width="9"/>
-            <path d="M149 59 Q166 46 189 51 Q193 60 187 74 L177 105 Q164 109 152 103 Q153 82 149 59 Z" stroke-width="2"/>
-            <path d="M185 56 L199 38" fill="none" stroke-width="11"/>
-            <path d="M199 38 L196 19" fill="none" stroke-width="8.5"/>
-            <circle cx="196" cy="15" r="6" stroke-width="0"/>
-            <path d="M153 62 L135 73" fill="none" stroke-width="10.5"/>
-            <path d="M135 73 L121 64" fill="none" stroke-width="8.5"/>
-            <circle cx="118" cy="62" r="5.5" stroke-width="0"/>
-            <path d="M151 98 L182 101 L186 125 Q168 131 149 124 Z" stroke-width="2"/>
-            <path d="M157 118 Q141 120 128 120" fill="none" stroke-width="17"/>
-            <path d="M128 120 Q114 116 101 110" fill="none" stroke-width="12"/>
-            <path d="M104 104 Q92 98 84 102 Q84 110 99 115 Z" stroke-width="2.5"/>
-            <path d="M178 121 Q175 138 169 151" fill="none" stroke-width="17"/>
-            <path d="M169 151 Q180 160 193 165" fill="none" stroke-width="12"/>
-            <path d="M190 160 Q201 160 206 170 Q201 176 189 170 Z" stroke-width="2.5"/>
-          </g>
-        <g id="rider" stroke-linecap="round" stroke-linejoin="round" fill="none">
-  <circle cx="70" cy="152" r="31" stroke-width="8"/>
-  <circle cx="176" cy="152" r="31" stroke-width="8"/>
-  <g stroke-width="1.3">
-    <path d="M70 124v56M42 152h56M50 132l40 40M90 132l-40 40M60 125l20 54M80 125l-20 54M43 142l54 20M97 142l-54 20"/>
-    <path d="M176 124v56M148 152h56M156 132l40 40M196 132l-40 40M166 125l20 54M186 125l-20 54M149 142l54 20M203 142l-54 20"/>
-  </g>
-  <circle cx="70" cy="152" r="7" stroke-width="3"/><circle cx="176" cy="152" r="5" stroke-width="5"/>
-  <path d="M90 114 L72 150" stroke-width="6"/>
-  <path d="M93 102 L88 118" stroke-width="7"/>
-  <path d="M90 116 L128 156" stroke-width="7.5"/>
-  <path d="M93 104 L146 112" stroke-width="6"/>
-  <path d="M146 110 L128 156" stroke-width="6"/>
-  <path d="M128 156 L176 152" stroke-width="5"/>
-  <path d="M146 112 L176 152" stroke-width="4.5"/>
-  <path d="M146 110 L150 96" stroke-width="4"/>
-  <path d="M140 94 Q150 91 162 94" stroke-width="6"/>
-  <path d="M92 101 L86 95 L76 95" stroke-width="4.5"/>
-  <circle cx="128" cy="156" r="7" stroke-width="3"/>
-  
-  <path d="M152 92 L138 118" stroke-width="13"/><path d="M138 118 L140 158" stroke-width="9"/>
-  
-  <path d="M154 92 Q146 70 124 60" stroke-width="20"/>
-  
-  <path d="M136 54 Q150 50 160 60 L162 80 Q156 88 146 84 Z" stroke-width="3" fill="currentColor"/>
-  
-  <circle cx="114" cy="47" r="9.5" stroke-width="0" fill="currentColor"/>
-  <path d="M102 44 Q104 30 118 31 Q128 32 129 42 L124 44 Z" stroke-width="2" fill="currentColor"/>
-  <path d="M104 42 L97 45" stroke-width="3"/>
-  
-  <path d="M124 64 L108 80 L86 93" stroke-width="8.5"/>
-  <circle cx="84" cy="94" r="4.5" stroke-width="0" fill="currentColor"/>
-  
-  <path d="M150 94 L122 112" stroke-width="15"/><path d="M122 112 L122 148" stroke-width="10"/>
-  <path d="M112 151 Q120 146 131 151 L131 156 L112 156 Z" stroke-width="2" fill="currentColor"/>
-</g>
-          <radialGradient id="gBall" cx="38%" cy="32%" r="75%"><stop offset="0" stop-color="#FFFFFF"/><stop offset=".6" stop-color="#E9ECF2"/><stop offset="1" stop-color="#9AA2B1"/></radialGradient><radialGradient id="gShade" cx="35%" cy="30%" r="80%"><stop offset=".55" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#0A1222" stop-opacity=".45"/></radialGradient><clipPath id="cBall"><circle r="50"/></clipPath><g id="ball"><circle r="50" fill="url(#gBall)"/><g clip-path="url(#cBall)" fill="#1C2233"><path d="M-3.0 -21.0 L13.2 -9.3 L7.0 9.8 L-13.0 9.8 L-19.2 -9.3Z"/><path d="M-3.0 -35.7 L-17.3 -42.1 L-11.8 -52.5 L5.8 -52.5 L11.3 -42.1Z"/><path d="M27.1 -13.8 L28.9 -29.3 L40.4 -27.4 L45.9 -10.6 L37.7 -2.2Z"/><path d="M15.6 21.6 L31.0 18.5 L32.7 30.1 L18.4 40.4 L7.9 35.2Z"/><path d="M-21.6 21.6 L-13.9 35.2 L-24.4 40.4 L-38.7 30.1 L-37.0 18.5Z"/><path d="M-33.1 -13.8 L-43.7 -2.2 L-51.9 -10.6 L-46.4 -27.4 L-34.9 -29.3Z"/></g><g clip-path="url(#cBall)" stroke="#9AA3B2" stroke-width="1.4" fill="none"><path d="M-3.0 -21.0 L-3.0 -35.7"/><path d="M13.2 -9.3 L27.1 -13.8"/><path d="M7.0 9.8 L15.6 21.6"/><path d="M-13.0 9.8 L-21.6 21.6"/><path d="M-19.2 -9.3 L-33.1 -13.8"/><path d="M11.3 -42.1 L28.9 -29.3"/><path d="M37.7 -2.2 L31.0 18.5"/><path d="M7.9 35.2 L-13.9 35.2"/><path d="M-37.0 18.5 L-43.7 -2.2"/><path d="M-34.9 -29.3 L-17.3 -42.1"/></g><circle r="50" fill="url(#gShade)"/></g>
-        </defs>
-        <ellipse cx="160" cy="100" rx="105" ry="95" fill="url(#gHalo)"/>
-        <path d="M-20 214 C 50 196, 120 176, 250 84" stroke="url(#gSw1)" stroke-width="12" fill="none" filter="url(#fBlur)"/>
-        <path d="M-20 214 C 50 196, 120 176, 250 84" stroke="url(#gSw1)" stroke-width="3" fill="none"/>
-        <path d="M10 222 C 90 206, 170 180, 250 128" stroke="url(#gSw2)" stroke-width="8" fill="none" filter="url(#fBlur)"/>
-        <path d="M10 222 C 90 206, 170 180, 250 128" stroke="url(#gSw2)" stroke-width="2" fill="none"/>
-        <g class="spark" fill="#B8FF3B"><circle cx="58" cy="198" r="1.8"/><circle cx="96" cy="186" r="1.2"/><circle cx="206" cy="128" r="1.5"/><circle cx="226" cy="102" r="1.1"/><circle cx="120" cy="196" r="1"/></g>
-        <g class="fig-ball">
-          <circle cx="184" cy="76" r="54" fill="#38E1C6" opacity=".16" filter="url(#fBlur)"/>
-          <circle cx="184" cy="76" r="42.5" fill="none" stroke="#38E1C6" stroke-width="2" opacity=".85" filter="url(#fRim)"/>
-          <use href="#ball" transform="translate(184 76) rotate(-14) scale(.8)"/>
-          <g stroke-linecap="round"><path d="M118 70 h18" stroke="#B8FF3B" stroke-width="2.6" opacity=".85"/><path d="M110 86 h22" stroke="#38E1C6" stroke-width="2" opacity=".75"/><path d="M124 102 h12" stroke="#38E1C6" stroke-width="1.6" opacity=".55"/></g>
-        </g>
-        <g class="fig-bike" transform="translate(80 -6) scale(.66)">
-          <g stroke="#38E1C6" color="#38E1C6" opacity=".9"><use href="#rider" filter="url(#fRim)"/></g>
-          <g stroke="#38E1C6" color="#38E1C6"><use href="#rider" transform="translate(1.2 -1)"/></g>
-          <g stroke="#0A1222" color="#0A1222"><use href="#rider"/></g>
-          <g stroke-linecap="round"><path d="M202 112 h34" stroke="#B8FF3B" stroke-width="2.6" opacity=".85"/><path d="M208 128 h28" stroke="#38E1C6" stroke-width="2" opacity=".8"/><path d="M198 96 h22" stroke="#38E1C6" stroke-width="1.6" opacity=".6"/></g>
-        </g>
-      </svg>
-      <img class="mast-photo" src="diego.png" alt="" aria-hidden="true" width="440" height="405" decoding="async">
-      <div class="mast-row">
-        <button class="ava" data-go="perfil" aria-label="Perfil y configuración"><svg class="ico"><use href="#i-user"/></svg></button>
-        <div><h1 class="hi" id="hiT">¡Hola, Diego!</h1><div class="hi2" id="hello">¡Vamos, Diego! ⚡</div></div>
+  <section class="screen pastel-home" id="s-inicio" hidden aria-labelledby="hiT">
+<header class="sage-hero" aria-labelledby="hiT">
+      <div class="hero-copy">
+        <span class="hero-eyebrow">TU ESPACIO · DIEGO</span>
+        <h1 class="hi" id="hiT">¡Hola, Diego!</h1>
+        <div class="hi2" id="hello">¡Vamos, Diego! ⚽</div>
+        <p>¿Qué comeremos hoy? Armemos algo rico.</p>
+        <button class="hero-cta" data-go="alimentos"><svg class="ico s"><use href="#i-plus"/></svg> Armar mi plato</button>
       </div>
-      <button class="nextbar" id="nextPill" aria-label="Ver horarios"></button>
-    </header>
-    <p class="q1">¿Qué comeremos hoy?</p>
-    <div class="mgrid" id="meals" role="group" aria-label="Comida"></div>
-    <div class="card plateh2">
+      <img class="sage-player" src="player-soft-pastel.webp" alt="Ilustración 3D de futbolista juvenil con pelota" />
+      <div class="sage-bike-figure" role="img" aria-label="Ciclista deportivo">🚴‍♂️</div>
+      </header>
+    <div class="nextbar-shell schedule-control"><button class="nextbar" id="nextPill" aria-label="Ver y editar horarios"></button><button type="button" class="schedule-edit" id="editSchedule" aria-label="Editar los horarios de comidas y recordatorios">✎ <span>Editar horarios</span></button></div>
+    <div class="section-intro"><div class="dashboard-section-heading"><div><span class="soft-kicker">ARMA TU PLATO</span><h2>¿Qué comida vamos a preparar?</h2><p class="meal-helper">Toca una opción para buscar y agregar alimentos a tu plato.</p></div></div></div>
+    <div class="mgrid" id="meals" role="group" aria-label="Selecciona la comida que quieres preparar"></div><div class="meal-selection-status" id="mealSelectionStatus" aria-live="polite"></div>
+    <div class="diego-home-actions" aria-label="Accesos a fotografía nutricional">
+      <button class="diego-home-action" type="button" data-photo-jump="label"><span class="diego-action-emoji" aria-hidden="true">📦</span><span><b>Escanear etiqueta</b><small>Leer producto con IA si está conectada</small></span><span aria-hidden="true">›</span></button>
+      <button class="diego-home-action" type="button" data-photo-jump="plate"><span class="diego-action-emoji" aria-hidden="true">📷</span><span><b>Foto del plato</b><small>Estimación que debes revisar</small></span><span aria-hidden="true">›</span></button>
+    </div>
+    <div class="dashboard-stats" aria-label="Resumen de tu plato">
+      <div class="stat3d mint" role="status"><span class="stat-emoji">🥗</span><span class="stat-label">Carbohidratos del plato</span><strong id="dashHC">—</strong><small>g HC calculados</small></div>
+      <div class="stat3d peach" role="status"><span class="stat-emoji">🍎</span><span class="stat-label">Alimentos elegidos</span><strong id="dashFoods">0</strong><small>En la comida actual</small></div>
+      <button class="stat3d yellow" data-go="recetas"><span class="stat-emoji">🍳</span><span class="stat-label">Mis recetas</span><strong>Explorar</strong><small>Preparaciones caseras</small></button>
+      <button class="stat3d blue" data-go="favoritos"><span class="stat-emoji">💛</span><span class="stat-label">Mis favoritos</span><strong>Repetir</strong><small>Tus comidas habituales</small></button>
+    </div>
+    <div class="dashboard-section-heading plate-heading"><div><span class="soft-kicker">TU COMIDA</span><h2>Lo que estás preparando</h2></div></div>
+    <div class="home-lower-grid"><div class="home-lower-main">
+    <div class="card plateh2 pastel-plate">
       <div class="ph-title"><svg class="bowl" viewBox="0 0 140 120" aria-hidden="true" focusable="false">
             <defs><radialGradient id="gBowl" cx=".5" cy=".3" r=".8"><stop offset="0" stop-color="#2A3650"/><stop offset="1" stop-color="#121A2B"/></radialGradient>
             <linearGradient id="gChk" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F2C27A"/><stop offset="1" stop-color="#C47A2C"/></linearGradient></defs>
@@ -554,25 +717,81 @@ html.fig-photo .mast2 .nextbar{grid-column:1/-1;grid-row:2;margin-top:6px}
       <div class="ph-row"><div class="ph-total" id="total" aria-live="polite">0 g HC</div><button class="btn btn-primary go" data-go="alimentos" id="addFood"></button></div>
       <div class="ph-ref" id="phRef"><span class="t2">Pauta de referencia: <b id="refHC">60 g HC</b></span><span class="diff" id="diff" hidden></span></div>
     </div>
+    <div class="pastel-shortcuts" aria-label="Accesos directos">
+      <button data-go="favoritos" class="pastel-shortcut"><span class="sc-symbol">♡</span><span>Favoritos</span></button>
+      <button data-go="recetas" class="pastel-shortcut"><span class="sc-symbol">♨</span><span>Recetas</span></button>
+      <button data-go="historial" class="pastel-shortcut"><span class="sc-symbol">▥</span><span>Historial</span></button>
+    </div>
     <div class="sect2"><span class="lbar"></span><h2>Mi plato</h2><span class="cnt" id="plateCount"></span><span class="sp"></span><button class="hbtn ic" id="favBtn" data-go="favoritos" aria-label="Mis comidas guardadas"><svg class="ico"><use href="#i-heart"/></svg></button><button class="hbtn ic" id="moreBtn" aria-label="Más opciones del plato"><svg class="ico"><use href="#i-more"/></svg></button></div>
     <div class="card plist"><ul class="list" id="plate"></ul></div>
     <button class="savebar" id="saveFav"><svg class="ico"><use href="#i-bookmark"/></svg><span>Guardar esta comida</span><svg class="ico s"><use href="#i-chev"/></svg></button>
+    </div><aside class="home-lower-aside" aria-label="Herramientas de tu día">
+      <div class="dashboard-side-card">
+        <div class="side-head"><span>📊</span><div><strong>Tu plato, de un vistazo</strong><small>Carbohidratos por alimento</small></div></div>
+        <div class="plate-bars" id="plateBars"><p>Agrega alimentos para ver su distribución.</p></div>
+        <p class="chart-caption">Comparación informativa de los HC de tu plato; no representa una meta clínica.</p>
+      </div>
+      <div class="dashboard-side-card side-quick">
+        <div class="side-head"><span>🌟</span><div><strong>Todo a tu mano</strong><small>Accesos rápidos</small></div></div>
+        <button data-go="alimentos"><span class="quick-ico">🍏</span><span>Buscar alimentos<small>Encuentra y agrega</small></span><span>›</span></button>
+        <button data-go="recetas"><span class="quick-ico">🍲</span><span>Mis recetas<small>Preparaciones de casa</small></span><span>›</span></button>
+        <button data-go="historial"><span class="quick-ico">🕒</span><span>Historial<small>Tus registros</small></span><span>›</span></button>
+      </div>
+      <div class="bottom-ribbon">⚡ <span>¡Vamos, Diego! Tu comida, a tu manera.</span></div>
+    </aside></div>
   </section>
 
   <!-- 2. EXPLORADOR DE ALIMENTOS -->
   <section class="screen" id="s-alimentos" hidden>
-    <header class="top"><div><h1 class="h1">¿Qué se te antoja?</h1><div class="hello" id="addingTo"></div></div><button class="avatar" data-go="perfil" aria-label="Perfil y configuración">D</button></header>
+    <header class="top pastel-pagehead"><div><div class="eyebrow">EXPLORA · COMBINA · DISFRUTA</div><h1 class="h1">Alimentos <span aria-hidden="true">🍎</span></h1><div class="hello" id="addingTo"></div></div><button class="avatar" data-go="perfil" aria-label="Perfil y configuración">D</button></header>
+    <div class="food-intro" aria-hidden="true"><div class="food-illus">🥐 <span>🍎</span> 🥛</div><div><b>¡Arma algo rico!</b><small>Tus alimentos, todos a mano</small></div></div>
+    <div class="food-walkthrough" aria-label="Cómo preparar tu plato">
+      <strong>¡Vamos a armar tu plato! 🍽️</strong>
+      <div class="food-steps"><span><b>1</b> Busca un alimento</span><span><b>2</b> Toca + y pon la cantidad</span><span><b>3</b> Presiona “Agregar al plato”</span></div>
+      <p>Después puedes agregar otro alimento o volver a ver tu plato.</p>
+    </div>
+    <div class="diego-search-tip" role="note">✓ Elige alimentos y confirma su cantidad. Los HC de una foto de plato son solo aproximados.</div>
     <div class="search"><div class="inp"><svg class="ico" aria-hidden="true"><use href="#i-search"/></svg><input id="q" type="search" placeholder="Busca lo que vas a comer" autocomplete="off" aria-label="Buscar alimento"></div></div>
     <div class="chips" id="cats" role="group" aria-label="Filtros"></div>
-    <div class="card" style="padding-top:4px;padding-bottom:4px"><ul class="list" id="foods"></ul></div>
+    <div class="food-list-head"><strong>Busca y agrega</strong><span>Porciones ajustables</span></div>
+    <div class="card food-panel" style="padding-top:4px;padding-bottom:4px"><ul class="list" id="foods"></ul></div>
+    <div class="food-finish"><div><b>Tu plato está en marcha</b><small>Cuando termines de elegir, revisa el resumen.</small></div><button type="button" class="btn btn-primary" data-go="inicio" id="viewPlateButton">Ver mi plato →</button></div>
+    <div class="photo-entry card" style="margin-top:14px;padding:16px">
+      <strong style="display:block;margin-bottom:6px">📷 Agregar con una foto</strong>
+      <p class="muted small" style="margin:0 0 12px">Elige una imagen desde tu teléfono. La cámara y el selector funcionan mejor abriendo esta aplicación desde GitHub Pages en Safari o Chrome.</p>
+      <details id="aiConfigPanel" style="border:1px solid var(--border2);border-radius:16px;padding:12px;margin-bottom:10px"><summary style="font-weight:800;cursor:pointer">⚙️ Configurar IA (primera vez)</summary><div id="aiConnectionSettings" style="padding-top:12px"></div></details>
+      <details class="photo-panel" id="labelPhotoPanel" style="border:1px solid var(--border2);border-radius:16px;padding:12px;margin-bottom:10px">
+        <summary style="font-weight:800;cursor:pointer;min-height:38px;display:list-item">📦 Foto de etiqueta nutricional</summary>
+        <label class="f" for="labelPhotoInput" style="margin-top:14px">Abrir cámara o elegir fotografía</label>
+        <input class="in s" id="labelPhotoInput" type="file" accept="image/*" aria-label="Elegir foto de etiqueta" style="display:block;width:100%">
+        <img id="labelPhotoPreview" hidden alt="Vista previa de la etiqueta" style="max-width:100%;max-height:220px;object-fit:contain;border-radius:12px;margin:10px auto">
+        <p class="t2 small">Puedes usar IA para completar los datos. Comprueba los valores antes de guardar.</p>
+        <label class="f" for="labelFoodName">Nombre del producto</label><input class="in s" id="labelFoodName" placeholder="Ej. Néctar de piña">
+        <label class="f" for="labelHC" style="margin-top:10px">Carbohidratos declarados (g)</label><input class="in s" id="labelHC" inputmode="decimal" placeholder="Ej. 6,4">
+        <label class="f" for="labelBasis" style="margin-top:10px">Valor de referencia</label>
+        <select class="in s" id="labelBasis"><option value="unit">Por unidad / porción</option><option value="100">Por 100 g o 100 ml</option></select>
+        <label class="f" for="labelSize" style="margin-top:10px">Contenido de una unidad (g o ml)</label><input class="in s" id="labelSize" inputmode="decimal" placeholder="Ej. 190">
+        <p class="err" id="labelPhotoError" role="alert"></p>
+        <button type="button" class="btn btn-primary" id="labelSaveBtn" style="margin-top:10px;width:100%">Guardar alimento</button>
+      </details>
+      <details class="photo-panel" id="platePhotoPanel" style="border:1px solid var(--border2);border-radius:16px;padding:12px">
+        <summary style="font-weight:800;cursor:pointer;min-height:38px;display:list-item">🍽️ Foto del plato</summary>
+        <label class="f" for="platePhotoInput" style="margin-top:14px">Abrir cámara o elegir fotografía</label>
+        <input class="in s" id="platePhotoInput" type="file" accept="image/*" aria-label="Elegir foto del plato" style="display:block;width:100%">
+        <img id="platePhotoPreview" hidden alt="Vista previa del plato" style="max-width:100%;max-height:220px;object-fit:contain;border-radius:12px;margin:10px auto">
+        <p class="t2 small">La IA sugiere ingredientes y HC estimados. Verifica cantidades antes de incorporar la comida a tu plato.</p>
+        <button type="button" class="btn btn-primary" id="plateChooseFoods" style="margin-top:10px;width:100%">Buscar ingredientes del plato</button>
+      </details>
+    </div>
     <button class="btn btn-ghost" id="newFood" style="margin-top:12px"></button>
     <p class="muted small" style="margin:10px 4px">Valores por 100 g o 100 ml, con su fuente. Tip: la fruta se pesa sin cáscara ni pepas, y "cocido" o "crudo" te dice cómo pesarlo.</p>
   </section>
 
   <!-- 3. CONSTRUCTOR DE RECETAS -->
   <section class="screen" id="s-recetas" hidden>
-    <header class="top"><div><h1 class="h1">Recetas</h1><div class="hello">Lo rico de la casa, bien calculado</div></div><button class="avatar" data-go="perfil" aria-label="Perfil y configuración">D</button></header>
-    <div id="recipes"></div>
+    <header class="top pastel-pagehead"><div><div class="eyebrow">EL RECETARIO DE DIEGO</div><h1 class="h1">Mis recetas <span aria-hidden="true">👨‍🍳</span></h1><div class="hello">Lo rico de casa, con tus cantidades</div></div><button class="avatar" data-go="perfil" aria-label="Perfil y configuración">D</button></header>
+    <div class="recipe-intro"><div class="recipe-intro-copy"><span>COCINAMOS A TU MANERA</span><strong>¡A crear algo rico!</strong><small>Guarda tus preparaciones y ajusta la porción.</small></div><div class="recipe-visual" aria-hidden="true">🍝</div></div>
+    <div class="recipe-list-title">Tu recetario</div><div id="recipes" class="recipe-cards"></div>
     <button class="btn btn-primary" id="newRecipe" style="margin-top:12px"></button>
   </section>
 
@@ -584,8 +803,10 @@ html.fig-photo .mast2 .nextbar{grid-column:1/-1;grid-row:2;margin-top:6px}
 
   <!-- 5. MI PAUTA -->
   <section class="screen" id="s-pauta" hidden>
-    <header class="top"><div><h1 class="h1">Mi pauta</h1><div class="hello" id="pMeal"></div></div><button class="avatar" data-go="perfil" aria-label="Perfil y configuración">D</button></header>
-    <div class="cols"><div>
+    <div class="diego-medical-notice" role="note"><strong>Importante para Diego</strong><span>Esta pauta es personal. Confirma con el equipo tratante los cambios de dosis, el manejo de insulina activa y las situaciones de ejercicio, hipoglucemia o enfermedad. Nunca calcules una dosis usando solo los HC estimados de una fotografía.</span></div>
+    <header class="top pastel-pagehead"><div><div class="eyebrow">TU INFORMACIÓN, BIEN CLARA</div><h1 class="h1">Mi pauta <span aria-hidden="true">📋</span></h1><div class="hello" id="pMeal"></div></div><button class="avatar" data-go="perfil" aria-label="Perfil y configuración">D</button></header>
+    <div class="pauta-intro"><span class="pauta-intro-icon" aria-hidden="true">🛡️</span><div><strong>Revisemos tu pauta</strong><small>Con calma, claridad y las indicaciones de tu equipo médico.</small></div></div>
+    <div class="pauta-privacy">🔒 <span>Tu información y tus valores están aquí para consultar; confirma siempre las decisiones de insulina con tu pauta clínica vigente.</span></div><div class="cols"><div>
     <div class="card calcc">
       <div class="grid2">
         <div><label class="f" for="pc">Carbohidratos</label><div class="inp"><input id="pc" inputmode="decimal" autocomplete="off" placeholder="0"><span>g HC</span></div></div>
@@ -612,7 +833,7 @@ html.fig-photo .mast2 .nextbar{grid-column:1/-1;grid-row:2;margin-top:6px}
     <header class="top"><div class="row"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg class="ico"><use href="#i-back"/></svg></button><div><h1 class="h1">Perfil</h1><div class="hello">Tu app, a tu manera</div></div></div></header>
     <div class="card hero row"><div class="avatar" style="width:56px;height:56px;font-size:22px" aria-hidden="true">D</div><div><b style="font-size:19px">Diego</b><div class="t2 small">Tus datos se quedan en este teléfono 🔒</div></div></div>
     <div class="sect">Apariencia</div>
-    <div class="card"><div class="seg full" id="themeSeg" role="group" aria-label="Tema"><button data-v="dark">Midnight oscuro</button><button data-v="light">Claro</button></div><div class="t2 small" style="margin:12px 2px 6px">Figura del encabezado</div><div class="seg full" id="figSeg" role="group" aria-label="Figura del encabezado"><button data-v="photo">📸 Diego</button><button data-v="ball">⚽ Pelota</button><button data-v="bike">🚴 Ciclista</button></div></div>
+    <div class="card"><div class="seg full" id="themeSeg" role="group" aria-label="Tema"><button type="button" data-v="dark" onclick="window.diegoChooseTheme('dark')">Midnight oscuro</button><button type="button" data-v="light" onclick="window.diegoChooseTheme('light')">Claro</button></div><div class="t2 small" style="margin:12px 2px 6px">Figura del encabezado</div><div class="seg full" id="figSeg" role="group" aria-label="Figura del encabezado"><button type="button" data-v="bike" onclick="window.diegoChooseFigure('bike')">🚴 Ciclista</button><button type="button" data-v="ball" onclick="window.diegoChooseFigure('ball')">⚽ Pelota</button></div></div>
     <div class="sect">Unidades de medida</div>
     <div class="card"><div class="kv"><span>Carbohidratos</span><b>gramos (g HC)</b></div><div class="kv"><span>Glicemia</span><b>mg/dL</b></div>
       <div class="row" style="margin-top:8px"><span class="sp">Cantidad al agregar alimentos con unidad</span></div>
@@ -631,7 +852,7 @@ html.fig-photo .mast2 .nextbar{grid-column:1/-1;grid-row:2;margin-top:6px}
       <button class="set" id="schedB"><span class="ic"><svg class="ico s"><use href="#i-clock"/></svg></span><span class="tx"><b>Horarios y alarmas</b><span id="schedTxt">Comidas y Tresiba</span></span><svg class="ico s muted"><use href="#i-chev"/></svg></button>
       <button class="set" id="pautaB"><span class="ic"><svg class="ico s"><use href="#i-drop"/></svg></span><span class="tx"><b>Mi ficha de tratamiento</b><span>Insulinas, parámetros, comidas, gotitas y cambios</span></span><svg class="ico s muted"><use href="#i-chev"/></svg></button>
     </div>
-    <p class="muted small" style="margin:14px 4px">diego. v7 · Midnight Energy ⚡ La app no envía tus datos a ningún servidor.</p>
+    <p class="muted small" style="margin:14px 4px">diego. v13 · Sage & Peach ⚡ La app no envía tus datos a ningún servidor.</p>
   </section>
 
   <!-- HISTORIAL -->
@@ -689,8 +910,35 @@ html.fig-photo .mast2 .nextbar{grid-column:1/-1;grid-row:2;margin-top:6px}
   <symbol id="i-apple" viewBox="0 0 24 24"><path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z"/><path d="M10 2c1 .5 2 2 2 5"/></symbol>
 </svg>
 
+<script>
+/* V13: controles independientes del script principal. Guarda las mismas claves de preferencias. */
+(function(){
+  'use strict';
+  function storeJSON(key,value){try{localStorage.setItem(key,JSON.stringify(value))}catch(e){}}
+  function readJSON(key,fall){try{var v=JSON.parse(localStorage.getItem(key));return v == null? fall :v}catch(e){return fall}}
+  function setPressed(id,value){var el=document.getElementById(id);if(!el)return;el.querySelectorAll('button[data-v]').forEach(function(btn){btn.setAttribute('aria-pressed',String(btn.dataset.v===value))})}
+  window.diegoChooseTheme=function(value){
+    if(value!=='dark'&&value!=='light')return;
+    document.documentElement.setAttribute('data-mode',value);
+    storeJSON('diego.v2.theme',value);
+    var meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.content=value==='dark'?'#0B1020':'#EEF4EE';
+    setPressed('themeSeg',value);
+  };
+  window.diegoChooseFigure=function(value){
+    if(value!=='bike'&&value!=='ball')return;
+    document.documentElement.classList.toggle('fig-ball',value==='ball');
+    var prefs=readJSON('diego.v3.prefs',{});if(!prefs||typeof prefs!=='object'||Array.isArray(prefs))prefs={};prefs.fig=value;storeJSON('diego.v3.prefs',prefs);
+    setPressed('figSeg',value);
+  };
+  // Rehydrate before legacy scripts initialize. Script runs below content at the end of body.
+  window.diegoChooseTheme(readJSON('diego.v2.theme','light')==='dark'?'dark':'light');
+  var fig=readJSON('diego.v3.prefs',{});window.diegoChooseFigure(fig&&fig.fig==='bike'?'bike':'ball');
+})();
+</script>
 <script src="calc.js"></script>
 <script src="store.js"></script>
 <script src="app.js"></script>
+<script src="sage-dashboard.js?v=16"></script>
+<script src="ai-photos.js?v=16"></script>
 </body>
 </html>

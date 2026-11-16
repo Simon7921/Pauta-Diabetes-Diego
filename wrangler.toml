@@ -1,0 +1,7 @@
+name = "diego-vision-ia"
+main = "worker.js"
+compatibility_date = "2026-11-01"
+
+[vars]
+ALLOWED_ORIGIN = "https://simon7921.github.io"
+OPENAI_MODEL = "gpt-4o-mini"

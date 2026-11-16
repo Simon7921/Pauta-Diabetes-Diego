@@ -127,7 +127,8 @@
     var d = new Date(), h = d.getHours();
     $("hiT").textContent = h >= 5 && h < 12 ? "¡Buenos días, Diego!" : h >= 20 || h < 5 ? "¡Buenas noches, Diego!" : "¡Hola, Diego!";
     renderDrops(h);
-    $("meals").innerHTML = C.MEALS.map(function (m) { return '<button class="chip" data-m="' + m.id + '" aria-pressed="' + (plate.meal === m.id) + '">' + ico(MEAL_ICON[m.id]) + m.name + "</button>"; }).join("");
+    $("meals").innerHTML = C.MEALS.map(function (m) { return '<button type="button" class="chip" data-m="' + m.id + '" aria-label="Armar plato para ' + esc(m.name) + '" aria-pressed="' + (plate.meal === m.id) + '">' + ico(MEAL_ICON[m.id]) + m.name + "</button>"; }).join("");
+    var status = $("mealSelectionStatus"); if (status) status.textContent = "Seleccionada: " + meal(plate.meal).name + " · Toca una comida para agregar alimentos";
     var m = meal(plate.meal), tot = plateTotal(), n = plate.items.length;
     animateNum($("total"), tot, " g HC");
     $("refHC").textContent = m.hc + " g HC";
@@ -143,7 +144,30 @@
     $("dot").textContent = n || "";
     renderNext();
   }
-  $("meals").addEventListener("click", function (e) { var b = e.target.closest("[data-m]"); if (!b) return; plate.meal = b.dataset.m; savePlate(); renderInicio(); });
+  $("meals").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-m]"); if (!b) return;
+    var target = b.dataset.m;
+    function startMeal() { plate.meal = target; savePlate(); renderInicio(); show("alimentos"); }
+    if (target === plate.meal || !plate.items.length) { startMeal(); return; }
+    confirmModal({
+      title: "¿Empezar " + meal(target).name.toLowerCase() + "?",
+      text: "Tu plato actual de " + meal(plate.meal).name.toLowerCase() + " tiene " + plate.items.length + " alimento(s). Para no mezclar comidas, al cambiar se vaciará. Puedes cancelar y guardar el plato primero.",
+      ok: "Cambiar y vaciar", danger: true,
+      onOk: function () { plate.items = []; startMeal(); }
+    });
+  });
+  // Acciones fotográficas visibles desde Inicio. El HTML de prueba nunca simula análisis IA.
+  document.querySelectorAll("[data-photo-jump]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      show("alimentos");
+      var target = b.dataset.photoJump === "label" ? $("labelPhotoPanel") : $("platePhotoPanel");
+      if (target) {
+        $("labelPhotoPanel").open = target === $("labelPhotoPanel");
+        $("platePhotoPanel").open = target === $("platePhotoPanel");
+        setTimeout(function () { target.scrollIntoView({behavior:"smooth",block:"start"}); }, 90);
+      }
+    });
+  });
   $("plate").addEventListener("click", function (e) {
     var ed = e.target.closest("[data-edit]"); if (!ed) return;
     var k = +ed.dataset.edit, x = plate.items[k]; var f = findFood(x.fid) || { id: x.fid, name: x.name, hc100: x.hc100, unit: x.unit, kind: "plate" }; qtySheet(f, k);
@@ -240,16 +264,16 @@
     var rmBtn = editing ? '<button class="btn btn-danger" id="qRm" style="margin-top:10px">' + ico("trash", "s") + "Quitar del plato</button>" : "";
     var extra = rmBtn + (food.kind === "custom" ? '<div class="grid2" style="margin-top:10px"><button class="btn btn-secondary" id="qEd">' + ico("pencil", "s") + 'Editar</button><button class="btn btn-danger" id="qDel">' + ico("trash", "s") + "Eliminar</button></div>" : "");
     openSheet('<h3 id="shT">' + esc(food.name) + stateBadge(food) + '</h3><p class="t2 small" style="margin:0 0 14px">' + metaTxt(food) + "<br>Fuente: " + esc(srcTxt(food)) + "</p>" + unitSeg +
-      '<label class="f" for="qQ" id="qL"></label><div class="inp"><input id="qQ" inputmode="decimal" autocomplete="off" value="' + (editing ? dec(it.qty) : "") + '"><span id="qU"></span></div><div class="quick" id="qk"></div>' +
+      '<label class="f" for="qQ" id="qL"></label><div class="inp"><input id="qQ" inputmode="decimal" autocomplete="off" value="' + (editing ? dec(it.qty) : (mode === "u" ? "1" : "")) + '"><span id="qU"></span></div><div class="quick" id="qk"></div>' +
       '<p class="t2 small" style="margin:8px 0 0;text-align:center">' + (editing ? "¿Un poquito más o menos? Ajusta y listo." : "") + '</p><div class="calc"><b id="qR">0</b>g HC</div><div class="row"><button class="ibtn' + (fav ? " on" : "") + '" id="qFav" aria-pressed="' + fav + '" aria-label="Marcar como favorito" style="border:1px solid var(--border2)">' + ico("star") + '</button><button class="btn btn-primary sp" id="qOk">' + (editing ? "Guardar cambios" : "Agregar al plato") + "</button></div>" + extra, function (b) {
       var inp = b.querySelector("#qQ");
       function lab() {
-        b.querySelector("#qL").textContent = mode === "u" ? "¿Cuántas unidades?" : "¿Cuánto vas a comer? (g o ml)"; b.querySelector("#qU").textContent = mode === "u" ? "u" : "g"; inp.placeholder = mode === "u" ? "1" : "Ej. 120";
+        b.querySelector("#qL").textContent = mode === "u" ? "¿Cuántas unidades?" : "¿Cuánto vas a comer? (g o ml)"; b.querySelector("#qU").textContent = mode === "u" ? "u" : "g/ml"; inp.placeholder = mode === "u" ? "1" : "Ej. 120";
         b.querySelector("#qk").innerHTML = (mode === "u" ? [1, 2, 3] : [50, 100, 150, 200]).map(function (v) { return '<button data-v="' + v + '">' + v + (mode === "u" ? "" : " g") + "</button>"; }).join("");
       }
       function upd() { var q = C.num(inp.value); b.querySelector("#qR").textContent = fmt(q > 0 ? C.hcFor(food, q, mode) : 0); }
       lab(); upd(); inp.addEventListener("input", upd);
-      var ms = b.querySelector("#qMode"); if (ms) ms.addEventListener("click", function (e) { var x = e.target.closest("[data-v]"); if (!x) return; mode = x.dataset.v; ms.querySelectorAll("button").forEach(function (y) { y.setAttribute("aria-pressed", String(y === x)); }); inp.value = ""; lab(); upd(); inp.focus(); });
+      var ms = b.querySelector("#qMode"); if (ms) ms.addEventListener("click", function (e) { var x = e.target.closest("[data-v]"); if (!x) return; mode = x.dataset.v; ms.querySelectorAll("button").forEach(function (y) { y.setAttribute("aria-pressed", String(y === x)); }); inp.value = mode === "u" ? "1" : ""; lab(); upd(); inp.focus(); });
       b.querySelector("#qk").addEventListener("click", function (e) { var x = e.target.closest("[data-v]"); if (x) { inp.value = x.dataset.v; upd(); } });
       b.querySelector("#qFav").onclick = function () { var i = favFoods.indexOf(food.id); if (i >= 0) favFoods.splice(i, 1); else favFoods.push(food.id); S.saveList("favFoods", favFoods); var on = i < 0; this.classList.toggle("on", on); this.setAttribute("aria-pressed", on); toast(on ? "Guardado en tus favoritos ★" : "Quitado de tus favoritos", "star"); if (ui.screen === "alimentos") renderFoods(); };
       b.querySelector("#qOk").onclick = function () {
@@ -282,6 +306,44 @@
       };
     });
   }
+
+
+  /* Fotos V12: selectors nativos visibles; no dependen de ventanas emergentes. */
+  function attachPhotoPreview(inputId, imageId) {
+    var input = $(inputId), preview = $(imageId), url = null;
+    if (!input || !preview) return;
+    input.addEventListener("change", function () {
+      if (url) { URL.revokeObjectURL(url); url = null; }
+      var file = input.files && input.files[0];
+      if (!file || !file.type.startsWith("image/")) { preview.hidden = true; preview.removeAttribute("src"); return; }
+      url = URL.createObjectURL(file);
+      preview.src = url; preview.hidden = false;
+      preview.style.display = "block";
+    });
+  }
+  attachPhotoPreview("labelPhotoInput", "labelPhotoPreview");
+  attachPhotoPreview("platePhotoInput", "platePhotoPreview");
+  $("labelSaveBtn").addEventListener("click", function () {
+    var name = $("labelFoodName").value.trim(), hc = C.num($("labelHC").value);
+    var unit = C.num($("labelSize").value), byUnit = $("labelBasis").value === "unit";
+    var err = $("labelPhotoError"); err.textContent = "";
+    if (!name) { err.textContent = "Escribe el nombre del producto."; return; }
+    if (!(hc >= 0 && isFinite(hc))) { err.textContent = "Ingresa los gramos de HC indicados en la tabla."; return; }
+    if (byUnit && !(unit > 0)) { err.textContent = "Ingresa el tamaño de la porción o unidad."; return; }
+    var per100 = byUnit ? hc * 100 / unit : hc;
+    if (!(per100 >= 0 && per100 <= 100)) { err.textContent = "Revisa el valor: los HC por 100 g/ml deben estar entre 0 y 100 g."; return; }
+    custom = S.upsertCustom(custom, { name: name, hc100: per100, unit: unit > 0 ? unit : null, source: "Etiqueta nutricional ingresada manualmente (verificar envase)" });
+    S.saveCustom(custom);
+    ui.cat = "Mis alimentos"; ui.q = ""; $("q").value = "";
+    $("labelPhotoPanel").open = false;
+    renderFoods(); toast("Alimento guardado: " + name, "check");
+  });
+  $("plateChooseFoods").addEventListener("click", function () {
+    $("platePhotoPanel").open = false;
+    ui.cat = "Todos"; ui.q = ""; $("q").value = "";
+    renderFoods(); $("q").focus();
+    toast("Busca cada ingrediente del plato", "info");
+  });
 
   /* ================= 3. CONSTRUCTOR DE RECETAS ================= */
   $("newRecipe").innerHTML = ico("plus") + "Crear una receta";
@@ -423,13 +485,13 @@
   function renderPerfil() {
     var th = document.documentElement.getAttribute("data-mode");
     $("themeSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === th)); });
-    $("figSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === figNow())); });
+    $("figSeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === (prefs.fig === "bike" ? "bike" : "ball"))); });
     $("qtySeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === (prefs.qty === "g" ? "g" : "auto"))); });
     $("mngCount").textContent = custom.length ? custom.length + (custom.length === 1 ? " alimento creado por ti" : " alimentos creados por ti") : "Todavía no creas alimentos";
     var rs = C.rulesStatus(rules); $("rulesCount").textContent = "Opcional · " + rs.done + " de " + rs.total + " anotadas";
     var d = C.PAUTA_DEFAULT; $("paramsTxt").textContent = (P.t === d.t && P.f === d.f && P.r === d.r ? "Pauta de la epicrisis" : "Modificados") + " · protegidos";
   }
-  $("themeSeg").addEventListener("click", function (e) { var b = e.target.closest("[data-v]"); if (!b) return; S.set(S.KEYS.theme, b.dataset.v); applyTheme(); renderPerfil(); toast(b.dataset.v === "light" ? "Modo claro activado ☀️" : "Modo Midnight activado ⚡"); });
+  $("themeSeg").addEventListener("click", function (e) { var b = e.target.closest("[data-v]"); if (!b) return; S.set(S.KEYS.theme, b.dataset.v); applyTheme(); toast(b.dataset.v === "light" ? "Modo claro activado ☀️" : "Modo Midnight activado ⚡"); });
   $("qtySeg").addEventListener("click", function (e) { var b = e.target.closest("[data-v]"); if (!b) return; prefs.qty = b.dataset.v; S.savePrefs(prefs); renderPerfil(); toast(b.dataset.v === "g" ? "Listo, te propondremos gramos" : "Listo, te propondremos unidades cuando existan"); });
   $("mngFoods").addEventListener("click", function () {
     openSheet('<h3 id="shT">Mis alimentos</h3><ul class="list">' + (custom.length ? custom.map(function (f, i) { return '<li class="li"><div class="main"><span class="nm">' + esc(f.name) + '</span><span class="mt">' + metaTxt(f) + " · " + esc(srcTxt(f)) + '</span></div><button class="ibtn" data-me="' + i + '" aria-label="Editar ' + esc(f.name) + '">' + ico("pencil", "s") + "</button></li>"; }).join("") : '<li class="empty"><p>Todavía no creas alimentos. ¡Cuando quieras!</p></li>') + '</ul><button class="btn btn-primary" id="mNew" style="margin-top:12px">' + ico("plus", "s") + "Nuevo alimento</button>", function (b) {
@@ -523,7 +585,7 @@
     var n = C.nextEvent(new Date(), sched()); if (!n) { $("nextPill").innerHTML = ""; return; }
     $("nextPill").innerHTML = ico(n.item.basal ? "drop" : "clock") + '<span class="nx">Próxima: <b>' + esc(n.item.label.replace(" (basal)", "")) + " · " + n.item.t + '</b></span><span class="cd">' + (n.minutes <= 1 ? "¡ahora!" : "en " + C.fmtDur(n.minutes)) + "</span>";
     $("nextPill").classList.toggle("soon", n.minutes <= 30);
-    $("nextPill").setAttribute("aria-label", "Próximo: " + n.item.label + " a las " + n.item.t + ", en " + C.fmtDur(n.minutes) + ". Ver horarios");
+    $("nextPill").setAttribute("aria-label", "Próximo: " + n.item.label + " a las " + n.item.t + ", en " + C.fmtDur(n.minutes) + ". Toca para editar horarios");
     var key = n.item.t + n.item.id;
     if (lastNext && lastNext !== key) { // pasó la hora del evento anterior mientras la app estaba abierta
       var prev = sched().filter(function (x) { return x.t + x.id === lastNext; })[0];
@@ -551,6 +613,7 @@
     });
   }
   $("nextPill").addEventListener("click", scheduleSheet);
+  var editSchedule = $("editSchedule"); if (editSchedule) editSchedule.addEventListener("click", scheduleSheet);
   $("schedB").addEventListener("click", scheduleSheet);
   setInterval(function () { renderNext(); }, 30000);
   document.addEventListener("visibilitychange", function () { if (!document.hidden) { lastNext = null; renderNext(); } });
@@ -568,9 +631,8 @@
   $("clrH").addEventListener("click", function () { if (!hist.length) return; confirmModal({ title: "¿Borramos todo el historial?", text: "Se eliminan " + hist.length + " registros de este teléfono. No se puede deshacer.", ok: "Sí, borrar todo", danger: true, onOk: function () { hist = []; S.saveHistory(hist); renderHist(); toast("Historial borrado", "trash"); } }); });
 
   /* ================= Tema ================= */
-  function figNow() { return prefs.fig === "bike" || prefs.fig === "ball" ? prefs.fig : "photo"; }
-  function applyFig() { var f = figNow(), r = document.documentElement.classList; r.toggle("fig-ball", f === "ball"); r.toggle("fig-photo", f === "photo"); }
-  $("figSeg").addEventListener("click", function (e) { var b = e.target.closest("[data-v]"); if (!b) return; prefs.fig = b.dataset.v; S.savePrefs(prefs); applyFig(); renderPerfil(); toast(b.dataset.v === "ball" ? "Pelota activada ⚽" : b.dataset.v === "bike" ? "Ciclista activado 🚴" : "Foto activada 📸"); });
+  function applyFig() { document.documentElement.classList.toggle("fig-ball", prefs.fig !== "bike"); }
+  $("figSeg").addEventListener("click", function (e) { var b = e.target.closest("[data-v]"); if (!b) return; prefs.fig = b.dataset.v; S.savePrefs(prefs); applyFig(); toast(b.dataset.v === "ball" ? "Pelota activada ⚽" : "Ciclista activado 🚴"); });
   function applyTheme() {
     var t = S.get(S.KEYS.theme, null) || "dark";
     document.documentElement.setAttribute("data-mode", t === "light" ? "light" : "dark");
@@ -578,15 +640,6 @@
   }
 
   applyTheme(); applyFig();
-  // Siempre parte en Inicio (aunque Safari o el ícono guarden #pauta u otra pantalla)
-  try { history.replaceState(null, "", location.pathname + location.search + "#inicio"); } catch (e) {}
-  show("inicio", false);
-  // Si la app vuelve después de más de 15 min en segundo plano, también vuelve a Inicio
-  var hiddenAt = 0;
-  document.addEventListener("visibilitychange", function () {
-    if (document.hidden) { hiddenAt = Date.now(); return; }
-    if (hiddenAt && Date.now() - hiddenAt > 15 * 60 * 1000 && ui.screen !== "inicio") { closeSheet(); show("inicio"); }
-    hiddenAt = 0;
-  });
+  show((location.hash || "#inicio").slice(1), false);
   if ("serviceWorker" in navigator && location.protocol.indexOf("http") === 0) navigator.serviceWorker.register("sw.js").catch(function () {});
 })();

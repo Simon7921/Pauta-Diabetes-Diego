@@ -1,0 +1,1 @@
+V13: Restaurados los controles de tema (Midnight/Claro) y figura (Pelota/Ciclista) con manejadores directos en HTML, actualización de clase/atributo y preferencias persistidas. Se conservan paneles de foto de etiqueta y plato de V12. No hubo cambios en calc.js ni en la pauta médica. Verificar en Safari y Chrome móviles.

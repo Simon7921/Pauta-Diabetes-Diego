@@ -1,0 +1,1 @@
+V9: Inicio móvil corregido. Se retiró el bloqueo de scroll del modo fit en celulares; se redujo hero y se puso grilla 3x2 de comidas (2 columnas en móviles estrechos). No se modificaron cálculos clínicos.
