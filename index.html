@@ -614,7 +614,31 @@ html[data-mode] .nav .in{background:rgba(255,249,241,.97)!important}
 @media(max-width:360px){#s-inicio .mgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 </style>
-<link rel="stylesheet" href="sage-dashboard.css?v=16">
+<link rel="stylesheet" href="sage-dashboard.css?v=18">
+<style>
+/* V18 — Recordatorio de cambio de sensor (independiente de pautas clínicas) */
+.sensor-reminder{margin:12px 0 10px;padding:12px 14px;border:1px solid rgba(83,143,119,.28);border-radius:19px;background:linear-gradient(110deg,#e7f6ed,#fbf8ed);color:#244f42;box-shadow:0 7px 19px rgba(53,99,69,.10)}
+.sensor-reminder.is-soon{background:linear-gradient(110deg,#fff1d5,#f9f3e7);border-color:#e8b76c}
+.sensor-reminder.is-today{background:linear-gradient(110deg,#fbe5de,#fff3ea);border-color:#db997f}
+.sensor-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.sensor-symbol{font-size:24px;line-height:1}
+.sensor-message{flex:1;min-width:145px;display:flex;flex-direction:column;gap:3px}
+.sensor-message strong{font-size:15px;line-height:1.25;color:inherit}
+.sensor-message small{font-size:12px;line-height:1.4;color:inherit;opacity:.82}
+.sensor-edit-button{border-radius:12px;border:1px solid #96b6a8;background:rgba(255,255,255,.7);color:#244f42;padding:10px 12px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;min-height:40px}
+.sensor-settings{margin-top:12px;padding-top:12px;border-top:1px solid #c7d9cd;display:grid;gap:9px}
+.sensor-settings[hidden]{display:none!important}
+.sensor-settings label{font-size:13px;font-weight:700}
+.sensor-settings input{padding:10px 12px;border:1px solid #8ab39d;border-radius:10px;min-height:42px;color:#244f42;background:#fff;font:inherit;max-width:220px}
+.sensor-settings p{font-size:12px;line-height:1.4;margin:0;opacity:.85}
+.sensor-actions{display:flex;gap:8px;flex-wrap:wrap}
+.sensor-actions button{padding:9px 12px;border:1px solid #8ab39d;border-radius:10px;background:#fff;color:#244f42;font:inherit;font-weight:700;font-size:12px;min-height:40px}
+.sensor-actions button:first-child{background:#2d725b;color:#fff}
+html[data-theme="dark"] .sensor-reminder,html.dark .sensor-reminder,body.dark .sensor-reminder{background:#223d43;color:#f0fff9;border-color:#528a7c}
+html[data-theme="dark"] .sensor-reminder.is-soon,html.dark .sensor-reminder.is-soon{background:#51422c}
+html[data-theme="dark"] .sensor-reminder.is-today,html.dark .sensor-reminder.is-today{background:#603e35}
+@media(max-width:430px){.sensor-reminder{margin:8px 0;padding:10px 11px}.sensor-top{gap:8px}.sensor-edit-button{padding:8px 10px}.sensor-message strong{font-size:14px}.sensor-symbol{font-size:20px}}
+</style>
 <style>
 /* Navegación y flujo de alimentos - versión V6 */
 .food-walkthrough{border:1px solid #D7E3D3;border-radius:22px;padding:16px;background:linear-gradient(120deg,#E5F2E6,#FFF9EC);box-shadow:0 8px 20px #8A9C8A18;margin:12px 0 16px;color:#42675B}
@@ -685,6 +709,19 @@ html[data-mode] .nav .in{background:rgba(255,249,241,.97)!important}
       <div class="sage-bike-figure" role="img" aria-label="Ciclista deportivo">🚴‍♂️</div>
       </header>
     <div class="nextbar-shell schedule-control"><button class="nextbar" id="nextPill" aria-label="Ver y editar horarios"></button><button type="button" class="schedule-edit" id="editSchedule" aria-label="Editar los horarios de comidas y recordatorios">✎ <span>Editar horarios</span></button></div>
+    <aside class="sensor-reminder" id="sensorReminder" aria-label="Próximo cambio de sensor">
+      <div class="sensor-top">
+        <span class="sensor-symbol" aria-hidden="true">📟</span>
+        <div class="sensor-message"><strong id="sensorStatus" aria-live="polite">Próximo cambio de sensor: 24 de noviembre</strong><small id="sensorDateDetail">Se repite cada 14 días</small></div>
+        <button type="button" class="sensor-edit-button" id="sensorEdit" aria-expanded="false" aria-controls="sensorSettings">✎ Cambiar fecha</button>
+      </div>
+      <div class="sensor-settings" id="sensorSettings" hidden>
+        <label for="sensorNextDate">Fecha del próximo cambio</label>
+        <input type="date" id="sensorNextDate" value="2026-11-24" />
+        <p>La app avisará aquí desde 3 días antes. Después del cambio, continuará cada 14 días. Si cambian el sensor antes, ajusta la fecha.</p>
+        <div class="sensor-actions"><button id="sensorSave" type="button">Guardar fecha</button><button id="sensorCancel" type="button">Cancelar</button></div>
+      </div>
+    </aside>
     <div class="section-intro"><div class="dashboard-section-heading"><div><span class="soft-kicker">ARMA TU PLATO</span><h2>¿Qué comida vamos a preparar?</h2><p class="meal-helper">Toca una opción para buscar y agregar alimentos a tu plato.</p></div></div></div>
     <div class="mgrid" id="meals" role="group" aria-label="Selecciona la comida que quieres preparar"></div><div class="meal-selection-status" id="mealSelectionStatus" aria-live="polite"></div>
     <div class="diego-home-actions" aria-label="Accesos a fotografía nutricional">
@@ -938,7 +975,8 @@ html[data-mode] .nav .in{background:rgba(255,249,241,.97)!important}
 <script src="calc.js"></script>
 <script src="store.js"></script>
 <script src="app.js"></script>
-<script src="sage-dashboard.js?v=16"></script>
-<script src="ai-photos.js?v=16"></script>
+<script src="sage-dashboard.js?v=18"></script>
+<script src="ai-photos.js?v=18"></script>
+<script src="sensor-reminder.js?v=18"></script>
 </body>
 </html>
