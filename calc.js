@@ -7,8 +7,8 @@
 })(typeof self !== "undefined" ? self : this, function () {
   "use strict";
 
-  // Pauta: epicrisis 12/11/2026; ratio cambiado de 12 a 14 por la Dra. el 15/11/2026. t = objetivo, f = sensibilidad, r = ratio.
-  var PAUTA_DEFAULT = Object.freeze({ t: 110, f: 50, r: 14 });
+  // Parámetros actuales de prueba: ratio actualizado a 16 por solicitud familiar. Confirmar con el equipo tratante antes de dosificar. t = objetivo, f = sensibilidad, r = ratio.
+  var PAUTA_DEFAULT = Object.freeze({ t: 110, f: 50, r: 16 });
 
   // Carbohidratos objetivo por comida según la pauta (g).
   var MEALS = Object.freeze([

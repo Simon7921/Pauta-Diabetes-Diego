@@ -11,11 +11,12 @@
 
   /* ---------------- Estado (todo persistido localmente) ---------------- */
   var P = S.loadPauta(C.PAUTA_DEFAULT);
-  // Migración única (15/11/2026): la Dra. cambió el ratio de 12 a 14. Solo si estaba guardada la pauta antigua sin cambios.
+  // Migración única V19: actualización del ratio 14 → 16 solicitada por la familia.
+  // Solo migra el ratio anterior exacto; preserva objetivo y sensibilidad personalizados.
   try {
-    if (!localStorage.getItem("diego.v3.ratio14")) {
-      if (P.t === 110 && P.f === 50 && P.r === 12) { P = Object.assign({}, C.PAUTA_DEFAULT); S.savePauta(P); }
-      localStorage.setItem("diego.v3.ratio14", "1");
+    if (!localStorage.getItem("diego.v3.ratio16")) {
+      if (P.r === 14) { P = Object.assign({}, P, { r: 16 }); S.savePauta(P); }
+      localStorage.setItem("diego.v3.ratio16", "1");
     }
   } catch (e) {}
   var custom = S.loadCustom(), recipes = S.loadRecipes(), favs = S.loadFavs(), plate = S.loadPlate();
@@ -489,7 +490,7 @@
     $("qtySeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === (prefs.qty === "g" ? "g" : "auto"))); });
     $("mngCount").textContent = custom.length ? custom.length + (custom.length === 1 ? " alimento creado por ti" : " alimentos creados por ti") : "Todavía no creas alimentos";
     var rs = C.rulesStatus(rules); $("rulesCount").textContent = "Opcional · " + rs.done + " de " + rs.total + " anotadas";
-    var d = C.PAUTA_DEFAULT; $("paramsTxt").textContent = (P.t === d.t && P.f === d.f && P.r === d.r ? "Pauta de la epicrisis" : "Modificados") + " · protegidos";
+    var d = C.PAUTA_DEFAULT; $("paramsTxt").textContent = (P.t === d.t && P.f === d.f && P.r === d.r ? "Valores de referencia" : "Modificados") + " · protegidos";
   }
   $("themeSeg").addEventListener("click", function (e) { var b = e.target.closest("[data-v]"); if (!b) return; S.set(S.KEYS.theme, b.dataset.v); applyTheme(); toast(b.dataset.v === "light" ? "Modo claro activado ☀️" : "Modo Midnight activado ⚡"); });
   $("qtySeg").addEventListener("click", function (e) { var b = e.target.closest("[data-v]"); if (!b) return; prefs.qty = b.dataset.v; S.savePrefs(prefs); renderPerfil(); toast(b.dataset.v === "g" ? "Listo, te propondremos gramos" : "Listo, te propondremos unidades cuando existan"); });
@@ -536,7 +537,7 @@
         if (!(t >= 60 && t <= 200 && f > 0 && f <= 300 && r > 0 && r <= 100)) { b.querySelector("#pE").textContent = "Revisa los valores: objetivo 60–200, sensibilidad y ratio mayores que 0."; return; }
         P = { t: t, f: f, r: r }; S.savePauta(P); closeSheet(); renderPerfil(); renderParams(); toast("Parámetros guardados", "lock");
       };
-      var rs = b.querySelector("#pReset"); if (rs) rs.onclick = function () { P = Object.assign({}, C.PAUTA_DEFAULT); try { localStorage.removeItem(S.KEYS.pauta); } catch (e) {} closeSheet(); renderPerfil(); renderParams(); toast("Pauta de la epicrisis restaurada", "lock"); };
+      var rs = b.querySelector("#pReset"); if (rs) rs.onclick = function () { P = Object.assign({}, C.PAUTA_DEFAULT); try { localStorage.removeItem(S.KEYS.pauta); } catch (e) {} closeSheet(); renderPerfil(); renderParams(); toast("Valores de referencia restaurada", "lock"); };
     });
   }
   function fichaSheet() {
