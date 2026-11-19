@@ -7,8 +7,8 @@
 })(typeof self !== "undefined" ? self : this, function () {
   "use strict";
 
-  // Parámetros actuales de prueba: ratio actualizado a 16 por solicitud familiar. Confirmar con el equipo tratante antes de dosificar. t = objetivo, f = sensibilidad, r = ratio.
-  var PAUTA_DEFAULT = Object.freeze({ t: 110, f: 50, r: 16 });
+  // Parámetros actuales de prueba: ratio 14 y Tresiba 12 U según indicación médica comunicada por la familia el 19/11/2026. Confirmar con el equipo tratante antes de dosificar. t = objetivo, f = sensibilidad, r = ratio.
+  var PAUTA_DEFAULT = Object.freeze({ t: 110, f: 50, r: 14 });
 
   // Carbohidratos objetivo por comida según la pauta (g).
   var MEALS = Object.freeze([

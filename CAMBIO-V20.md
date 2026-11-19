@@ -1,0 +1,1 @@
+19/11/2026: ratio 1:14 y Tresiba 12 U según indicación comunicada por la familia. Horario, objetivo y sensibilidad sin cambios. Confirmar la pauta clínica, especialmente colaciones. No modifica registros históricos. Calculadora no validada clínicamente.

@@ -11,12 +11,12 @@
 
   /* ---------------- Estado (todo persistido localmente) ---------------- */
   var P = S.loadPauta(C.PAUTA_DEFAULT);
-  // Migración única V19: actualización del ratio 14 → 16 solicitada por la familia.
-  // Solo migra el ratio anterior exacto; preserva objetivo y sensibilidad personalizados.
+  // Migración única V20: ratio actualizado a 14 según pauta comunicada el 19/11/2026.
+  // Actualiza el ratio a 14; conserva objetivo y sensibilidad guardados.
   try {
-    if (!localStorage.getItem("diego.v3.ratio16")) {
-      if (P.r === 14) { P = Object.assign({}, P, { r: 16 }); S.savePauta(P); }
-      localStorage.setItem("diego.v3.ratio16", "1");
+    if (!localStorage.getItem("diego.v3.pauta20261119")) {
+      if (P.r !== 14) { P = Object.assign({}, P, { r: 14 }); S.savePauta(P); }
+      localStorage.setItem("diego.v3.pauta20261119", "1");
     }
   } catch (e) {}
   var custom = S.loadCustom(), recipes = S.loadRecipes(), favs = S.loadFavs(), plate = S.loadPlate();
@@ -427,7 +427,7 @@
   $("toHist").innerHTML = ico("clock", "s") + "Ver mi historial";
   function renderParams() {
     var d = C.PAUTA_DEFAULT, mod = !(P.t === d.t && P.f === d.f && P.r === d.r);
-    $("params").innerHTML = '<div class="kv"><span>Ratio insulina/HC</span><b>1 U × ' + dec(P.r) + ' g</b></div><div class="kv"><span>Factor de sensibilidad</span><b>' + dec(P.f) + ' mg/dL</b></div><div class="kv"><span>Glucosa objetivo</span><b>' + dec(P.t) + ' mg/dL</b></div><div class="kv"><span>Basal (Tresiba)</span><b>14 U · 20:00</b></div>' + (mod ? '<div class="note warn" style="margin-top:8px">' + ico("alert") + "<div><b>Parámetros modificados</b>Distintos a la pauta indicada por la Dra. Revísalos en Perfil.</div></div>" : "");
+    $("params").innerHTML = '<div class="kv"><span>Ratio insulina/HC</span><b>1 U × ' + dec(P.r) + ' g</b></div><div class="kv"><span>Factor de sensibilidad</span><b>' + dec(P.f) + ' mg/dL</b></div><div class="kv"><span>Glucosa objetivo</span><b>' + dec(P.t) + ' mg/dL</b></div><div class="kv"><span>Basal (Tresiba)</span><b>12 U · 20:00</b></div>' + (mod ? '<div class="note warn" style="margin-top:8px">' + ico("alert") + "<div><b>Parámetros modificados</b>Distintos a la pauta indicada por la Dra. Revísalos en Perfil.</div></div>" : "");
   }
   function enterPauta() {
     var nI = plate.items.length; $("pMeal").textContent = meal(plate.meal).name + " · " + (nI ? nI + (nI === 1 ? " alimento" : " alimentos") + " en el plato" : "plato vacío");
@@ -543,14 +543,14 @@
   function fichaSheet() {
     var kv = function (k, v) { return '<div class="kv"><span>' + k + "</span><b>" + v + "</b></div>"; }, sect = function (t) { return '<div class="sect" style="margin-top:16px">' + t + "</div>"; };
     openSheet('<h3 id="shT">Mi ficha de tratamiento</h3><p class="t2 small" style="margin:0 0 4px">Diabetes tipo 1. Lo que indica tu equipo médico; si te cambian algo, manda lo que diga el equipo.</p>' +
-      sect("Insulinas") + kv("Tresiba (basal)", "14 U · 20:00 todos los días") + kv("NovoRapid o Fiasp (rápida)", "antes de cada comida") +
+      sect("Insulinas") + kv("Tresiba (basal)", "12 U · 20:00 todos los días") + kv("NovoRapid o Fiasp (rápida)", "antes de cada comida") +
       sect("Parámetros de cálculo") + kv("Ratio", "1 U × " + dec(P.r) + " g HC") + kv("Sensibilidad", "1 U baja ~" + dec(P.f) + " mg/dL") + kv("Glucosa objetivo", dec(P.t) + " mg/dL") +
       '<p class="t2 small" style="margin:8px 0 0">Dosis = (glicemia − ' + dec(P.t) + ") ÷ " + dec(P.f) + " + HC ÷ " + dec(P.r) + "</p>" +
       sect("Carbohidratos por comida") + C.MEALS.map(function (m) { return kv(m.name, m.hc + " g · " + C.fmt(m.hc / P.r, 1) + " U teórica"); }).join("") +
       '<p class="t2 small" style="margin:6px 0 0">La U teórica es solo por los carbohidratos; la app suma la corrección según la glicemia.</p>' +
       sect("Controles de glicemia") + '<p class="t2" style="margin:0">Antes de desayuno, almuerzo, once y cena; 2 h después de cada una; y a las 02:00.</p>' +
       sect("Otros") + kv("Vitamina D", "5 gotas al día, con el desayuno") +
-      sect("Cambios indicados por el equipo") + kv("14-11-2026", "Tresiba de 15 a 14 U") + kv("15-11-2026", "Ratio de 12 a 14 g") +
+      sect("Cambios indicados por el equipo") + kv("14-11-2026", "Tresiba de 15 a 14 U") + kv("15-11-2026", "Ratio de 12 a 14 g") + kv("17-11-2026", "Ratio de 14 a 16 g") + kv("19-11-2026", "Ratio de 16 a 14 g; Tresiba de 14 a 12 U") +
       sect("Hipoglucemia (bajo 70)") + note("warn", "Consciente y puede tragar", "15 g de azúcar rápida (jugo o bebida normal, 1 cda. de azúcar en agua). Medir a los 15 min y repetir si sigue bajo 70. Luego algo con carbohidrato lento. Si el sensor no coincide con cómo se siente, confirmar con capilar.") +
       note("danger", "Inconsciente, convulsiona o no puede tragar", "No darle nada por la boca. Ponerlo de lado, usar glucagón si hay y llevarlo a la clínica o llamar al 131 (SAMU)."));
   }
