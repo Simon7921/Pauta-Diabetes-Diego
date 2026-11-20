@@ -1,0 +1,1 @@
+19/11/2026 noche: ratio 1:18 para todas las comidas, según indicación de la doctora comunicada por la familia. Tresiba 12 U sin cambios. Se conservan objetivo, sensibilidad y horario anteriores. Confirmar pauta de colaciones. Calculadora no validada clínicamente.
