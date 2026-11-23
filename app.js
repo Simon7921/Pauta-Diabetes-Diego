@@ -11,12 +11,13 @@
 
   /* ---------------- Estado (todo persistido localmente) ---------------- */
   var P = S.loadPauta(C.PAUTA_DEFAULT);
-  // Migración única V21: ratio actualizado a 18 según pauta comunicada el 19/11/2026.
-  // Actualiza el ratio a 18; conserva objetivo y sensibilidad guardados.
+  // Migración única V22: ratio 1:20 según indicación médica comunicada el 22/11/2026.
+  // Solo modifica el ratio, conserva objetivo y sensibilidad guardados.
+  // Antes de cualquier dosificación verificar la indicación clínica vigente.
   try {
-    if (!localStorage.getItem("diego.v3.pauta20261119noche")) {
-      if (P.r !== 18) { P = Object.assign({}, P, { r: 18 }); S.savePauta(P); }
-      localStorage.setItem("diego.v3.pauta20261119noche", "1");
+    if (!localStorage.getItem("diego.v3.pauta20261122ratio20")) {
+      if (P.r !== 20) { P = Object.assign({}, P, { r: 20 }); S.savePauta(P); }
+      localStorage.setItem("diego.v3.pauta20261122ratio20", "1");
     }
   } catch (e) {}
   var custom = S.loadCustom(), recipes = S.loadRecipes(), favs = S.loadFavs(), plate = S.loadPlate();
@@ -550,7 +551,7 @@
       '<p class="t2 small" style="margin:6px 0 0">La U teórica es solo por los carbohidratos; la app suma la corrección según la glicemia.</p>' +
       sect("Controles de glicemia") + '<p class="t2" style="margin:0">Antes de desayuno, almuerzo, once y cena; 2 h después de cada una; y a las 02:00.</p>' +
       sect("Otros") + kv("Vitamina D", "5 gotas al día, con el desayuno") +
-      sect("Cambios indicados por el equipo") + kv("14-11-2026", "Tresiba de 15 a 14 U") + kv("15-11-2026", "Ratio de 12 a 14 g") + kv("17-11-2026", "Ratio de 14 a 16 g") + kv("19-11-2026 (tarde)", "Ratio de 16 a 14 g; Tresiba de 14 a 12 U") + kv("19-11-2026 (noche)", "Ratio de 14 a 18 g; Tresiba sin cambio (12 U)") +
+      sect("Cambios indicados por el equipo") + kv("14-11-2026", "Tresiba de 15 a 14 U") + kv("15-11-2026", "Ratio de 12 a 14 g") + kv("17-11-2026", "Ratio de 14 a 16 g") + kv("19-11-2026 (tarde)", "Ratio de 16 a 14 g; Tresiba de 14 a 12 U") + kv("19-11-2026 (noche)", "Ratio de 14 a 18 g; Tresiba sin cambio (12 U)") + kv("22-11-2026", "Ratio de 18 a 20 g; Tresiba sin cambio (12 U)") +
       sect("Hipoglucemia (bajo 70)") + note("warn", "Consciente y puede tragar", "15 g de azúcar rápida (jugo o bebida normal, 1 cda. de azúcar en agua). Medir a los 15 min y repetir si sigue bajo 70. Luego algo con carbohidrato lento. Si el sensor no coincide con cómo se siente, confirmar con capilar.") +
       note("danger", "Inconsciente, convulsiona o no puede tragar", "No darle nada por la boca. Ponerlo de lado, usar glucagón si hay y llevarlo a la clínica o llamar al 131 (SAMU)."));
   }
