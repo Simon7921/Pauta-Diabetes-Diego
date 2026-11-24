@@ -20,6 +20,14 @@
       localStorage.setItem("diego.v3.pauta20261122ratio20", "1");
     }
   } catch (e) {}
+  // V23 mantiene parámetros individuales de glucosa y sensibilidad guardados.
+  // Los ratios por comida son específicos; P.r queda como valor legado de desayuno.
+  try {
+    if (!localStorage.getItem("diego.v3.pauta20261123mealratios")) {
+      if (P.r !== 20) { P = Object.assign({}, P, { r: 20 }); S.savePauta(P); }
+      localStorage.setItem("diego.v3.pauta20261123mealratios", "1");
+    }
+  } catch (e) {}
   var custom = S.loadCustom(), recipes = S.loadRecipes(), favs = S.loadFavs(), plate = S.loadPlate();
   var usage = S.loadUsage(), hist = S.loadHistory(), rules = S.loadRules(), prefs = S.loadPrefs();
   var recent = S.loadList("recent"), favFoods = S.loadList("favFoods");
@@ -428,7 +436,7 @@
   $("toHist").innerHTML = ico("clock", "s") + "Ver mi historial";
   function renderParams() {
     var d = C.PAUTA_DEFAULT, mod = !(P.t === d.t && P.f === d.f && P.r === d.r);
-    $("params").innerHTML = '<div class="kv"><span>Ratio insulina/HC</span><b>1 U × ' + dec(P.r) + ' g</b></div><div class="kv"><span>Factor de sensibilidad</span><b>' + dec(P.f) + ' mg/dL</b></div><div class="kv"><span>Glucosa objetivo</span><b>' + dec(P.t) + ' mg/dL</b></div><div class="kv"><span>Basal (Tresiba)</span><b>12 U · 20:00</b></div>' + (mod ? '<div class="note warn" style="margin-top:8px">' + ico("alert") + "<div><b>Parámetros modificados</b>Distintos a la pauta indicada por la Dra. Revísalos en Perfil.</div></div>" : "");
+    $("params").innerHTML = '<div class="kv"><span>Desayuno</span><b>1:20</b></div><div class="kv"><span>Almuerzo, once y cena</span><b>1:22</b></div><div class="kv"><span>Colaciones</span><b>Sin insulina</b></div><div class="kv"><span>Factor de sensibilidad</span><b>' + dec(P.f) + ' mg/dL</b></div><div class="kv"><span>Glucosa objetivo</span><b>' + dec(P.t) + ' mg/dL</b></div><div class="kv"><span>Basal (Tresiba)</span><b>12 U · 20:00</b></div>' + (mod ? '<div class="note warn" style="margin-top:8px">' + ico("alert") + "<div><b>Parámetros modificados</b>Distintos a la pauta indicada por la Dra. Revísalos en Perfil.</div></div>" : "");
   }
   function enterPauta() {
     var nI = plate.items.length; $("pMeal").textContent = meal(plate.meal).name + " · " + (nI ? nI + (nI === 1 ? " alimento" : " alimentos") + " en el plato" : "plato vacío");
@@ -455,7 +463,17 @@
   function note(kind, title, txt) { return '<div class="note ' + kind + '">' + ico(kind === "info" ? "info" : "alert") + "<div><b>" + esc(title) + "</b>" + txt + "</div></div>"; }
   function compute() {
     var g = C.num($("pg").value), c = C.num($("pc").value);
-    var r = C.dose({ g: g, c: c, P: P, recent: pz.recent, sport: pz.sport, sym: pz.sym }), out = [];
+    var mealId = plate.meal;
+    var activeRatio = C.ratioForMeal(mealId);
+    if (activeRatio == null) {
+      LAST = null;
+      $("gState").innerHTML = "";
+      $("doseBox").innerHTML = '<div class="lab">Colación · sin insulina</div><div class="dv">No corresponde bolo</div><div class="brk">Se registran los HC, sin cálculo ni corrección de insulina para esta colación.</div>';
+      $("result").innerHTML = note("info", "Indicación médica comunicada", "Las colaciones no llevan insulina. Si hay una glucosa baja o alta, sigue el plan específico de la diabetóloga; esta pantalla no calcula correcciones.");
+      return;
+    }
+    var effectiveP = Object.assign({}, P, { r: activeRatio });
+    var r = C.dose({ g: g, c: c, P: effectiveP, recent: pz.recent, sport: pz.sport, sym: pz.sym }), out = [];
     var st = "";
     if (r.range) { var lb = { low: "Baja · menos de 70", ok: "Entre 70 y 180", high: "Alta · 181 a 250", vhigh: "Muy alta · sobre 250" }[r.range.id]; st = '<span class="pill ' + r.range.id + '">' + (r.range.id === "ok" ? ico("info", "s") : ico("alert", "s")) + g + " mg/dL · " + lb + "</span>"; }
     if (pz.src === "sensor" && pz.sym) st += '<div style="margin-top:8px">' + note("warn", "Sensor y síntomas no coinciden", "Mide en el dedo (capilar) y usa ese valor.") + "</div>";
@@ -477,6 +495,10 @@
     $("result").innerHTML = out.join("");
   }
   $("save").addEventListener("click", function () {
+    if (plate.meal === "colacion") {
+      hist.unshift({ t: Date.now(), meal: "Colación", src: pz.src, g: C.num($("pg").value), c: C.num($("pc").value), dose: null, ap: null, note: "Colación sin insulina según indicación médica" });
+      S.saveHistory(hist); toast("Colación registrada sin insulina", "clock"); return;
+    }
     if (!LAST) { toast("Primero ingresa la glicemia", "info"); $("pg").focus(); return; }
     var ap = C.num($("ap").value);
     hist.unshift(Object.assign({ t: Date.now(), meal: meal(plate.meal).name, src: pz.src, ap: isNaN(ap) ? null : ap }, LAST));
@@ -530,12 +552,12 @@
     openSheet('<h3 id="shT">Parámetros médicos</h3><p class="t2 small">' + (unlocked ? "Edición desbloqueada. Cambia solo lo que indicó el equipo médico." : "Protegidos contra cambios accidentales.") + "</p>" +
       '<label class="f" for="pT">Glucosa objetivo</label><div class="inp"><input id="pT" inputmode="decimal" value="' + dec(P.t) + '"' + dis + "><span>mg/dL</span></div>" +
       '<label class="f" for="pF" style="margin-top:10px">Factor de sensibilidad</label><div class="inp"><input id="pF" inputmode="decimal" value="' + dec(P.f) + '"' + dis + "><span>mg/dL</span></div>" +
-      '<label class="f" for="pR" style="margin-top:10px">Ratio (g de HC por 1 U)</label><div class="inp"><input id="pR" inputmode="decimal" value="' + dec(P.r) + '"' + dis + "><span>g</span></div>" +
+      '<p class="t2 small" style="margin-top:12px"><b>Ratios por comida indicados por la doctora:</b> Desayuno 1:20 · Almuerzo, once y cena 1:22 · Colaciones sin insulina. No se editan con el ratio global antiguo.</p>' +
       '<div class="err" id="pE" role="alert"></div>' + (unlocked ? '<button class="btn btn-primary" id="pSave" style="margin-top:12px">Guardar parámetros</button><button class="btn btn-ghost" id="pReset" style="margin-top:8px">Volver a la epicrisis (110 · 50 · 12)</button>' : '<button class="btn btn-secondary" id="pUnlock" style="margin-top:12px">' + ico("lock", "s") + "Desbloquear edición</button>"), function (b) {
       var u = b.querySelector("#pUnlock"); if (u) u.onclick = function () { confirmModal({ title: "¿Desbloquear parámetros?", text: "Cambiarlos afecta todos los cálculos. Hazlo solo si el equipo médico indicó una pauta nueva.", ok: "Desbloquear", onOk: function () { paramsSheet(true); } }); };
       var sv = b.querySelector("#pSave"); if (sv) sv.onclick = function () {
-        var t = C.num(b.querySelector("#pT").value), f = C.num(b.querySelector("#pF").value), r = C.num(b.querySelector("#pR").value);
-        if (!(t >= 60 && t <= 200 && f > 0 && f <= 300 && r > 0 && r <= 100)) { b.querySelector("#pE").textContent = "Revisa los valores: objetivo 60–200, sensibilidad y ratio mayores que 0."; return; }
+        var t = C.num(b.querySelector("#pT").value), f = C.num(b.querySelector("#pF").value), r = 20;
+        if (!(t >= 60 && t <= 200 && f > 0 && f <= 300)) { b.querySelector("#pE").textContent = "Revisa los valores: objetivo 60–200 y sensibilidad mayor que 0."; return; }
         P = { t: t, f: f, r: r }; S.savePauta(P); closeSheet(); renderPerfil(); renderParams(); toast("Parámetros guardados", "lock");
       };
       var rs = b.querySelector("#pReset"); if (rs) rs.onclick = function () { P = Object.assign({}, C.PAUTA_DEFAULT); try { localStorage.removeItem(S.KEYS.pauta); } catch (e) {} closeSheet(); renderPerfil(); renderParams(); toast("Valores de referencia restaurada", "lock"); };
@@ -544,14 +566,14 @@
   function fichaSheet() {
     var kv = function (k, v) { return '<div class="kv"><span>' + k + "</span><b>" + v + "</b></div>"; }, sect = function (t) { return '<div class="sect" style="margin-top:16px">' + t + "</div>"; };
     openSheet('<h3 id="shT">Mi ficha de tratamiento</h3><p class="t2 small" style="margin:0 0 4px">Diabetes tipo 1. Lo que indica tu equipo médico; si te cambian algo, manda lo que diga el equipo.</p>' +
-      sect("Insulinas") + kv("Tresiba (basal)", "12 U · 20:00 todos los días") + kv("NovoRapid o Fiasp (rápida)", "antes de cada comida") +
-      sect("Parámetros de cálculo") + kv("Ratio", "1 U × " + dec(P.r) + " g HC") + kv("Sensibilidad", "1 U baja ~" + dec(P.f) + " mg/dL") + kv("Glucosa objetivo", dec(P.t) + " mg/dL") +
-      '<p class="t2 small" style="margin:8px 0 0">Dosis = (glicemia − ' + dec(P.t) + ") ÷ " + dec(P.f) + " + HC ÷ " + dec(P.r) + "</p>" +
-      sect("Carbohidratos por comida") + C.MEALS.map(function (m) { return kv(m.name, m.hc + " g · " + C.fmt(m.hc / P.r, 1) + " U teórica"); }).join("") +
-      '<p class="t2 small" style="margin:6px 0 0">La U teórica es solo por los carbohidratos; la app suma la corrección según la glicemia.</p>' +
+      sect("Insulinas") + kv("Tresiba (basal)", "12 U · 20:00 todos los días") + kv("Fiasp (rápida)", "Según indicación médica solo en comidas que correspondan; colaciones sin insulina") +
+      sect("Parámetros de cálculo") + kv("Desayuno", "Ratio 1:20") + kv("Almuerzo, once y cena", "Ratio 1:22") + kv("Colaciones", "Sin insulina") + kv("Sensibilidad", "1 U baja ~" + dec(P.f) + " mg/dL") + kv("Glucosa objetivo", dec(P.t) + " mg/dL") +
+      '<p class="t2 small" style="margin:8px 0 0">Dosis = (glicemia − ' + dec(P.t) + ") ÷ " + dec(P.f) + " + HC ÷ ratio de la comida (20 o 22). No calcular bolos para colación.</p>" +
+      sect("Carbohidratos por comida") + C.MEALS.map(function (m) { return kv(m.name, m.hc + " g HC · " + (C.ratioForMeal(m.id) == null ? "Sin insulina" : "Ratio 1:" + C.ratioForMeal(m.id))); }).join("") +
+      '<p class="t2 small" style="margin:6px 0 0">La colación no lleva insulina. Cualquier cálculo de la app debe verificarse con la pauta médica.</p>' +
       sect("Controles de glicemia") + '<p class="t2" style="margin:0">Antes de desayuno, almuerzo, once y cena; 2 h después de cada una; y a las 02:00.</p>' +
       sect("Otros") + kv("Vitamina D", "5 gotas al día, con el desayuno") +
-      sect("Cambios indicados por el equipo") + kv("14-11-2026", "Tresiba de 15 a 14 U") + kv("15-11-2026", "Ratio de 12 a 14 g") + kv("17-11-2026", "Ratio de 14 a 16 g") + kv("19-11-2026 (tarde)", "Ratio de 16 a 14 g; Tresiba de 14 a 12 U") + kv("19-11-2026 (noche)", "Ratio de 14 a 18 g; Tresiba sin cambio (12 U)") + kv("22-11-2026", "Ratio de 18 a 20 g; Tresiba sin cambio (12 U)") +
+      sect("Cambios indicados por el equipo") + kv("14-11-2026", "Tresiba de 15 a 14 U") + kv("15-11-2026", "Ratio de 12 a 14 g") + kv("17-11-2026", "Ratio de 14 a 16 g") + kv("19-11-2026 (tarde)", "Ratio de 16 a 14 g; Tresiba de 14 a 12 U") + kv("19-11-2026 (noche)", "Ratio de 14 a 18 g; Tresiba sin cambio (12 U)") + kv("22-11-2026", "Ratio de 18 a 20 g; Tresiba sin cambio (12 U)") + kv("23-11-2026", "Desayuno 1:20; almuerzo, once y cena 1:22; colaciones sin insulina; Tresiba 12 U") +
       sect("Hipoglucemia (bajo 70)") + note("warn", "Consciente y puede tragar", "15 g de azúcar rápida (jugo o bebida normal, 1 cda. de azúcar en agua). Medir a los 15 min y repetir si sigue bajo 70. Luego algo con carbohidrato lento. Si el sensor no coincide con cómo se siente, confirmar con capilar.") +
       note("danger", "Inconsciente, convulsiona o no puede tragar", "No darle nada por la boca. Ponerlo de lado, usar glucagón si hay y llevarlo a la clínica o llamar al 131 (SAMU)."));
   }
