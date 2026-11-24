@@ -8,9 +8,9 @@
   "use strict";
 
   // Parámetros actuales de prueba: ratio 20 y Tresiba 12 U según última indicación médica comunicada por la familia el 22/11/2026. Confirmar con el equipo tratante antes de dosificar. t = objetivo, f = sensibilidad, r = ratio.
-  var PAUTA_DEFAULT = Object.freeze({ t: 110, f: 50, r: 20 });
+  var PAUTA_DEFAULT = Object.freeze({ t: 110, f: 50, r: 18 });
   // Pauta comunicada el 23/11/2026: la colación NO lleva insulina.
-  var MEAL_RATIOS = Object.freeze({ desayuno: 20, colacion: null, almuerzo: 22, once: 22, cena: 22 });
+  var MEAL_RATIOS = Object.freeze({ desayuno: 18, colacion: null, almuerzo: 22, once: 20, cena: 22 });
   function ratioForMeal(id) { return Object.prototype.hasOwnProperty.call(MEAL_RATIOS, id) ? MEAL_RATIOS[id] : null; }
 
   // Carbohidratos objetivo por comida según la pauta (g).
@@ -72,6 +72,23 @@
     var cur = now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60;
     for (var i = 0; i < list.length; i++) { var d = toMin(list[i].t) - cur; if (d > 0) return { item: list[i], minutes: Math.ceil(d), tomorrow: false }; }
     return { item: list[0], minutes: Math.ceil(toMin(list[0].t) + 1440 - cur), tomorrow: true };
+  }
+  // Selecciona únicamente la próxima comida o colación; omite eventos de insulina basal.
+  // Horarios interpretados en la zona local del dispositivo. En el minuto exacto, mantiene esa comida.
+  function nextMeal(now, schedule) {
+    var allowed = { desayuno: true, colacion: true, almuerzo: true, once: true, cena: true };
+    var list = (schedule || SCHEDULE_DEFAULT).filter(function (x) {
+      return x && allowed[x.id] && !x.basal && !isNaN(toMin(x.t)) && toMin(x.t) < 1440;
+    });
+    if (!list.length) return null;
+    var current = now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60;
+    var nearest = null;
+    list.forEach(function (x) {
+      var m = toMin(x.t), remaining = m - current, tomorrow = remaining < -1 / 60;
+      if (tomorrow) remaining += 1440;
+      if (!nearest || remaining < nearest.minutes) nearest = { item: x, minutes: remaining, tomorrow: tomorrow };
+    });
+    return nearest;
   }
   function fmtDur(min) { var h = Math.floor(min / 60), m = min % 60; return h ? h + " h" + (m ? " " + m + " min" : "") : m + " min"; }
   // Archivo de calendario (.ics) con eventos diarios y aviso a la hora exacta y 10 min antes
@@ -186,6 +203,6 @@
   return {
     PAUTA_DEFAULT: PAUTA_DEFAULT, MEAL_RATIOS: MEAL_RATIOS, ratioForMeal: ratioForMeal, MEALS: MEALS, FOODS: FOODS,
     baseFoods: baseFoods, slug: slug, num: num, round1: round1,
-    SCHEDULE_DEFAULT: SCHEDULE_DEFAULT, toMin: toMin, nextEvent: nextEvent, fmtDur: fmtDur, icsFor: icsFor, hcFor: hcFor, CLINICAL_RULES: CLINICAL_RULES, rulesStatus: rulesStatus, plateTotal: plateTotal, recipe: recipe, glucoseRange: glucoseRange, dose: dose, fmt: fmt
+    SCHEDULE_DEFAULT: SCHEDULE_DEFAULT, nextMeal: nextMeal, toMin: toMin, nextEvent: nextEvent, fmtDur: fmtDur, icsFor: icsFor, hcFor: hcFor, CLINICAL_RULES: CLINICAL_RULES, rulesStatus: rulesStatus, plateTotal: plateTotal, recipe: recipe, glucoseRange: glucoseRange, dose: dose, fmt: fmt
   };
 });
