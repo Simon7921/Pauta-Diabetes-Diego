@@ -33,10 +33,13 @@
   // Migración única: conserva objetivo y sensibilidad preexistentes.
   try {
     if (!localStorage.getItem("diego.v3.pauta20261123v27")) {
-      if (P.r !== 18) { P = Object.assign({}, P, { r: 18 }); S.savePauta(P); }
+      if (P.r !== 18) { P = Object.assign({}, P, { r: C.ratioForMeal("desayuno") }); S.savePauta(P); }
       localStorage.setItem("diego.v3.pauta20261123v27", "1");
     }
   } catch (e) {}
+  // V35: la pauta vigente usa C.ratioForMeal, nunca el campo heredado P.r.
+  // Sólo para mostrar coherencia con el ratio actual de desayuno.
+  P = Object.assign({}, P, {r: C.ratioForMeal('desayuno')});
   var custom = S.loadCustom(), recipes = S.loadRecipes(), favs = S.loadFavs(), plate = S.loadPlate();
   var usage = S.loadUsage(), hist = S.loadHistory(), rules = S.loadRules(), prefs = S.loadPrefs();
   var recent = S.loadList("recent"), favFoods = S.loadList("favFoods");
@@ -113,14 +116,14 @@
   }
 
   /* ---------------- Navegación ---------------- */
-  var SCREENS = ["inicio", "alimentos", "recetas", "favoritos", "pauta", "perfil", "historial"];
-  var NAVOF = { inicio: "inicio", favoritos: "inicio", perfil: "inicio", alimentos: "alimentos", recetas: "recetas", pauta: "pauta", historial: "pauta" };
+  var SCREENS = ["inicio", "alimentos", "recetas", "favoritos", "pauta", "perfil", "historial", "bitacora", "diegoai"];
+  var NAVOF = { inicio: "inicio", favoritos: "inicio", perfil: "inicio", alimentos: "alimentos", recetas: "recetas", pauta: "pauta", historial: "pauta", bitacora: "bitacora", diegoai: "diegoai" };
   function show(name, push) {
     if (SCREENS.indexOf(name) < 0) name = "inicio";
     ui.screen = name; $("boot").hidden = true; document.documentElement.classList.toggle("fit", name === "inicio");
     SCREENS.forEach(function (k) { var el = $("s-" + k); el.hidden = k !== name; if (k === name) { el.classList.remove("enter"); void el.offsetWidth; el.classList.add("enter"); } });
     document.querySelectorAll(".nav button").forEach(function (b) { if (b.dataset.go === NAVOF[name]) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current"); });
-    ({ inicio: renderInicio, alimentos: renderFoods, recetas: renderRecipes, favoritos: renderFavs, pauta: enterPauta, perfil: renderPerfil, historial: renderHist })[name]();
+    ({ inicio: renderInicio, alimentos: renderFoods, recetas: renderRecipes, favoritos: renderFavs, pauta: enterPauta, perfil: renderPerfil, historial: renderHist, bitacora: function () { if (window.DiegoBitacora) window.DiegoBitacora.render(); }, diegoai: function () { if(window.DiegoAI)window.DiegoAI.render(); } })[name]();
     if (push !== false && location.hash !== "#" + name) { try { history.pushState(null, "", "#" + name); } catch (e) {} }
     window.scrollTo(0, 0);
   }
@@ -173,6 +176,9 @@
       else status.textContent = "Seleccionada: " + label + " · Puedes cambiarla cuando quieras";
     }
     var m = meal(plate.meal), tot = plateTotal(), n = plate.items.length;
+    var uxMeal=document.getElementById('uxMealName'),uxRatio=document.getElementById('uxRatioText'),uxCarbs=document.getElementById('uxCarbCount'),uxFoods=document.getElementById('uxFoodCount'),uxMode=document.getElementById('uxMealMode');
+    if(uxMeal){uxMeal.textContent=m.name;uxRatio.textContent=C.ratioForMeal(plate.meal)==null?'Sin insulina para esta comida':'Ratio 1:'+C.ratioForMeal(plate.meal);uxCarbs.innerHTML=fmt(tot)+' <small>g HC</small>';uxFoods.textContent=n+' '+(n===1?'alimento':'alimentos');uxMode.textContent=mealSelectionMode==='manual'?'Elegida por ti':'Según horario';}
+
     var ratioEl = $("homeMealRatio"), activeMealRatio = C.ratioForMeal(plate.meal);
     if (ratioEl) { ratioEl.querySelector("strong").textContent = m.name + " · " + (activeMealRatio == null ? "Sin insulina" : "1:" + activeMealRatio); }
     animateNum($("total"), tot, " g HC");
@@ -473,7 +479,7 @@
   $("toHist").innerHTML = ico("clock", "s") + "Ver mi historial";
   function renderParams() {
     var d = C.PAUTA_DEFAULT, mod = !(P.t === d.t && P.f === d.f && P.r === d.r);
-    $("params").innerHTML = '<div class="kv"><span>Desayuno</span><b>1:18</b></div><div class="kv"><span>Almuerzo y cena</span><b>1:22</b></div><div class="kv"><span>Once</span><b>1:20</b></div><div class="kv"><span>Colaciones</span><b>Sin insulina</b></div><div class="kv"><span>Factor de sensibilidad</span><b>' + dec(P.f) + ' mg/dL</b></div><div class="kv"><span>Glucosa objetivo</span><b>' + dec(P.t) + ' mg/dL</b></div><div class="kv"><span>Basal (Tresiba)</span><b>12 U · 20:00</b></div>' + (mod ? '<div class="note warn" style="margin-top:8px">' + ico("alert") + "<div><b>Parámetros modificados</b>Distintos a la pauta indicada por la Dra. Revísalos en Perfil.</div></div>" : "");
+    $("params").innerHTML = '<div class="kv"><span>Desayuno</span><b>1:' + C.ratioForMeal('desayuno') + '</b></div><div class="kv"><span>Almuerzo</span><b>1:' + C.ratioForMeal('almuerzo') + '</b></div><div class="kv"><span>Once</span><b>1:' + C.ratioForMeal('once') + '</b></div><div class="kv"><span>Cena</span><b>1:' + C.ratioForMeal('cena') + '</b></div><div class="kv"><span>Colaciones</span><b>Sin insulina</b></div><div class="kv"><span>Factor de sensibilidad</span><b>' + dec(P.f) + ' mg/dL</b></div><div class="kv"><span>Glucosa objetivo</span><b>' + dec(P.t) + ' mg/dL</b></div><div class="kv"><span>Basal (Tresiba)</span><b>12 U · 20:00</b></div>' + (mod ? '<div class="note warn" style="margin-top:8px">' + ico("alert") + "<div><b>Parámetros modificados</b>Distintos a la pauta indicada por la Dra. Revísalos en Perfil.</div></div>" : "");
   }
   function enterPauta() {
     var nI = plate.items.length; $("pMeal").textContent = meal(plate.meal).name + " · " + (nI ? nI + (nI === 1 ? " alimento" : " alimentos") + " en el plato" : "plato vacío");
@@ -558,6 +564,8 @@
     $("qtySeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === (prefs.qty === "g" ? "g" : "auto"))); });
     $("mngCount").textContent = custom.length ? custom.length + (custom.length === 1 ? " alimento creado por ti" : " alimentos creados por ti") : "Todavía no creas alimentos";
     var rs = C.rulesStatus(rules); $("rulesCount").textContent = "Opcional · " + rs.done + " de " + rs.total + " anotadas";
+    var ratiosNow=C.currentRatios(), ratioSummary=$("ratioCurrentTxt");
+    if(ratioSummary) ratioSummary.textContent='Desayuno 1:'+ratiosNow.desayuno+' · Almuerzo 1:'+ratiosNow.almuerzo+' · Once 1:'+ratiosNow.once+' · Cena 1:'+ratiosNow.cena+' · Ver cambios';
     var d = C.PAUTA_DEFAULT; $("paramsTxt").textContent = (P.t === d.t && P.f === d.f && P.r === d.r ? "Valores de referencia" : "Modificados") + " · protegidos";
   }
   $("themeSeg").addEventListener("click", function (e) { var b = e.target.closest("[data-v]"); if (!b) return; S.set(S.KEYS.theme, b.dataset.v); applyTheme(); toast(b.dataset.v === "light" ? "Modo claro activado ☀️" : "Modo Midnight activado ⚡"); });
@@ -592,33 +600,79 @@
   }
   $("rulesB").addEventListener("click", rulesSheet);
   $("paramsB").addEventListener("click", function () { paramsSheet(false); });
+  $("ratiosB").addEventListener("click", ratioSheet);
   function paramsSheet(unlocked) {
     var dis = unlocked ? "" : " disabled";
     openSheet('<h3 id="shT">Parámetros médicos</h3><p class="t2 small">' + (unlocked ? "Edición desbloqueada. Cambia solo lo que indicó el equipo médico." : "Protegidos contra cambios accidentales.") + "</p>" +
       '<label class="f" for="pT">Glucosa objetivo</label><div class="inp"><input id="pT" inputmode="decimal" value="' + dec(P.t) + '"' + dis + "><span>mg/dL</span></div>" +
       '<label class="f" for="pF" style="margin-top:10px">Factor de sensibilidad</label><div class="inp"><input id="pF" inputmode="decimal" value="' + dec(P.f) + '"' + dis + "><span>mg/dL</span></div>" +
-      '<p class="t2 small" style="margin-top:12px"><b>Ratios por comida indicados por la doctora:</b> Desayuno 1:18 · Almuerzo 1:22 · Once 1:20 · Cena 1:22 · Colaciones sin insulina. No se editan con el ratio global antiguo.</p>' +
+      '<p class="t2 small" style="margin-top:12px"><b>Ratios vigentes por comida:</b> Desayuno 1:' + C.ratioForMeal('desayuno') + ' · Almuerzo 1:' + C.ratioForMeal('almuerzo') + ' · Once 1:' + C.ratioForMeal('once') + ' · Cena 1:' + C.ratioForMeal('cena') + '. Colaciones sin insulina. Edición protegida con historial.</p>' +
       '<div class="err" id="pE" role="alert"></div>' + (unlocked ? '<button class="btn btn-primary" id="pSave" style="margin-top:12px">Guardar parámetros</button><button class="btn btn-ghost" id="pReset" style="margin-top:8px">Volver a la epicrisis (110 · 50 · 12)</button>' : '<button class="btn btn-secondary" id="pUnlock" style="margin-top:12px">' + ico("lock", "s") + "Desbloquear edición</button>"), function (b) {
       var u = b.querySelector("#pUnlock"); if (u) u.onclick = function () { confirmModal({ title: "¿Desbloquear parámetros?", text: "Cambiarlos afecta todos los cálculos. Hazlo solo si el equipo médico indicó una pauta nueva.", ok: "Desbloquear", onOk: function () { paramsSheet(true); } }); };
       var sv = b.querySelector("#pSave"); if (sv) sv.onclick = function () {
-        var t = C.num(b.querySelector("#pT").value), f = C.num(b.querySelector("#pF").value), r = 18;
+        var t = C.num(b.querySelector("#pT").value), f = C.num(b.querySelector("#pF").value), r = C.ratioForMeal("desayuno");
         if (!(t >= 60 && t <= 200 && f > 0 && f <= 300)) { b.querySelector("#pE").textContent = "Revisa los valores: objetivo 60–200 y sensibilidad mayor que 0."; return; }
         P = { t: t, f: f, r: r }; S.savePauta(P); closeSheet(); renderPerfil(); renderParams(); toast("Parámetros guardados", "lock");
       };
       var rs = b.querySelector("#pReset"); if (rs) rs.onclick = function () { P = Object.assign({}, C.PAUTA_DEFAULT); try { localStorage.removeItem(S.KEYS.pauta); } catch (e) {} closeSheet(); renderPerfil(); renderParams(); toast("Valores de referencia restaurada", "lock"); };
     });
   }
+  // Ratios con trazabilidad local, confirmación explícita y sin alterar cálculos históricos.
+  var RATIO_AUDIT_KEY = 'diego.v35.ratioAudit';
+  try {
+    if (!localStorage.getItem(RATIO_AUDIT_KEY)) {
+      localStorage.setItem(RATIO_AUDIT_KEY, JSON.stringify([{at:new Date().toISOString(),reason:'Pauta comunicada por la familia el 24/11/2026. Registro inicial al instalar V35 (no modifica la historia anterior).',before:'desayuno 1:18 · almuerzo 1:22 · once 1:20 · cena 1:22',after:'desayuno 1:22 · almuerzo 1:22 · once 1:22 · cena 1:22'}]));
+    }
+  } catch (e) {}
+  function ratioAudit() { try {var v=JSON.parse(localStorage.getItem(RATIO_AUDIT_KEY)||'[]'); return Array.isArray(v)?v:[];} catch(e){return [];} }
+  function ratioHistorySheet() {
+    var entries = ratioAudit();
+    openSheet('<h3 id="shT">Historial de cambios de ratios</h3><p class="t2 small">Registrado en este dispositivo. No se sincroniza automáticamente con Firebase. Los cálculos y dosis históricos no se modifican.</p>' +
+      (entries.length ? entries.map(function(e){return '<div class="card" style="margin:10px 0;padding:12px"><b>'+esc(new Date(e.at).toLocaleString('es-CL'))+'</b><p class="t2 small">'+esc(e.reason || 'Cambio inicial')+'</p><p class="t2 small">Antes: '+esc(e.before || 'No registrado')+'</p><p class="t2 small">Después: '+esc(e.after)+'</p></div>';}).join('') : '<p class="t2 small">Sin cambios registrados desde que instalaste esta versión. Estado inicial comunicado el 24/11/2026: 1:22 en todas las comidas.</p>') +
+      '<button class="btn btn-secondary" id="rhBack">Volver a ratios</button>',function(b){b.querySelector('#rhBack').onclick=ratioSheet;});
+  }
+  function ratioSheet(){
+    var cur=C.currentRatios(), meals=['desayuno','almuerzo','once','cena'];
+    openSheet('<h3 id="shT">Ratios de insulina por comida</h3>'+note('danger','Cambio clínico sensible','Modificar estos valores afecta los cálculos futuros. Verifica siempre la nueva indicación escrita del equipo tratante. No cambia insulina basal, sensibilidad ni objetivo.')+
+      '<p class="t2 small"><b>Vigente:</b> '+meals.map(function(k){return k+' 1:'+cur[k];}).join(' · ')+'</p>'+
+      meals.map(function(k){return '<label class="f" for="ratio-'+k+'">'+({desayuno:'Desayuno',almuerzo:'Almuerzo',once:'Once',cena:'Cena'}[k])+' · HC por 1 U</label><div class="inp"><span>1:</span><input id="ratio-'+k+'" type="number" inputmode="numeric" min="5" max="60" step="1" value="'+cur[k]+'" /></div>';}).join('')+
+      '<label class="f" for="ratioReason" style="margin-top:12px">Fuente y motivo de la nueva indicación (obligatorio)</label><input id="ratioReason" placeholder="Ej.: diabetóloga, control 24/11/2026" maxlength="180" style="width:100%;padding:12px;border-radius:12px;border:1px solid #a9b9ad;font-size:16px" />'+
+      '<label style="display:flex;gap:9px;align-items:flex-start;margin:14px 0"><input id="ratioAck" type="checkbox" style="min-width:20px;min-height:20px" /><span>Confirmo que estos ratios corresponden a una indicación clínica vigente, revisada por un adulto responsable.</span></label>'+ 
+      '<p class="t2 small">Este historial queda solo en este teléfono. Otros dispositivos deberán actualizar la pauta de forma independiente hasta disponer de sincronización médica verificada.</p>'+ 
+      '<div class="err" id="ratioErr" role="alert"></div><button class="btn btn-primary" id="ratioSave">Revisar cambio</button><button class="btn btn-secondary" id="ratioHistory" style="margin-top:10px">Ver historial de modificaciones</button>',function(b){
+      b.querySelector('#ratioHistory').onclick=ratioHistorySheet;
+      b.querySelector('#ratioSave').onclick=function(){
+        var next={colacion:null},reason=b.querySelector('#ratioReason').value.trim(), changed=false;
+        meals.forEach(function(k){next[k]=Number(b.querySelector('#ratio-'+k).value); if(next[k]!==cur[k]) changed=true;});
+        var err=b.querySelector('#ratioErr');
+        if(meals.some(function(k){return !Number.isInteger(next[k])||next[k]<5||next[k]>60;})){err.textContent='Los ratios deben ser números enteros entre 5 y 60. Confirma la pauta clínica.';return;}
+        if(!changed){err.textContent='No hay cambios en los ratios.';return;}
+        if(reason.length<8){err.textContent='Indica quién confirmó la pauta y cuándo, para que el historial sea útil.';return;}
+        if(!b.querySelector('#ratioAck').checked){err.textContent='Marca la confirmación clínica antes de continuar.';return;}
+        var label=function(v){return meals.map(function(k){return k+' 1:'+v[k];}).join(' · ');};
+        confirmModal({title:'Confirmar modificación médica',text:'Antes: '+label(cur)+' | Nuevos ratios: '+label(next)+'. Este cambio afectará los cálculos futuros y no modificará las dosis antiguas. ¿Confirmas que fue indicado por la diabetóloga?',ok:'Confirmar cambio',onOk:function(){
+          try {
+            var history=ratioAudit(); history.unshift({at:new Date().toISOString(),reason:reason,before:label(cur),after:label(next)});
+            localStorage.setItem(RATIO_AUDIT_KEY,JSON.stringify(history));
+            localStorage.setItem('diego.v35.clinicalRatios',JSON.stringify(next));
+            P=Object.assign({},P,{r:next.desayuno});S.savePauta(P);
+          }catch(e){toast('No se pudo guardar. Revisa el almacenamiento local.','info');return;}
+          closeSheet();renderPerfil();renderParams();renderInicio(); if(ui.screen==='pauta')compute();toast('Ratios vigentes guardados con historial','shield');
+        }});
+      };
+    });
+  }
   function fichaSheet() {
     var kv = function (k, v) { return '<div class="kv"><span>' + k + "</span><b>" + v + "</b></div>"; }, sect = function (t) { return '<div class="sect" style="margin-top:16px">' + t + "</div>"; };
     openSheet('<h3 id="shT">Mi ficha de tratamiento</h3><p class="t2 small" style="margin:0 0 4px">Diabetes tipo 1. Lo que indica tu equipo médico; si te cambian algo, manda lo que diga el equipo.</p>' +
       sect("Insulinas") + kv("Tresiba (basal)", "12 U · 20:00 todos los días") + kv("Fiasp (rápida)", "Según indicación médica solo en comidas que correspondan; colaciones sin insulina") +
-      sect("Parámetros de cálculo") + kv("Desayuno", "Ratio 1:18") + kv("Almuerzo", "Ratio 1:22") + kv("Once", "Ratio 1:20") + kv("Cena", "Ratio 1:22") + kv("Colaciones", "Sin insulina") + kv("Sensibilidad", "1 U baja ~" + dec(P.f) + " mg/dL") + kv("Glucosa objetivo", dec(P.t) + " mg/dL") +
-      '<p class="t2 small" style="margin:8px 0 0">Dosis = (glicemia − ' + dec(P.t) + ") ÷ " + dec(P.f) + " + HC ÷ ratio de la comida (20 o 22). No calcular bolos para colación.</p>" +
+      sect("Parámetros de cálculo") + kv("Desayuno", "Ratio 1:" + C.ratioForMeal("desayuno")) + kv("Almuerzo", "Ratio 1:" + C.ratioForMeal("almuerzo")) + kv("Once", "Ratio 1:" + C.ratioForMeal("once")) + kv("Cena", "Ratio 1:" + C.ratioForMeal("cena")) + kv("Colaciones", "Sin insulina") + kv("Sensibilidad", "1 U baja ~" + dec(P.f) + " mg/dL") + kv("Glucosa objetivo", dec(P.t) + " mg/dL") +
+      '<p class="t2 small" style="margin:8px 0 0">Dosis = (glicemia − ' + dec(P.t) + ") ÷ " + dec(P.f) + " + HC ÷ ratio vigente de la comida. No calcular bolos para colación.</p>" +
       sect("Carbohidratos por comida") + C.MEALS.map(function (m) { return kv(m.name, m.hc + " g HC · " + (C.ratioForMeal(m.id) == null ? "Sin insulina" : "Ratio 1:" + C.ratioForMeal(m.id))); }).join("") +
       '<p class="t2 small" style="margin:6px 0 0">La colación no lleva insulina. Cualquier cálculo de la app debe verificarse con la pauta médica.</p>' +
       sect("Controles de glicemia") + '<p class="t2" style="margin:0">Antes de desayuno, almuerzo, once y cena; 2 h después de cada una; y a las 02:00.</p>' +
       sect("Otros") + kv("Vitamina D", "5 gotas al día, con el desayuno") +
-      sect("Cambios indicados por el equipo") + kv("14-11-2026", "Tresiba de 15 a 14 U") + kv("15-11-2026", "Ratio de 12 a 14 g") + kv("17-11-2026", "Ratio de 14 a 16 g") + kv("19-11-2026 (tarde)", "Ratio de 16 a 14 g; Tresiba de 14 a 12 U") + kv("19-11-2026 (noche)", "Ratio de 14 a 18 g; Tresiba sin cambio (12 U)") + kv("22-11-2026", "Ratio de 18 a 20 g; Tresiba sin cambio (12 U)") + kv("23-11-2026", "Desayuno 1:20; almuerzo, once y cena 1:22; colaciones sin insulina; Tresiba 12 U") + kv("23-11-2026 (última confirmación)", "Desayuno 1:18; almuerzo 1:22; once 1:20; cena 1:22; colaciones sin insulina; Tresiba 12 U") +
+      sect("Cambios indicados por el equipo") + kv("24-11-2026 (última confirmación)", "Desayuno, almuerzo, once y cena 1:22; colaciones sin insulina.") + kv("14-11-2026", "Tresiba de 15 a 14 U") + kv("15-11-2026", "Ratio de 12 a 14 g") + kv("17-11-2026", "Ratio de 14 a 16 g") + kv("19-11-2026 (tarde)", "Ratio de 16 a 14 g; Tresiba de 14 a 12 U") + kv("19-11-2026 (noche)", "Ratio de 14 a 18 g; Tresiba sin cambio (12 U)") + kv("22-11-2026", "Ratio de 18 a 20 g; Tresiba sin cambio (12 U)") + kv("23-11-2026", "Desayuno 1:20; almuerzo, once y cena 1:22; colaciones sin insulina; Tresiba 12 U") + kv("23-11-2026 (última confirmación)", "Desayuno 1:18; almuerzo 1:22; once 1:20; cena 1:22; colaciones sin insulina; Tresiba 12 U") +
       sect("Hipoglucemia (bajo 70)") + note("warn", "Consciente y puede tragar", "15 g de azúcar rápida (jugo o bebida normal, 1 cda. de azúcar en agua). Medir a los 15 min y repetir si sigue bajo 70. Luego algo con carbohidrato lento. Si el sensor no coincide con cómo se siente, confirmar con capilar.") +
       note("danger", "Inconsciente, convulsiona o no puede tragar", "No darle nada por la boca. Ponerlo de lado, usar glucagón si hay y llevarlo a la clínica o llamar al 131 (SAMU)."));
   }
@@ -707,6 +761,24 @@
     document.documentElement.setAttribute("data-mode", t === "light" ? "light" : "dark");
     var m = document.querySelector('meta[name="theme-color"]'); if (m) m.content = t === "light" ? "#F3F5F9" : "#0B1020";
   }
+
+
+  /* Bitácora integrada: copia SOLO datos reales ya ingresados, sin inferir dosis. */
+  window.diegoBitacoraBridge = {
+    context: function () {
+      var source = plate.items.map(function (it) { return { name: it.name, quantity: it.qty, unit: it.unit, mode: it.mode, hc: it.hc }; });
+      var glucose = C.num($("pg").value), inputCarbs = C.num($("pc").value);
+      return {
+        mealId: plate.meal, mealName: meal(plate.meal).name,
+        foods: source, carbs: source.length ? C.round1(plateTotal()) : (Number.isFinite(inputCarbs) ? inputCarbs : null),
+        ratio: C.ratioForMeal(plate.meal),
+        calculatedDose: LAST && Number.isFinite(LAST.dose) ? LAST.dose : null,
+        glucose: Number.isFinite(glucose) ? glucose : null,
+        glucoseSource: pz.src
+      };
+    },
+    open: function () { show("bitacora"); }
+  };
 
   applyTheme(); applyFig();
   show((location.hash || "#inicio").slice(1), false);

@@ -7,11 +7,22 @@
 })(typeof self !== "undefined" ? self : this, function () {
   "use strict";
 
-  // Parámetros actuales de prueba: ratio 20 y Tresiba 12 U según última indicación médica comunicada por la familia el 22/11/2026. Confirmar con el equipo tratante antes de dosificar. t = objetivo, f = sensibilidad, r = ratio.
-  var PAUTA_DEFAULT = Object.freeze({ t: 110, f: 50, r: 18 });
+  // Ratios comunicados por la familia el 24/11/2026: 1:22 en las cuatro comidas. Tresiba 12 U según pauta previamente informada. Confirmar con el equipo tratante antes de dosificar. t = objetivo, f = sensibilidad, r = ratio.
+  var PAUTA_DEFAULT = Object.freeze({ t: 110, f: 50, r: 22 });
   // Pauta comunicada el 23/11/2026: la colación NO lleva insulina.
-  var MEAL_RATIOS = Object.freeze({ desayuno: 18, colacion: null, almuerzo: 22, once: 20, cena: 22 });
-  function ratioForMeal(id) { return Object.prototype.hasOwnProperty.call(MEAL_RATIOS, id) ? MEAL_RATIOS[id] : null; }
+  var MEAL_RATIOS = Object.freeze({ desayuno: 22, colacion: null, almuerzo: 22, once: 22, cena: 22 });
+  var RATIO_STORAGE = "diego.v35.clinicalRatios";
+  function currentRatios() {
+    var r = Object.assign({}, MEAL_RATIOS);
+    try {
+      var val = JSON.parse(localStorage.getItem(RATIO_STORAGE) || 'null');
+      if (val && typeof val === 'object') ['desayuno','almuerzo','once','cena'].forEach(function(k){
+        var n = Number(val[k]); if (Number.isInteger(n) && n >= 5 && n <= 60) r[k] = n;
+      });
+    } catch(e) {}
+    return r;
+  }
+  function ratioForMeal(id) { var ratios = currentRatios(); return Object.prototype.hasOwnProperty.call(ratios, id) ? ratios[id] : null; }
 
   // Carbohidratos objetivo por comida según la pauta (g).
   var MEALS = Object.freeze([
@@ -209,7 +220,7 @@
   }
 
   return {
-    PAUTA_DEFAULT: PAUTA_DEFAULT, MEAL_RATIOS: MEAL_RATIOS, ratioForMeal: ratioForMeal, MEALS: MEALS, FOODS: FOODS,
+    PAUTA_DEFAULT: PAUTA_DEFAULT, MEAL_RATIOS: MEAL_RATIOS, currentRatios: currentRatios, ratioForMeal: ratioForMeal, MEALS: MEALS, FOODS: FOODS,
     baseFoods: baseFoods, slug: slug, num: num, round1: round1,
     SCHEDULE_DEFAULT: SCHEDULE_DEFAULT, nextMeal: nextMeal, toMin: toMin, nextEvent: nextEvent, fmtDur: fmtDur, icsFor: icsFor, hcFor: hcFor, CLINICAL_RULES: CLINICAL_RULES, rulesStatus: rulesStatus, plateTotal: plateTotal, recipe: recipe, glucoseRange: glucoseRange, dose: dose, fmt: fmt
   };

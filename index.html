@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Diego · Soft 3D Dashboard</title>
+<title>Diego Familiar V33 · LibreView PDF y día</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="diego.">
@@ -621,6 +621,37 @@ html[data-mode] .nav .in{background:rgba(255,249,241,.97)!important}
 html[data-mode="dark"] #s-inicio .ratio-banner{background:#142C35;color:#E5FAF3;border-color:#4B7973}
 html[data-mode="dark"] #s-inicio .ratio-banner strong{color:#B3FAE0}
 @media(max-width:380px){#s-inicio .ratio-banner{padding:10px 12px}#s-inicio .ratio-banner strong{font-size:16px}}
+
+/* Bitácora V29 — estilos adaptables, componentes táctiles accesibles */
+#s-bitacora .bt-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0}
+#s-bitacora .bt-actions button{min-height:76px;text-align:left;display:flex;gap:9px;align-items:center;justify-content:flex-start;white-space:normal;line-height:1.3}
+#s-bitacora .bt-actions .bt-emoji{font-size:24px}
+.bt-card{background:var(--card,rgba(255,255,255,.6));border:1px solid var(--border2,#ddd);border-radius:20px;padding:14px;margin:12px 0}
+.bt-row{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.bt-muting{color:var(--muted,#6c7779);font-size:13px}
+.bt-field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.bt-field label{font-weight:650;font-size:13px}
+.bt-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin:10px 0}
+.bt-fields .bt-wide{grid-column:1/-1}
+#s-bitacora input,#s-bitacora select,#s-bitacora textarea,.bt-modal input,.bt-modal select,.bt-modal textarea{width:100%;min-width:0;min-height:45px;border:1px solid var(--border2,#ddd);border-radius:13px;padding:10px 12px;background:var(--card,#fff);color:var(--text,#223);font:inherit;box-sizing:border-box}
+#s-bitacora button.bt-pill{padding:8px 12px;min-height:40px;border:1px solid var(--border2,#ddd);border-radius:12px;background:transparent;color:inherit;font-weight:650}
+#s-bitacora .bt-toggle button[aria-pressed=true]{background:#bee8d0;color:#184f39;border-color:#67ac86}
+.bt-item{padding:11px 0;border-bottom:1px solid var(--border2,#ddd)}.bt-item:last-child{border:0}
+.bt-type{font-size:14px;font-weight:750}.bt-timing{font-size:12px;opacity:.75}.bt-badge{display:inline-block;border-radius:9px;padding:3px 8px;font-size:11px;font-weight:700;background:#dee9e1;color:#275842}
+.bt-calendar{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.bt-calendar button{border:1px solid var(--border2,#ddd);border-radius:10px;min-height:44px;background:var(--card,#fff);color:inherit;font-size:13px}
+.bt-calendar button[data-level=red]{background:#f8d7d5;color:#792a24}.bt-calendar button[data-level=yellow]{background:#fff1ba;color:#775500}.bt-calendar button[data-level=green]{background:#daf2dd;color:#21613e}.bt-calendar button[data-selected=true]{outline:2px solid #31866c;outline-offset:1px}
+.bt-chart{width:100%;max-height:190px;overflow:visible}.bt-dialog{border:0;max-width:560px;width:calc(100% - 20px);max-height:88dvh;overflow:auto;border-radius:22px;background:var(--card,#fff);color:var(--text,#223);padding:18px;box-shadow:0 15px 80px #0004}.bt-dialog::backdrop{background:#0008}
+.bt-small{font-size:12px;color:var(--muted,#657);line-height:1.5}
+@media(max-width:480px){#s-bitacora .bt-actions{gap:8px}#s-bitacora .bt-actions button{padding:11px 9px;font-size:13px}.bt-fields{gap:8px}}
+
+
+/* Diego AI V31 · mobile-first, no clinical status encoded solely by color */
+.ai-warning{background:#fff0dd;color:#633c21;border:1px solid #c8aa85;border-radius:15px;padding:13px 15px;font-weight:750;font-size:13px;line-height:1.5;margin:10px 0 16px}
+.ai-note{background:#e5edf8;color:#233c5b;border-radius:13px;padding:12px;font-size:13px;margin-bottom:12px}
+.ai-panel{margin:12px 0;padding:15px!important;border-radius:20px}.ai-panel>summary{font-size:16px;font-weight:800;cursor:pointer;padding:4px 0 10px;list-style-position:inside}.ai-panel label{font-size:13px;font-weight:700;display:block;margin:9px 0 6px}.ai-panel select,.ai-panel input[type=file]{width:100%;font:inherit;font-size:15px;background:var(--card,#fff);color:var(--text,#213);padding:11px;border:1px solid #b9c9bd;border-radius:12px;max-width:100%}
+.ai-buttons{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:10px 0}.ai-buttons button{flex:1 1 170px}.ai-buttons select{width:auto;max-width:220px}.ai-chart-scroll{width:100%;overflow:auto}.ai-chart-scroll svg{width:100%;min-width:280px;height:auto;display:block}.ai-mini{padding:12px;border-radius:12px;background:rgba(127,152,128,.1);margin:7px 0;line-height:1.5;font-size:14px}.ai-mini strong{display:block;margin-bottom:3px}.ai-small{font-size:12px;opacity:.8}.ai-answer{white-space:pre-wrap;font-size:14px;line-height:1.6;padding:13px;background:rgba(127,152,128,.09);border-radius:12px;margin-top:10px}.ai-stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.ai-stats>div{padding:12px;background:rgba(127,152,128,.1);border-radius:12px}.ai-stats b{font-size:21px;display:block}.ai-stats small{font-size:11px;opacity:.8}@media(max-width:420px){.ai-panel{padding:12px!important}.ai-buttons button{flex-basis:130px}}
+#s-diegoai .ai-day-form,#s-diegoai .ai-pdf-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}#s-diegoai .ai-day-form label,#s-diegoai .ai-pdf-form label{min-width:0;font-size:12px}#s-diegoai .ai-day-form input,#s-diegoai .ai-day-form select,#s-diegoai .ai-pdf-form input{width:100%;min-width:0;min-height:42px;padding:9px;border:1px solid #bbccc0;border-radius:10px;font:inherit;font-size:14px;background:var(--card,#fff);color:var(--text,#223)}#s-diegoai textarea{width:100%;min-height:65px;resize:vertical;padding:10px;border:1px solid #bbccc0;border-radius:11px;font:inherit;background:var(--card,#fff);color:var(--text,#223)}@media(max-width:370px){#s-diegoai .ai-day-form,#s-diegoai .ai-pdf-form{grid-template-columns:1fr}}
 </style>
 <link rel="stylesheet" href="sage-dashboard.css?v=18">
 <style>
@@ -687,6 +718,63 @@ html[data-theme="dark"] .sensor-reminder.is-today,html.dark .sensor-reminder.is-
 html[data-mode="dark"] .ratio-query-summary{background:#1e3935;color:#effff7;border-color:#8bc6aa}
 @media(max-width:540px){.ratio-query-summary{display:flex;flex-direction:column;align-items:flex-start;gap:3px;margin:10px 0}.ratio-query-summary strong{font-size:16px}}
 </style>
+<style>
+.family-panel{padding:15px!important;margin:12px 0 16px!important}
+.family-title{display:flex;gap:8px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+.family-title strong{font-size:17px}.family-title p{margin:3px 0}
+#familyStatus{border-radius:50px;padding:6px 10px;background:#e4ede7;color:#345447;font-size:12px;font-weight:700}
+#familySettings{margin-top:9px}#familySettings summary{padding:12px;cursor:pointer;font-weight:700}
+#familySettings label{display:block;margin:12px 0 5px;font-weight:650;font-size:13px}
+#familySettings input,#familySettings select{width:100%;padding:12px;border:1px solid #b6c9b9;border-radius:12px;font-size:16px;background:var(--card,#fff);color:var(--text,#233)}
+.family-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:10px 0}
+#familySettings button{margin-top:8px;min-height:44px;white-space:normal}
+#familyMessage{padding:6px 0;overflow-wrap:anywhere}
+.family-member{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 0;font-size:13px;overflow-wrap:anywhere}.family-member button{width:auto!important;min-width:85px!important}@media(max-width:380px){.family-actions{grid-template-columns:1fr}}
+</style>
+<style id="diego-ux-v32">
+/* V32 — UI improvements. Original features, forms, model, and medical parameters remain unchanged. */
+:root[data-mode=light]{--ux-forest:#285947;--ux-sage:#DDECE1;--ux-cream:#FFF9F2;--ux-peach:#F9E8DA}
+.ux-hub{padding:18px!important;border-radius:26px!important;background:linear-gradient(145deg,#F7FCF8,#FFF6EB)!important;border:1px solid #D6E5D9!important;box-shadow:0 7px 20px #596F5F1A!important;color:#254B3D!important;margin:12px 0!important}
+.ux-hub-top,.ux-hub-count{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.ux-hub h2{font-size:25px!important;line-height:1.15;margin:4px 0!important;color:#234D3D!important}
+.ux-hub p{margin:5px 0;color:#60776B;font-size:13px}
+.ux-eyebrow{font-weight:800;letter-spacing:.08em;color:#617A6B;font-size:11px}
+.ux-pill{display:inline-flex;padding:7px 10px;border-radius:30px;background:#E0EDE1;color:#426C55;font-size:11px;font-weight:750;white-space:nowrap}
+.ux-hub-count{margin:16px 0 14px;padding:15px 0;border-top:1px solid #E2E8DD;border-bottom:1px solid #E2E8DD;align-items:end}
+.ux-hub-count strong{display:block;font-size:39px;line-height:1.2;font-variant-numeric:tabular-nums;letter-spacing:-.04em;color:#276E55}
+.ux-hub-count strong small{font-size:15px;color:#6D8075;letter-spacing:0}
+.ux-food-count{font-size:12px;background:#EDEFD9;color:#52604D;border-radius:15px;padding:7px 9px;white-space:nowrap}
+.ux-main-action{min-height:54px;border:0;width:100%;border-radius:17px;background:#2D7155;color:#fff;font-weight:800;font-size:16px;display:flex;align-items:center;justify-content:center;gap:9px}
+.ux-main-action span{margin-left:auto;padding-right:12px;font-size:20px}
+.ux-shortcuts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:12px}
+.ux-shortcuts button{min-height:74px;border:1px solid #E1E9DD;background:#fff;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;color:#34574A;font-size:12px;font-weight:750}
+.ux-shortcuts button span{font-size:24px;line-height:1}
+.ux-hub p.ux-sync{margin-top:12px;border-top:1px solid #E2E8DD;padding-top:10px;font-size:12px;line-height:1.4}
+.ux-extra{border:1px solid var(--border2);border-radius:18px;background:var(--surface);margin:12px 0;overflow:hidden}
+.ux-extra>summary{list-style:none;cursor:pointer;padding:15px;font-weight:750;min-height:50px;display:flex;justify-content:space-between;align-items:center}
+.ux-extra>summary::-webkit-details-marker{display:none}.ux-extra-inner{padding:0 12px 12px}
+.ux-extra .dashboard-stats{margin:10px 0!important}
+.ux-extra .diego-home-actions{margin:0!important}
+.ux-fab{position:fixed;right:19px;bottom:calc(98px + env(safe-area-inset-bottom));z-index:31;border:0;border-radius:30px;background:#315F4A;color:white;box-shadow:0 8px 24px #1D4A3980;padding:13px 16px;font-size:17px;font-weight:800;display:flex;gap:7px;align-items:center;min-height:50px}
+.ux-quick-backdrop{position:fixed;inset:0;background:rgba(18,35,29,.54);z-index:41}
+.ux-quick-dialog{position:fixed;bottom:calc(12px + env(safe-area-inset-bottom));left:12px;right:12px;max-width:480px;margin:auto;padding:17px;background:#FFF9F3;color:#315646;z-index:42;border-radius:24px;border:1px solid #DDE9DC;box-shadow:0 18px 60px #1B342780}
+.ux-quick-head{display:flex;align-items:center;justify-content:space-between;font-size:20px;margin-bottom:13px}
+.ux-quick-head button{border:0;border-radius:50%;height:36px;width:36px;background:#E9F1E7;color:#294D40;font-size:26px}
+.ux-quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.ux-quick-grid button{min-height:70px;border:1px solid #DEE6DE;background:#fff;border-radius:16px;color:#315646;font-size:22px;text-align:left;padding:10px 14px;display:flex;align-items:center;gap:8px}
+.ux-quick-grid button span{font-weight:750;font-size:15px}.ux-quick-dialog p{color:#6C7C70;font-size:12px;margin:12px 0 0}
+html[data-mode] .nav .in{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+html[data-mode] .nav button{font-size:10px!important;min-height:57px!important;white-space:nowrap;gap:2px!important;padding:5px 1px!important}
+html[data-mode] .nav button .ico{width:22px!important;height:22px!important}
+.ux-nav-glyph{font-size:24px;line-height:22px;height:22px;font-weight:800}
+#s-diegoai .ai-panel{border-radius:18px;margin:10px 0}
+#s-diegoai .ai-panel>summary{min-height:51px;padding:11px 7px;font-size:15px}
+#s-diegoai .ai-warning{border-radius:13px}
+@media(max-width:699px){.sage-hero{min-height:0!important;padding:16px!important;margin-bottom:9px!important}.sage-hero h1{font-size:clamp(22px,6.3vw,30px)!important}.sage-hero p,.sage-hero .hero-cta{display:none!important}.sage-player{max-height:110px!important;max-width:100px!important}.nextbar-shell{margin:8px 0!important}.sensor-reminder{margin:10px 0!important}.ux-fab{bottom:calc(92px + env(safe-area-inset-bottom))}.wrap{padding-bottom:calc(175px + env(safe-area-inset-bottom))!important}}
+@media(min-width:700px){.ux-fab{right:25px;bottom:25px}.ux-hub{max-width:760px}.ux-quick-dialog{bottom:35px}}
+@media(max-width:360px){.ux-fab span{display:none}.ux-fab{padding:12px 17px}.ux-shortcuts button{font-size:11px}.ux-hub-count strong{font-size:35px}}
+.ux-quick-backdrop[hidden],.ux-quick-dialog[hidden]{display:none!important}
+</style>
 </head>
 <body>
 <button type="button" id="mobileMenuButton" class="mobile-menu-button" aria-label="Abrir menú con todas las secciones" aria-controls="mainSidebar" aria-expanded="false"><span aria-hidden="true">☰</span><span>Menú</span></button>
@@ -702,6 +790,8 @@ html[data-mode="dark"] .ratio-query-summary{background:#1e3935;color:#effff7;bor
     <button data-go="favoritos"><span>♡</span> Favoritos</button>
     <button data-go="pauta"><span>▤</span> Mi pauta</button>
     <button data-go="historial"><span>◷</span> Historial</button>
+    <button data-go="bitacora"><span>▤</span> Bitácora de Diego</button>
+    <button data-go="diegoai"><span>✧</span> Diego AI · Inteligencia Glucémica</button>
     <button data-go="perfil"><span>⚙</span> Ajustes</button>
   </nav>
   <div class="sidebar-bottom"><span class="side-ball">⚽</span><strong>¡Sigue tu ritmo!</strong><small>Alimentación simple, hecha para ti.</small></div>
@@ -738,8 +828,16 @@ html[data-mode="dark"] .ratio-query-summary{background:#1e3935;color:#effff7;bor
         <div class="sensor-actions"><button id="sensorSave" type="button">Guardar fecha</button><button id="sensorCancel" type="button">Cancelar</button></div>
       </div>
     </aside>
+    <section class="ux-hub card" aria-label="Resumen y accesos rápidos">
+      <div class="ux-hub-top"><div><span class="ux-eyebrow">TU COMIDA ACTUAL</span><h2 id="uxMealName">Desayuno</h2><p id="uxRatioText">Ratio 1:22 · se actualiza con la comida</p></div><span class="ux-pill" id="uxMealMode">Según horario</span></div>
+      <div class="ux-hub-count"><div><span class="ux-eyebrow">CARBOHIDRATOS DEL PLATO</span><strong id="uxCarbCount" aria-live="polite">0 <small>g HC</small></strong></div><span class="ux-food-count" id="uxFoodCount">0 alimentos</span></div>
+      <button type="button" class="ux-main-action" data-go="alimentos">＋ Armar o editar mi plato <span>→</span></button>
+      <div class="ux-shortcuts"><button type="button" data-go="bitacora"><span>▤</span>Bitácora</button><button type="button" data-ux-record="glucose"><span>◉</span>Glucosa</button><button type="button" data-go="diegoai"><span>✧</span>Diego AI</button></div>
+      <p class="ux-sync" id="uxSyncText" role="status">◌ Registros guardados en este dispositivo hasta verificar sincronización</p>
+    </section>
     <div class="section-intro"><div class="dashboard-section-heading"><div><span class="soft-kicker">ARMA TU PLATO</span><h2>¿Qué comida vamos a preparar?</h2><p class="meal-helper">Toca una opción para buscar y agregar alimentos a tu plato.</p></div></div></div>
     <div class="mgrid" id="meals" role="group" aria-label="Selecciona la comida que quieres preparar"></div><div class="meal-selection-status" id="mealSelectionStatus" aria-live="polite"></div>
+    <details class="ux-extra"><summary>📷 Escanear etiquetas, fotos y más opciones <span>⌄</span></summary><div class="ux-extra-inner">
     <div class="diego-home-actions" aria-label="Accesos a fotografía nutricional">
       <button class="diego-home-action" type="button" data-photo-jump="label"><span class="diego-action-emoji" aria-hidden="true">📦</span><span><b>Escanear etiqueta</b><small>Leer producto con IA si está conectada</small></span><span aria-hidden="true">›</span></button>
       <button class="diego-home-action" type="button" data-photo-jump="plate"><span class="diego-action-emoji" aria-hidden="true">📷</span><span><b>Foto del plato</b><small>Estimación que debes revisar</small></span><span aria-hidden="true">›</span></button>
@@ -750,6 +848,8 @@ html[data-mode="dark"] .ratio-query-summary{background:#1e3935;color:#effff7;bor
       <button class="stat3d yellow" data-go="recetas"><span class="stat-emoji">🍳</span><span class="stat-label">Mis recetas</span><strong>Explorar</strong><small>Preparaciones caseras</small></button>
       <button class="stat3d blue" data-go="favoritos"><span class="stat-emoji">💛</span><span class="stat-label">Mis favoritos</span><strong>Repetir</strong><small>Tus comidas habituales</small></button>
     </div>
+    </div></details>
+    <button class="btn btn-secondary" type="button" id="btFromPlate" style="margin:12px 0;min-height:50px;width:100%">📔 Guardar mi plato en bitácora</button>
     <div class="dashboard-section-heading plate-heading"><div><span class="soft-kicker">TU COMIDA</span><h2>Lo que estás preparando</h2></div></div>
     <div class="home-lower-grid"><div class="home-lower-main">
     <div class="card plateh2 pastel-plate">
@@ -768,7 +868,7 @@ html[data-mode="dark"] .ratio-query-summary{background:#1e3935;color:#effff7;bor
             <path d="M0 112 C 40 104, 90 96, 140 70" stroke="#38E1C6" stroke-width="3" fill="none" opacity=".7"/>
           </svg><span>Tu plato de hoy</span></div>
       <div class="ph-row"><div class="ph-total" id="total" aria-live="polite">0 g HC</div><button class="btn btn-primary go" data-go="alimentos" id="addFood"></button></div>
-      <div class="ratio-banner" id="homeMealRatio" aria-live="polite"><span class="ratio-banner__label">Ratio de la comida seleccionada</span><strong>Desayuno · 1:18</strong></div>
+      <div class="ratio-banner" id="homeMealRatio" aria-live="polite"><span class="ratio-banner__label">Ratio de la comida seleccionada</span><strong>Desayuno · 1:22</strong></div>
       <div class="ph-ref" id="phRef"><span class="t2">Pauta de referencia: <b id="refHC">60 g HC</b></span><span class="diff" id="diff" hidden></span></div>
     </div>
     <div class="pastel-shortcuts" aria-label="Accesos directos">
@@ -877,7 +977,7 @@ html[data-mode="dark"] .ratio-query-summary{background:#1e3935;color:#effff7;bor
     </div>
     <div id="result" aria-live="polite" class="stack" style="margin-top:12px"></div>
     </div><div>
-    <div class="card"><div class="grid2"><div class="inp s"><input id="ap" inputmode="decimal" autocomplete="off" placeholder="Aplicadas" aria-label="Unidades aplicadas (opcional)"><span>U</span></div><button class="btn btn-primary" id="save"></button></div><p class="muted small" style="margin:8px 2px 0">Guarda la glicemia, los carbohidratos y lo que te pusiste, para tener tu historial al día.</p><button class="btn btn-ghost" data-go="historial" style="margin-top:10px" id="toHist"></button></div>
+    <div class="card"><div class="grid2"><div class="inp s"><input id="ap" inputmode="decimal" autocomplete="off" placeholder="Aplicadas" aria-label="Unidades aplicadas (opcional)"><span>U</span></div><button class="btn btn-primary" id="save"></button></div><p class="muted small" style="margin:8px 2px 0">Guarda la glicemia, los carbohidratos y lo que te pusiste, para tener tu historial al día.</p><button class="btn btn-secondary" id="btFromPauta" type="button" style="margin-top:10px;width:100%">📔 Guardar comida en bitácora</button><button class="btn btn-ghost" data-go="historial" style="margin-top:10px" id="toHist"></button></div>
     <div class="card"><div class="step"><i>i</i>Parámetros vigentes</div><div id="params"></div><p class="muted small" style="margin:8px 0 0">Se cambian desde Perfil, con confirmación.</p><button class="lk" id="fichaB2" style="margin-top:4px">Ver mi ficha de tratamiento</button></div>
     <div class="note danger" style="margin-top:12px"><svg class="ico"><use href="#i-alert"/></svg><div><b>Es poco probable, pero si está inconsciente, convulsiona o no puede tragar:</b>no darle nada por la boca. Ponerlo de lado, usar glucagón si hay y llevarlo a la clínica. Si no puede trasladarlo de inmediato, llamar al 131 (SAMU).</div></div>
     </div></div>
@@ -903,6 +1003,7 @@ html[data-mode="dark"] .ratio-query-summary{background:#1e3935;color:#effff7;bor
     <div class="sect">Salud</div>
     <div class="card" style="padding-top:4px;padding-bottom:4px">
       <button class="set" id="rulesB"><span class="ic"><svg class="ico s"><use href="#i-shield"/></svg></span><span class="tx"><b>Notas del equipo</b><span id="rulesCount"></span></span><svg class="ico s muted"><use href="#i-chev"/></svg></button>
+      <button class="set" id="ratiosB"><span class="ic">⚕️</span><span class="tx"><b>Editar ratios de comidas</b><span><span id="ratioCurrentTxt">1:22 vigente · Confirmación e historial de cambios</span></span></span><span class="muted">›</span></button>
       <button class="set" id="paramsB"><span class="ic"><svg class="ico s"><use href="#i-lock"/></svg></span><span class="tx"><b>Parámetros médicos</b><span id="paramsTxt"></span></span><svg class="ico s muted"><use href="#i-chev"/></svg></button>
       <button class="set" id="schedB"><span class="ic"><svg class="ico s"><use href="#i-clock"/></svg></span><span class="tx"><b>Horarios y alarmas</b><span id="schedTxt">Comidas y Tresiba</span></span><svg class="ico s muted"><use href="#i-chev"/></svg></button>
       <button class="set" id="pautaB"><span class="ic"><svg class="ico s"><use href="#i-drop"/></svg></span><span class="tx"><b>Mi ficha de tratamiento</b><span>Insulinas, parámetros, comidas, gotitas y cambios</span></span><svg class="ico s muted"><use href="#i-chev"/></svg></button>
@@ -910,7 +1011,132 @@ html[data-mode="dark"] .ratio-query-summary{background:#1e3935;color:#effff7;bor
     <p class="muted small" style="margin:14px 4px">diego. v23 · Sage & Peach ⚡ La app no envía tus datos a ningún servidor.</p>
   </section>
 
+
+  <!-- BITÁCORA DE DIEGO — registro rápido -->
+  <section class="screen" id="s-bitacora" hidden>
+    <header class="top"><div class="row"><button class="back" data-go="inicio" aria-label="Volver a Inicio"><svg class="ico"><use href="#i-back"/></svg></button><div><h1 class="h1">Bitácora de Diego</h1><div class="hello" id="btToday">Tu día, de un vistazo</div></div></div></header><button class="btn btn-secondary" type="button" data-go="diegoai" style="margin:10px 0;width:100%">✧ Abrir Diego AI · Inteligencia Glucémica</button>
+    <section id="familyPanel" class="family-panel card" aria-label="Compartir bitácora familiar">
+  <div class="family-title"><div><strong>👨‍👩‍👦 Diego Familiar</strong><p class="bt-small">Compartir la misma bitácora en celulares autorizados.</p></div><span id="familyStatus" role="status">Solo en este teléfono</span></div>
+  <details id="familySettings"><summary>Configurar o administrar acceso familiar</summary>
+    <p class="bt-small" id="familyHelp">Para sincronizar, hay que configurar Firebase. Los datos de este teléfono no se publicarán automáticamente.</p>
+    <div id="familyAuth">
+      <label for="familyEmail">Correo personal</label><input id="familyEmail" type="email" autocomplete="email" placeholder="correo@ejemplo.cl">
+      <label for="familyPassword">Contraseña personal (mín. 12 caracteres)</label><input id="familyPassword" type="password" autocomplete="current-password" minlength="12" placeholder="Contraseña">
+      <div class="family-actions"><button type="button" id="familyLogin" class="btn btn-secondary">Iniciar sesión</button><button type="button" id="familyRegister" class="btn btn-secondary">Crear cuenta</button></div>
+    </div>
+    <div id="familyLogged" hidden>
+      <p class="bt-small" id="familyUserLabel"></p>
+      <button type="button" class="btn btn-secondary" id="familyVerify">Reenviar correo de verificación</button>
+      <button type="button" class="btn btn-secondary" id="familyLogout">Cerrar sesión</button>
+      <div id="familyHome" hidden>
+        <button type="button" class="btn btn-secondary" id="familyCreate">Crear espacio privado de Diego</button>
+        <label for="familyJoinId">ID de la familia compartido por el propietario</label><input id="familyJoinId" autocomplete="off" placeholder="Pegar ID del espacio familiar">
+        <button type="button" class="btn btn-secondary" id="familyJoin">Unirme con invitación</button>
+      </div>
+      <div id="familyConnected" hidden>
+        <p class="bt-small">Espacio: <strong id="familySpaceId"></strong> · Acceso: <span id="familyRole"></span></p>
+        <div id="familyOwnerTools" hidden>
+          <label for="familyInviteEmail">Invitar correo (ya debe tener cuenta verificada)</label><input id="familyInviteEmail" type="email" placeholder="familiar@correo.cl">
+          <label for="familyInviteRole">Permiso</label><select id="familyInviteRole"><option value="editor">Puede registrar y editar</option><option value="viewer">Solo puede consultar</option></select>
+          <button type="button" class="btn btn-secondary" id="familyInvite">Autorizar correo</button>
+          <p class="bt-small">Comparte por privado el ID del espacio y pide ingresar desde su propia cuenta.</p>
+          <div class="family-actions"><strong>Integrantes autorizados</strong><button type="button" class="btn btn-secondary" id="familyRefreshMembers">Actualizar</button></div><div id="familyMembers"></div>
+        </div>
+        <div class="family-actions"><button type="button" class="btn btn-secondary" id="familyCopyId">Copiar ID para invitar</button><button type="button" class="btn btn-secondary" id="familyLeave">Desconectar este teléfono</button></div>
+        <button type="button" class="btn btn-secondary" id="familyUpload">Subir registros locales de este dispositivo (una vez)</button>
+        <p class="bt-small">Antes de subir datos antiguos, usa «Respaldo JSON». La sincronización incluye solo bitácora, no la pauta médica ni los parámetros de insulina.</p>
+      </div>
+    </div>
+    <p class="bt-small" id="familyMessage" role="status" aria-live="polite"></p>
+  </details>
+</section>
+<div class="bt-actions" aria-label="Registro rápido">
+      <button class="btn btn-secondary" id="btAddMeal"><span class="bt-emoji">🍽️</span><span>Registrar comida</span></button>
+      <button class="btn btn-secondary" id="btAddGlucose"><span class="bt-emoji">🩸</span><span>Registrar glucosa</span></button>
+      <button class="btn btn-secondary" id="btAddLow"><span class="bt-emoji">🧃</span><span>Registrar baja</span></button>
+      <button class="btn btn-secondary" id="btAddExercise"><span class="bt-emoji">⚽</span><span>Registrar ejercicio</span></button>
+      <button class="btn btn-secondary" id="btAddBasal"><span class="bt-emoji">💉</span><span>Insulina basal</span></button>
+      <button class="btn btn-secondary" id="btAddOther"><span class="bt-emoji">✏️</span><span>Otro registro</span></button>
+    </div>
+    <div class="bt-card" id="btTimer" hidden aria-live="polite"></div>
+    <div class="bt-card"><div class="bt-row"><b>Actividad</b><select id="btTimelinePeriod" style="max-width:130px"><option value="day">Día</option><option value="week">Semana</option><option value="month">Mes</option></select><span class="bt-muting" id="btDayTitle"></span></div><div id="btTimeline"></div></div>
+    <div class="bt-card"><div class="bt-row"><b>Calendario e historial</b><div><button class="bt-pill" id="btPrevMonth" aria-label="Mes anterior">‹</button><button class="bt-pill" id="btNextMonth" aria-label="Mes siguiente">›</button></div></div><p id="btMonthLabel" class="bt-muting"></p><div id="btCalendar" class="bt-calendar"></div><p class="bt-small">Verde: registros sin baja · Amarillo: descenso preventivo · Rojo: hipoglucemia · Gris: sin datos. No representa tiempo en rango.</p></div>
+    <div class="bt-card"><div class="bt-row"><b>Análisis de tendencias</b><select id="btStatsPeriod" style="max-width:140px"><option value="7">7 días</option><option value="30">30 días</option><option value="90">90 días</option></select></div><div id="btStats" style="margin-top:10px"></div><div id="btGlucoseChart"></div></div>
+    <div class="bt-card"><b>Informe para la doctora</b><p class="bt-small">Resumen descriptivo de los datos registrados. No determina causas ni modifica insulina.</p><div class="grid2" style="margin-top:10px"><button class="btn btn-secondary" id="btExportCSV">Exportar CSV</button><button class="btn btn-primary" id="btWeeklyReport">Informe 7 días</button></div><button class="btn btn-secondary" id="btBackup" style="margin-top:9px;width:100%">Respaldo JSON de bitácora</button></div>
+  </section>
+
   <!-- HISTORIAL -->
+  <section class="screen" id="s-diegoai" hidden aria-labelledby="diegoAiTitle">
+    <header class="top"><div class="row"><button class="back" data-go="bitacora" aria-label="Volver a la bitácora"><svg class="ico"><use href="#i-back"/></svg></button><div><h1 class="h1" id="diegoAiTitle">✧ Diego AI</h1><div class="hello">Inteligencia glucémica · observaciones reales</div></div></div></header>
+    <div class="ai-warning" role="note">Análisis orientativo experimental. No utilizar para tomar decisiones de tratamiento.</div>
+    <div class="ai-note" id="aiConnection">No hay conexión en vivo con FreeStyle Libre. Importa datos de LibreView.</div>
+    <details class="card ai-panel" open><summary>📁 Importar LibreView · PDF o CSV</summary>
+      <p class="bt-small">El archivo se procesa en este dispositivo; no se envía automáticamente a Firebase ni a servicios externos. Los valores históricos no son lecturas en vivo.</p>
+      <label for="aiFile" class="ai-file-label">Seleccionar CSV de LibreView (lecturas individuales)</label><input id="aiFile" type="file" accept=".csv,text/csv,text/plain" aria-label="Seleccionar CSV LibreView">
+      <div class="ai-buttons"><button type="button" class="btn btn-secondary" id="aiImport">Importar datos reales</button><button type="button" class="btn btn-secondary" id="aiExport">Exportar mis datos importados</button></div>
+      <p id="aiImportStatus" class="bt-small" role="status">Todavía no hay archivo seleccionado.</p><div id="aiDataCount" class="bt-small"></div>
+      <details><summary>Privacidad y gestión de archivos importados</summary><p class="bt-small">Las mediciones LibreView se almacenan en este navegador, no en la bitácora familiar sincronizada. Haz una exportación antes de borrar los datos de este dispositivo.</p><button type="button" class="btn btn-secondary" id="aiErase">Borrar lecturas importadas de este dispositivo</button></details>
+    </details>
+    <details class="card ai-panel" open><summary>📄 Informe LibreView PDF · resumen histórico</summary>
+      <p class="bt-small">Los PDF contienen gráficos y estadísticas agregadas. No se convierten curvas dibujadas en lecturas individuales ni se usan como datos de proyección. El PDF se analiza en este teléfono, sin enviarlo a Firebase. Para procesarlo, el navegador necesita cargar la biblioteca PDF.js mediante internet.</p>
+      <label for="aiPdfFile">Seleccionar informe PDF</label><input id="aiPdfFile" type="file" accept=".pdf,application/pdf" aria-label="Seleccionar informe PDF de LibreView">
+      <button type="button" class="btn btn-secondary" id="aiPdfRead">Leer y revisar informe</button>
+      <button type="button" class="btn btn-secondary" id="aiPdfManual" style="margin-top:8px;width:100%">Introducir resumen de otro PDF manualmente</button>
+      <p class="bt-small">Si falla la lectura automática, puedes guardar un resumen histórico sin inventar mediciones individuales.</p>
+      <p class="bt-small" id="aiPdfStatus" role="status">Ningún informe PDF analizado.</p>
+      <div id="aiPdfReview" hidden>
+        <p class="bt-small">Revisa los datos extraídos antes de guardarlos. Deja en blanco lo que no figure claramente en el PDF.</p>
+        <div class="ai-pdf-form">
+          <label>Inicio del período <input type="date" id="pdfStart"></label>
+          <label>Fin del período <input type="date" id="pdfEnd"></label>
+          <label>Promedio mg/dL <input type="number" min="20" max="600" id="pdfAvg"></label>
+          <label>Tiempo 70–180 (%) <input type="number" min="0" max="100" id="pdfTir"></label>
+          <label>Tiempo bajo 70 (%) <input type="number" min="0" max="100" id="pdfLow"></label>
+          <label>Sensor activo (%) <input type="number" min="0" max="100" id="pdfActive"></label>
+          <label>Eventos de glucosa baja <input type="number" min="0" max="1000" id="pdfEpisodes"></label>
+          <label>Duración media de bajas (min) <input type="number" min="0" max="1440" id="pdfDuration"></label>
+        </div>
+        <button type="button" class="btn btn-primary" id="aiPdfSave">Confirmar y guardar resumen PDF</button>
+      </div>
+      <div id="aiPdfSummaries" class="ai-mini" aria-live="polite">Sin informes guardados.</div>
+    </details>
+    <details class="card ai-panel" open><summary>🗓️ ¿Cómo estuvo su día? · Contexto rápido</summary>
+      <p class="bt-small">Añade información que el sensor no conoce. Se almacena en este teléfono y se relaciona por fecha con las comidas y glucosas registradas. No demuestra causas.</p>
+      <div class="ai-day-form">
+        <label>Día <input type="date" id="dayDate"></label>
+        <label>Cómo estuvo <select id="dayWellbeing"><option value="">Sin informar</option><option>Bien</option><option>Regular</option><option>Cansado</option><option>Enfermo</option><option>Estresado</option></select></label>
+        <label>Sueño <select id="daySleep"><option value="">Sin informar</option><option>Durmió bien</option><option>Durmió poco</option><option>Despertares</option><option>Siesta</option></select></label>
+        <label>Actividad <select id="dayActivity"><option value="">Sin informar</option><option>Fútbol</option><option>Bicicleta</option><option>Caminata</option><option>Gimnasio</option><option>Descanso</option><option>Otra actividad</option></select></label>
+        <label>Intensidad <select id="dayIntensity"><option value="">Sin informar</option><option>Suave</option><option>Moderada</option><option>Intensa</option></select></label>
+        <label>Situaciones <select id="dayNotes"><option value="">Ninguna anotada</option><option>Rutina normal</option><option>Día de colegio</option><option>Partido/entrenamiento</option><option>Malestar/enfermedad</option><option>Estrés</option><option>Cambio de horarios</option><option>Comió más rápido</option></select></label>
+      </div>
+      <label for="dayFreeNotes">Observación opcional (máx. 280 caracteres)</label><textarea id="dayFreeNotes" maxlength="280" rows="2" placeholder="Algo que sea importante recordar"></textarea>
+      <div class="ai-buttons"><button class="btn btn-primary" type="button" id="aiDaySave">Guardar día</button><button class="btn btn-secondary" type="button" id="aiDayDelete">Eliminar registro del día</button></div>
+      <p class="bt-small" id="aiDayStatus" role="status"></p>
+      <div id="aiDayHistory" class="ai-mini">Sin contextos diarios registrados.</div><button class="btn btn-secondary" id="aiContextBackup" type="button" style="width:100%;margin-top:8px">Respaldar PDF y contextos del día (JSON)</button>
+    </details>
+    <details class="card ai-panel" open><summary>📈 Evolución de glucosa</summary>
+      <div class="ai-buttons"><label for="aiPeriod">Período</label><select id="aiPeriod"><option value="6">Últimas 6 horas</option><option value="24">Últimas 24 horas</option><option value="72">Últimos 3 días</option><option value="168">Últimos 7 días</option></select></div>
+      <div class="ai-chart-scroll"><svg id="aiChart" viewBox="0 0 620 310" role="img" aria-label="Gráfico de glucosa registrada y proyección experimental si está validada"></svg></div><p class="bt-small" id="aiChartLegend">Solo se dibujan mediciones registradas.</p>
+    </details>
+    <details class="card ai-panel" open><summary>🔎 Proyección experimental</summary>
+      <p class="bt-small">Basada en cambios históricos comparables, no en una simulación farmacológica. No permite retrasar el tratamiento de una hipoglucemia.</p>
+      <div id="aiProjection" aria-live="polite">Información insuficiente para proyectar.</div>
+      <p class="bt-small" id="aiProjectionMethod"></p>
+    </details>
+    <details class="card ai-panel" open><summary>🧭 Patrones observados</summary>
+      <div class="ai-buttons"><label for="aiDays">Analizar</label><select id="aiDays"><option value="3">3 días</option><option value="7" selected>7 días</option><option value="14">14 días</option><option value="30">30 días</option></select></div>
+      <div id="aiPatterns">Sin datos disponibles.</div>
+    </details>
+    <details class="card ai-panel"><summary>🎯 Historial de precisión</summary><p class="bt-small">Evaluación con datos posteriores separados cronológicamente de los datos utilizados como referencia. No representa validación clínica.</p><div id="aiAccuracy">Sin proyecciones evaluables.</div></details>
+    <details class="card ai-panel" open><summary>💬 Consultar a Diego AI</summary>
+      <p class="bt-small">Asistente de preguntas frecuentes basado exclusivamente en tus registros. No usa un modelo conversacional externo ni envía información de salud fuera del dispositivo.</p>
+      <label for="aiQuestion">Pregunta</label><select id="aiQuestion"><option value="week">¿Qué patrones observas esta semana?</option><option value="low">¿En qué horarios ha presentado más bajas?</option><option value="breakfast">¿Cómo se ha comportado después del desayuno?</option><option value="exercise">¿Qué diferencias hay entre días con y sin ejercicio?</option><option value="food">¿Cómo respondió al plátano, pan o yogur?</option><option value="doctor">¿Qué información llevar a la diabetóloga?</option></select>
+      <button type="button" id="aiAsk" class="btn btn-primary">Analizar registros</button><div class="ai-answer" id="aiAnswer" role="status">Selecciona una pregunta y presiona Analizar registros.</div>
+    </details>
+    <details class="card ai-panel"><summary>🩺 Informe para la diabetóloga</summary><p class="bt-small">Incluye número de registros, eventos y limitaciones de los datos; no propone cambios de insulina.</p><button class="btn btn-secondary" type="button" id="aiDoctor">Descargar informe TXT</button></details>
+    <div class="ai-warning">Análisis orientativo experimental. No utilizar para tomar decisiones de tratamiento.</div>
+  </section>
   <section class="screen" id="s-historial" hidden>
     <header class="top"><div class="row"><button class="back" data-go="pauta" aria-label="Volver a Pauta"><svg class="ico"><use href="#i-back"/></svg></button><div><h1 class="h1">Historial</h1><div class="hello">Tus registros, en orden</div></div></div></header>
     <div class="card" style="padding-top:4px;padding-bottom:4px"><ul class="list" id="hist"></ul></div>
@@ -921,10 +1147,23 @@ html[data-mode="dark"] .ratio-query-summary{background:#1e3935;color:#effff7;bor
 <nav class="nav" aria-label="Secciones"><div class="in">
   <button data-go="inicio"><svg class="ico"><use href="#i-home"/></svg>Inicio<span class="dot" id="dot" hidden></span></button>
   <button data-go="alimentos"><svg class="ico"><use href="#i-apple"/></svg>Alimentos</button>
-  <button data-go="recetas"><svg class="ico"><use href="#i-chef"/></svg>Recetas</button>
-  <button data-go="pauta"><svg class="ico"><use href="#i-calendar"/></svg>Pauta</button>
+  <button data-go="bitacora"><svg class="ico"><use href="#i-calendar"/></svg>Bitácora</button>
+  <button data-go="diegoai"><span class="ux-nav-glyph">✧</span>Diego AI</button>
+  <button data-go="pauta"><svg class="ico"><use href="#i-clock"/></svg>Pauta</button>
 </div></nav>
 
+<button class="ux-fab" id="uxOpenQuick" type="button" aria-haspopup="dialog" aria-controls="uxQuickDialog" aria-expanded="false">＋ <span>Registrar</span></button>
+<div class="ux-quick-backdrop" id="uxQuickBackdrop" hidden></div>
+<section class="ux-quick-dialog" id="uxQuickDialog" role="dialog" aria-modal="true" aria-label="Registro rápido" hidden>
+  <div class="ux-quick-head"><strong>¿Qué quieres registrar?</strong><button type="button" id="uxCloseQuick" aria-label="Cerrar">×</button></div>
+  <div class="ux-quick-grid">
+    <button type="button" data-ux-record="meal">🍽️ <span>Comida</span></button>
+    <button type="button" data-ux-record="glucose">🩸 <span>Glucosa</span></button>
+    <button type="button" data-ux-record="low">🧃 <span>Baja</span></button>
+    <button type="button" data-ux-record="exercise">⚽ <span>Ejercicio</span></button>
+  </div>
+  <p>Se abre el formulario real de la Bitácora. No crea mediciones automáticas.</p>
+</section>
 <div class="scrim" id="scrim"></div>
 <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="shT" hidden><div class="grab" aria-hidden="true"></div><button class="ibtn x" id="shX" aria-label="Cerrar"><svg class="ico"><use href="#i-x"/></svg></button><div id="shBody"></div></div>
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -990,11 +1229,28 @@ html[data-mode="dark"] .ratio-query-summary{background:#1e3935;color:#effff7;bor
   var fig=readJSON('diego.v3.prefs',{});window.diegoChooseFigure(fig&&fig.fig==='bike'?'bike':'ball');
 })();
 </script>
-<script src="calc.js"></script>
+<script src="calc.js?v=35"></script>
 <script src="store.js"></script>
-<script src="app.js"></script>
+<script src="app.js?v=35"></script>
+<script src="bitacora.js?v=30"></script>
+<script src="diego-ai.js?v=31"></script>
+<script src="diego-ai-context.js?v=34"></script>
+<script src="firebase-config.js"></script>
+<script type="module" src="diego-familiar.js?v=30"></script>
 <script src="sage-dashboard.js?v=18"></script>
 <script src="ai-photos.js?v=18"></script>
 <script src="sensor-reminder.js?v=18"></script>
+<script id="diego-ux32-script">
+(function(){'use strict';
+var $=function(id){return document.getElementById(id)},fab=$('uxOpenQuick'),dialog=$('uxQuickDialog'),back=$('uxQuickBackdrop');
+function open(){dialog.hidden=false;back.hidden=false;fab.setAttribute('aria-expanded','true');$('uxCloseQuick').focus();}
+function close(){dialog.hidden=true;back.hidden=true;fab.setAttribute('aria-expanded','false');fab.focus();}
+fab.addEventListener('click',open);$('uxCloseQuick').addEventListener('click',close);back.addEventListener('click',close);document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!dialog.hidden)close();});
+var targets={meal:'btAddMeal',glucose:'btAddGlucose',low:'btAddLow',exercise:'btAddExercise'};
+document.addEventListener('click',function(e){var b=e.target.closest('[data-ux-record]');if(!b)return;var which=b.getAttribute('data-ux-record');if(!dialog.hidden)close();var tab=document.querySelector('.nav button[data-go="bitacora"]');if(tab)tab.click();setTimeout(function(){var btn=$(targets[which]);if(btn)btn.click();},45);});
+function sync(){var status=$('familyStatus'),dest=$('uxSyncText');if(!status||!dest)return;var s=status.textContent.trim();dest.textContent= /sincronizad/i.test(s)?'✓ '+s:'◌ '+(s||'Sin sincronización verificada')+' · Comprueba el estado antes de confiar en la nube';}
+if($('familyStatus')){new MutationObserver(sync).observe($('familyStatus'),{subtree:true,childList:true,characterData:true});sync();}
+})();
+</script>
 </body>
 </html>
