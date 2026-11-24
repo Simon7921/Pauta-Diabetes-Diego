@@ -140,6 +140,8 @@
     $("meals").innerHTML = C.MEALS.map(function (m) { return '<button type="button" class="chip" data-m="' + m.id + '" aria-label="Armar plato para ' + esc(m.name) + '" aria-pressed="' + (plate.meal === m.id) + '">' + ico(MEAL_ICON[m.id]) + m.name + "</button>"; }).join("");
     var status = $("mealSelectionStatus"); if (status) status.textContent = "Seleccionada: " + meal(plate.meal).name + " · Toca una comida para agregar alimentos";
     var m = meal(plate.meal), tot = plateTotal(), n = plate.items.length;
+    var ratioEl = $("homeMealRatio"), activeMealRatio = C.ratioForMeal(plate.meal);
+    if (ratioEl) { ratioEl.querySelector("strong").textContent = m.name + " · " + (activeMealRatio == null ? "Sin insulina" : "1:" + activeMealRatio); }
     animateNum($("total"), tot, " g HC");
     $("refHC").textContent = m.hc + " g HC";
     var dif = C.round1(tot - m.hc), df = $("diff");
@@ -243,11 +245,13 @@
   function okBreakfast(f) { return f.cat !== "Acompañamientos" && !NOT_BREAKFAST.test(norm(f.name)); }
   function renderFoods() {
     $("addingTo").textContent = "¡Vamos a elegir! Agregando a: " + meal(plate.meal).name;
+    var currentMealRatio = C.ratioForMeal(plate.meal);
+    $("addingTo").textContent += " · " + (currentMealRatio == null ? "Sin insulina" : "Ratio 1:" + currentMealRatio);
     var bm = breakfastMode(), canFilter = plate.meal === "desayuno" || plate.meal === "once";
     var cats = ["Todos", "Recientes", "Favoritos", "Mis alimentos"]; if (recipes.length) cats.push("Recetas"); cats = cats.concat(Object.keys(C.FOODS).filter(function (c) { return !bm || c !== "Acompañamientos"; }));
     if (cats.indexOf(ui.cat) < 0) ui.cat = "Todos";
     $("cats").innerHTML = (canFilter ? '<button class="chip" id="showAll" aria-pressed="false">' + (ui.showAll ? "Solo " + meal(plate.meal).name.toLowerCase() : "Ver todo") + "</button>" : "") + cats.map(function (c) { return '<button class="chip" data-cat="' + esc(c) + '" aria-pressed="' + (ui.cat === c) + '">' + (c === "Favoritos" ? "★ " : "") + esc(c) + "</button>"; }).join("");
-    if (bm) $("addingTo").textContent = "Agregando a: " + meal(plate.meal).name + " · solo lo de " + meal(plate.meal).name.toLowerCase();
+    if (bm) $("addingTo").textContent = "Agregando a: " + meal(plate.meal).name + " · " + (currentMealRatio == null ? "Sin insulina" : "Ratio 1:" + currentMealRatio) + " · solo lo de " + meal(plate.meal).name.toLowerCase();
     var list = allFoods(), q = norm(ui.q.trim());
     if (ui.cat === "Recientes") list = recent.map(findFood).filter(Boolean);
     else if (ui.cat === "Favoritos") list = list.filter(function (f) { return favFoods.indexOf(f.id) >= 0; });
@@ -465,6 +469,14 @@
     var g = C.num($("pg").value), c = C.num($("pc").value);
     var mealId = plate.meal;
     var activeRatio = C.ratioForMeal(mealId);
+    // Mostrar SIEMPRE la relación exacta usada en esta consulta, incluso con datos pendientes.
+    // La información refleja la comida seleccionada, no un ratio global antiguo.
+    var contextBox = $("pCalcContext");
+    if (contextBox) {
+      var hcLabel = Number.isFinite(c) && c >= 0 ? fmt(c) + " g HC" : "HC pendientes";
+      var ratioLabel = activeRatio == null ? "Sin insulina (colación)" : "1:" + activeRatio;
+      contextBox.innerHTML = "<strong>Ratio utilizado: " + ratioLabel + "</strong><span>" + esc(meal(mealId).name) + " · " + hcLabel + "</span>";
+    }
     if (activeRatio == null) {
       LAST = null;
       $("gState").innerHTML = "";
@@ -496,12 +508,12 @@
   }
   $("save").addEventListener("click", function () {
     if (plate.meal === "colacion") {
-      hist.unshift({ t: Date.now(), meal: "Colación", src: pz.src, g: C.num($("pg").value), c: C.num($("pc").value), dose: null, ap: null, note: "Colación sin insulina según indicación médica" });
+      hist.unshift({ t: Date.now(), meal: "Colación", src: pz.src, g: C.num($("pg").value), c: C.num($("pc").value), dose: null, ap: null, ratio: null, note: "Colación sin insulina según indicación médica" });
       S.saveHistory(hist); toast("Colación registrada sin insulina", "clock"); return;
     }
     if (!LAST) { toast("Primero ingresa la glicemia", "info"); $("pg").focus(); return; }
     var ap = C.num($("ap").value);
-    hist.unshift(Object.assign({ t: Date.now(), meal: meal(plate.meal).name, src: pz.src, ap: isNaN(ap) ? null : ap }, LAST));
+    hist.unshift(Object.assign({ t: Date.now(), meal: meal(plate.meal).name, src: pz.src, ratio: C.ratioForMeal(plate.meal), ap: isNaN(ap) ? null : ap }, LAST));
     S.saveHistory(hist); $("ap").value = ""; toast("Registro guardado. ¡Bien por llevar tu historial al día!", "clock");
   });
 

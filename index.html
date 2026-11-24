@@ -613,6 +613,14 @@ html[data-mode] .nav .in{background:rgba(255,249,241,.97)!important}
 @media(max-width:580px){.schedule-control{gap:7px}.schedule-control .nextbar{flex-basis:100%}.schedule-edit{margin-left:auto;min-height:42px}.meal-helper{font-size:13px}#s-inicio .mgrid{grid-template-columns:repeat(3,minmax(0,1fr))}#s-inicio .mgrid .chip{min-height:76px}}
 @media(max-width:360px){#s-inicio .mgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
+
+/* V24: ratio visible junto al total de carbohidratos */
+#s-inicio .ratio-banner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin:10px 0 4px;padding:12px 14px;border-radius:17px;background:rgba(255,255,255,.75);border:1px solid rgba(46,109,88,.22);color:#255746;font-size:14px;line-height:1.35}
+#s-inicio .ratio-banner__label{font-weight:600;opacity:.88}
+#s-inicio .ratio-banner strong{font-size:17px;font-weight:900;letter-spacing:-.02em;color:#215C4A}
+html[data-mode="dark"] #s-inicio .ratio-banner{background:#142C35;color:#E5FAF3;border-color:#4B7973}
+html[data-mode="dark"] #s-inicio .ratio-banner strong{color:#B3FAE0}
+@media(max-width:380px){#s-inicio .ratio-banner{padding:10px 12px}#s-inicio .ratio-banner strong{font-size:16px}}
 </style>
 <link rel="stylesheet" href="sage-dashboard.css?v=18">
 <style>
@@ -671,7 +679,15 @@ html[data-theme="dark"] .sensor-reminder.is-today,html.dark .sensor-reminder.is-
 @media(max-width:580px){.schedule-control{gap:7px}.schedule-control .nextbar{flex-basis:100%}.schedule-edit{margin-left:auto;min-height:42px}.meal-helper{font-size:13px}#s-inicio .mgrid{grid-template-columns:repeat(3,minmax(0,1fr))}#s-inicio .mgrid .chip{min-height:76px}}
 @media(max-width:360px){#s-inicio .mgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
-</style></head>
+</style>
+<style>
+.ratio-query-summary{display:flex;flex-wrap:wrap;gap:5px 14px;justify-content:space-between;align-items:center;border:2px solid #4c806a;border-radius:14px;padding:12px 14px;margin:12px 0 10px;background:#e8f3e8;color:#234c3d;font-size:14px;line-height:1.4}
+.ratio-query-summary strong{font-size:17px;font-weight:800}
+.ratio-query-summary span{font-size:13px;font-weight:600}
+html[data-mode="dark"] .ratio-query-summary{background:#1e3935;color:#effff7;border-color:#8bc6aa}
+@media(max-width:540px){.ratio-query-summary{display:flex;flex-direction:column;align-items:flex-start;gap:3px;margin:10px 0}.ratio-query-summary strong{font-size:16px}}
+</style>
+</head>
 <body>
 <button type="button" id="mobileMenuButton" class="mobile-menu-button" aria-label="Abrir menú con todas las secciones" aria-controls="mainSidebar" aria-expanded="false"><span aria-hidden="true">☰</span><span>Menú</span></button>
 <div id="mobileMenuScrim" class="mobile-menu-scrim" hidden></div>
@@ -752,6 +768,7 @@ html[data-theme="dark"] .sensor-reminder.is-today,html.dark .sensor-reminder.is-
             <path d="M0 112 C 40 104, 90 96, 140 70" stroke="#38E1C6" stroke-width="3" fill="none" opacity=".7"/>
           </svg><span>Tu plato de hoy</span></div>
       <div class="ph-row"><div class="ph-total" id="total" aria-live="polite">0 g HC</div><button class="btn btn-primary go" data-go="alimentos" id="addFood"></button></div>
+      <div class="ratio-banner" id="homeMealRatio" aria-live="polite"><span class="ratio-banner__label">Ratio de la comida seleccionada</span><strong>Desayuno · 1:20</strong></div>
       <div class="ph-ref" id="phRef"><span class="t2">Pauta de referencia: <b id="refHC">60 g HC</b></span><span class="diff" id="diff" hidden></span></div>
     </div>
     <div class="pastel-shortcuts" aria-label="Accesos directos">
@@ -850,6 +867,7 @@ html[data-theme="dark"] .sensor-reminder.is-today,html.dark .sensor-reminder.is-
         <div><label class="f" for="pg">Glicemia actual</label><div class="inp"><input id="pg" inputmode="decimal" autocomplete="off" placeholder="Ej. 150"><span>mg/dL</span></div></div>
       </div>
       <div class="row" style="margin-top:6px"><button class="lk" id="syncPlate" style="padding:0">Usar total del plato</button><span class="sp"></span><div class="seg" data-k="src" role="group" aria-label="Origen de la medición"><button data-v="sensor" aria-pressed="true">Sensor</button><button data-v="capilar" aria-pressed="false">Capilar</button></div></div>
+      <div class="ratio-query-summary" id="pCalcContext" role="status" aria-live="polite" aria-atomic="true"><strong>Ratio utilizado: —</strong><span>Selecciona la comida y registra los carbohidratos.</span></div>
       <div class="dosebox" id="doseBox" aria-live="polite"></div>
       <div id="gState"></div>
     </div>
