@@ -169,7 +169,7 @@
       var suggestion = C.nextMeal(d, sched()), label = meal(plate.meal).name;
       if (plate.items.length) status.textContent = "Preparando: " + label + " · Puedes cambiar la comida manualmente";
       else if (mealSelectionMode === "manual") status.textContent = "Elegida por ti: " + label + " · Puedes cambiarla cuando quieras";
-      else if (suggestion && suggestion.item.id === plate.meal) status.textContent = "Próxima comida según horario: " + label + " · " + suggestion.item.t + (suggestion.tomorrow ? " (mañana)" : "") + " · Puedes cambiarla";
+      else if (suggestion && suggestion.item.id === plate.meal) status.textContent = "Comida más cercana según horario: " + label + " · " + suggestion.item.t + (suggestion.tomorrow ? " (mañana)" : suggestion.yesterday ? " (ayer)" : "") + " · Puedes cambiarla";
       else status.textContent = "Seleccionada: " + label + " · Puedes cambiarla cuando quieras";
     }
     var m = meal(plate.meal), tot = plateTotal(), n = plate.items.length;

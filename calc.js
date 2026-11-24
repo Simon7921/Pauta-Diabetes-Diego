@@ -73,8 +73,9 @@
     for (var i = 0; i < list.length; i++) { var d = toMin(list[i].t) - cur; if (d > 0) return { item: list[i], minutes: Math.ceil(d), tomorrow: false }; }
     return { item: list[0], minutes: Math.ceil(toMin(list[0].t) + 1440 - cur), tomorrow: true };
   }
-  // Selecciona únicamente la próxima comida o colación; omite eventos de insulina basal.
-  // Horarios interpretados en la zona local del dispositivo. En el minuto exacto, mantiene esa comida.
+  // Comida con hora más cercana, pasada o futura; incluye cruce de medianoche.
+  // No confundir con nextEvent(), que sigue indicando el próximo evento futuro.
+  // En empate entre dos comidas, favorece la futura. Ignora Tresiba basal.
   function nextMeal(now, schedule) {
     var allowed = { desayuno: true, colacion: true, almuerzo: true, once: true, cena: true };
     var list = (schedule || SCHEDULE_DEFAULT).filter(function (x) {
@@ -84,9 +85,16 @@
     var current = now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60;
     var nearest = null;
     list.forEach(function (x) {
-      var m = toMin(x.t), remaining = m - current, tomorrow = remaining < -1 / 60;
-      if (tomorrow) remaining += 1440;
-      if (!nearest || remaining < nearest.minutes) nearest = { item: x, minutes: remaining, tomorrow: tomorrow };
+      var difference = toMin(x.t) - current;
+      if (difference > 720) difference -= 1440; // ayer es más cercano
+      else if (difference < -720) difference += 1440; // mañana es más cercano
+      var distance = Math.abs(difference);
+      if (!nearest || distance < nearest.minutes ||
+          (distance === nearest.minutes && difference >= 0 && nearest.offset < 0)) {
+        nearest = { item: x, minutes: distance, offset: difference,
+          tomorrow: difference > 0 && toMin(x.t) < current,
+          yesterday: difference < 0 && toMin(x.t) > current };
+      }
     });
     return nearest;
   }
