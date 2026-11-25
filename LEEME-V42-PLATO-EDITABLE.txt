@@ -1,0 +1,9 @@
+Diego Familiar V42 — Armar o editar mi plato
+
+Se corrigió el botón en Inicio: si hay alimentos guardados abre un listado con nombres, cantidades y HC.
+Al pulsar uno se puede modificar la cantidad o quitarlo. Se puede agregar otro alimento o volver a Inicio.
+Si no hay alimentos, abre el buscador para iniciar el plato.
+No se modificaron los cálculos de glucosa ni insulina de V41.
+
+Los datos guardados en cada navegador permanecen locales; no asumir sincronización.
+La calculadora no es una herramienta validada clínicamente para administrar insulina.

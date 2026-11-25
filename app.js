@@ -201,6 +201,7 @@
     var m = meal(plate.meal), tot = plateTotal(), n = plate.items.length;
     var uxMeal=document.getElementById('uxMealName'),uxRatio=document.getElementById('uxRatioText'),uxCarbs=document.getElementById('uxCarbCount'),uxFoods=document.getElementById('uxFoodCount'),uxMode=document.getElementById('uxMealMode');
     if(uxMeal){uxMeal.textContent=m.name;uxRatio.textContent=C.ratioForMeal(plate.meal)==null?'Sin insulina para esta comida':'Ratio 1:'+C.ratioForMeal(plate.meal);uxCarbs.innerHTML=fmt(tot)+' <small>g HC</small>';uxFoods.textContent=n+' '+(n===1?'alimento':'alimentos');uxMode.textContent=mealSelectionMode==='manual'?'Elegida por ti':'Según horario';}
+    var plateAction = $('uxEditPlate'); if(plateAction) { plateAction.innerHTML = n ? '✎ Ver o editar mi plato <span>→</span>' : '＋ Armar mi plato <span>→</span>'; plateAction.setAttribute('aria-label', n ? 'Ver o editar los '+n+' alimentos de mi plato' : 'Buscar alimentos para armar mi plato'); }
 
     var ratioEl = $("homeMealRatio"), activeMealRatio = C.ratioForMeal(plate.meal);
     if (ratioEl) { ratioEl.querySelector("strong").textContent = m.name + " · " + (activeMealRatio == null ? "Sin insulina" : "1:" + activeMealRatio); }
@@ -218,6 +219,35 @@
     $("dot").textContent = n || "";
     renderNext();
   }
+  // V42: abrir el plato REAL, no redirigir al buscador al intentar editar.
+  // Los alimentos se mantienen en el dispositivo. No crea registros clínicos.
+  function openPlateEditor() {
+    if (!plate.items.length) { show("alimentos"); return; }
+    var rows = plate.items.map(function(it, i) {
+      return '<button type="button" class="set" data-edit-plate="' + i + '" style="width:100%;text-align:left;min-height:64px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border2)">' +
+        '<span style="font-size:25px" aria-hidden="true">' + thumb(it) + '</span>' +
+        '<span style="flex:1;min-width:0"><b style="display:block">' + esc(it.name) + '</b><small style="display:block">' + esc(qtyTxt(it)) + ' · ' + fmt(it.hc) + ' g HC</small></span>' +
+        '<span aria-hidden="true">✎</span></button>';
+    }).join('');
+    openSheet('<h3 id="shT">✎ Editar mi plato</h3><p class="t2 small">' + esc(meal(plate.meal).name) + ' · ' + plate.items.length + ' alimentos · <b>' + fmt(plateTotal()) + ' g HC</b></p>' +
+      '<p class="t2 small">Toca un alimento para cambiar su cantidad o quitarlo.</p>' +
+      '<div id="plateEditRows">' + rows + '</div>' +
+      '<button type="button" class="btn btn-primary" id="plateEditAdd" style="width:100%;margin-top:14px">＋ Agregar otro alimento</button>' +
+      '<button type="button" class="btn btn-secondary" id="plateEditDone" style="width:100%;margin-top:10px">Listo, volver a Inicio</button>', function (b) {
+        b.querySelectorAll('[data-edit-plate]').forEach(function(button) {
+          button.addEventListener('click', function () {
+            var k = Number(button.getAttribute('data-edit-plate'));
+            var it = plate.items[k]; if (!it) { closeSheet(); return; }
+            var f = findFood(it.fid) || {id:it.fid,name:it.name,hc100:it.hc100,unit:it.unit,kind:'plate'};
+            qtySheet(f,k);
+          });
+        });
+        b.querySelector('#plateEditAdd').onclick = function () { closeSheet(); show('alimentos'); };
+        b.querySelector('#plateEditDone').onclick = closeSheet;
+      });
+  }
+  var uxPlateButton = $('uxEditPlate');
+  if (uxPlateButton) uxPlateButton.addEventListener('click', openPlateEditor);
   $("meals").addEventListener("click", function (e) {
     var b = e.target.closest("[data-m]"); if (!b) return;
     var target = b.dataset.m;
