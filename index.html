@@ -858,12 +858,12 @@ html[data-mode] .nav button .ico{width:22px!important;height:22px!important}
         <label>Carbohidratos <span>g HC</span><input id="homeQuickCarbs" type="text" inputmode="decimal" autocomplete="off" placeholder="Ej. 66,9" aria-describedby="homeQuickDisclaimer"></label>
       </div>
       <div class="home-quickcalc__result" aria-live="polite"><div><span>Componente por carbohidratos</span><strong id="homeQuickFoodValue">— U</strong></div><small>Resultado matemático, NO dosis para inyectar</small></div>
-      <div class="home-quickcalc__visible-formula" role="math" aria-label="Fórmula matemática: glicemia menos ciento diez dividido por cincuenta, más hidratos de carbono dividido por veintidós">
+      <div class="home-quickcalc__visible-formula" role="group" aria-label="Fórmula matemática con valores actualizados de glicemia, carbohidratos y parámetros registrados">
         <p class="home-quickcalc__formula-caption">Fórmula de la doctora · ratio actualizado</p>
         <div class="home-quickcalc__equation">
-          <span class="home-quickcalc__fraction"><span class="home-quickcalc__numerator">Glicemia − 110</span><span class="home-quickcalc__denominator">50</span></span>
+          <span class="home-quickcalc__fraction"><span class="home-quickcalc__numerator" id="homeQuickFormulaGlucose">— − 110</span><span class="home-quickcalc__denominator" id="homeQuickFormulaSensitivity">50</span></span>
           <span class="home-quickcalc__plus">+</span>
-          <span class="home-quickcalc__fraction"><span class="home-quickcalc__numerator">H de C</span><span class="home-quickcalc__denominator" id="homeQuickFormulaRatio">22</span></span>
+          <span class="home-quickcalc__fraction"><span class="home-quickcalc__numerator" id="homeQuickFormulaCarbs">—</span><span class="home-quickcalc__denominator" id="homeQuickFormulaRatio">22</span></span>
         </div>
         <p class="home-quickcalc__formula-foot">Fórmula matemática visible para comprobar los componentes. No determina por sí sola la dosis a administrar.</p>
       </div>
@@ -1300,9 +1300,9 @@ html[data-mode] .nav button .ico{width:22px!important;height:22px!important}
   var fig=readJSON('diego.v3.prefs',{});window.diegoChooseFigure(fig&&fig.fig==='bike'?'bike':'ball');
 })();
 </script>
-<script src="calc.js?v=40"></script>
+<script src="calc.js?v=43"></script>
 <script src="store.js"></script>
-<script src="app.js?v=40"></script>
+<script src="app.js?v=43"></script>
 <script src="bitacora.js?v=30"></script>
 <script src="diego-ai.js?v=31"></script>
 <script src="diego-ai-context.js?v=34"></script>
@@ -1338,8 +1338,16 @@ if($('familyStatus')){new MutationObserver(sync).observe($('familyStatus'),{subt
     var settings=window.Store&&window.Store.create?window.Store.create().loadPauta(window.Calc.PAUTA_DEFAULT):null;
     var target=settings?Number(settings.t):NaN,sensitivity=settings?Number(settings.f):NaN;
     put('homeQuickRatio',ratio?'Ratio 1:'+ratio:'Sin ratio para esta comida');
+    // Los datos visibles en ambas fracciones son los mismos ingresados arriba.
+    // Objetivo/sensibilidad/ratio proceden de Parámetros médicos, nunca de texto fijo.
+    var glucoseOk=Number.isFinite(valG)&&valG>=0&&valG<=600;
+    var carbsOk=Number.isFinite(valC)&&valC>=0&&valC<=500;
+    function numeral(n){return Number(n).toLocaleString('es-CL',{maximumFractionDigits:2});}
+    put('homeQuickFormulaGlucose',(glucoseOk?numeral(valG):'—')+' − '+(Number.isFinite(target)?numeral(target):'—'));
+    put('homeQuickFormulaCarbs',carbsOk?numeral(valC):'—');
+    put('homeQuickFormulaSensitivity',Number.isFinite(sensitivity)&&sensitivity>0?numeral(sensitivity):'—');
     put('homeQuickFormulaRatio',ratio||'—');
-    var valid=ratio&&Number.isFinite(valG)&&Number.isFinite(valC)&&valG>=0&&valG<=600&&valC>=0&&valC<=500&&target===110&&sensitivity===50;
+    var valid=ratio&&glucoseOk&&carbsOk&&target===110&&sensitivity===50;
     var food=valid?valC/ratio:NaN,correction=valid?(valG-target)/sensitivity:NaN;
     put('homeQuickFoodValue',fmt(food));put('homeQuickFoodDetail',fmt(food));put('homeQuickCorrection',fmt(correction));put('homeQuickTotal',fmt(food+correction));
     put('homeQuickParams',target===110&&sensitivity===50?'Fórmula: (glicemia − 110) ÷ 50 + CH ÷ '+(ratio||'ratio')+' · sin reglas clínicas adicionales.':'⚠️ Parámetros guardados diferentes de objetivo 110 y sensibilidad 50. Revisa Parámetros médicos; el cálculo permanece bloqueado.');
@@ -1347,6 +1355,11 @@ if($('familyStatus')){new MutationObserver(sync).observe($('familyStatus'),{subt
   g.addEventListener('input',update);c.addEventListener('input',update);
   var meal=el('uxMealName');if(meal&&window.MutationObserver)new MutationObserver(update).observe(meal,{childList:true,characterData:true,subtree:true});
   document.addEventListener('visibilitychange',function(){if(!document.hidden)update()});
+  window.addEventListener('focus',update);
+  window.addEventListener('pageshow',update);
+  window.addEventListener('storage',update);
+  // La vista Pauta puede editar parámetros sin recargar toda la página.
+  document.addEventListener('click',function(){setTimeout(update,0)});
   update();
 })();
 </script>
