@@ -788,6 +788,16 @@ html[data-mode] .nav button .ico{width:22px!important;height:22px!important}
 [data-mode="dark"] .drops-before-breakfast__message strong,[data-mode="dark"] .drops-before-breakfast__message span{color:#fff6d9}
 @media(max-width:440px){.drops-before-breakfast__done{width:100%}}
 </style>
+
+<style id="home-quickcalc-v40-css">
+.home-quickcalc{margin:14px 0 16px;padding:18px;border-radius:24px;background:linear-gradient(135deg,#172843,#223C59);color:#eef7ff;box-shadow:0 12px 28px #18354d24;border:1px solid #4d688047}
+.home-quickcalc__header{display:flex;align-items:center;justify-content:space-between;gap:8px}.home-quickcalc__header h2{font-size:21px;margin:3px 0 0;color:#fff;letter-spacing:-.03em}.home-quickcalc__eyebrow{font-size:10px;letter-spacing:.14em;color:#91d6e3;font-weight:800}.home-quickcalc__ratio{font-size:12px;color:#c6f3e1;background:#345568;padding:7px 10px;border-radius:100px;white-space:nowrap;font-weight:700}.home-quickcalc__intro{margin:9px 0 14px;color:#c2d5e8;font-size:13px}
+.home-quickcalc__inputs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.home-quickcalc__inputs label{font-size:13px;font-weight:700;color:#e2f0fa;min-width:0}.home-quickcalc__inputs label span{font-size:10px;color:#a9bfd2;font-weight:500}.home-quickcalc__inputs input{display:block;box-sizing:border-box;width:100%;margin-top:7px;height:49px;border-radius:13px;border:1px solid #6a829a;background:#f8fbff;color:#1a2d46;padding:0 12px;font:700 20px inherit;font-size:20px;outline-offset:3px}
+.home-quickcalc__result{background:#10243f;border:1px solid #3a5574;border-radius:17px;margin-top:14px;text-align:center;padding:14px 10px}.home-quickcalc__result>div{display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left}.home-quickcalc__result span{font-size:12px;color:#b9d0e4;line-height:1.3}.home-quickcalc__result strong{font-size:29px;color:#8fe4c2;white-space:nowrap;font-variant-numeric:tabular-nums}.home-quickcalc__result small{display:block;margin-top:7px;color:#b5c8dc;font-size:11px}
+.home-quickcalc__details{margin:10px 0;color:#d7e7fa}.home-quickcalc__details summary{cursor:pointer;list-style:none;text-align:center;padding:7px;font-weight:650;font-size:13px}.home-quickcalc__details summary::-webkit-details-marker{display:none}.home-quickcalc__breakdown{padding:10px;background:#10243f;border-radius:13px}.home-quickcalc__breakdown>div{display:flex;justify-content:space-between;gap:12px;padding:9px 0;font-size:12px;border-bottom:1px solid #4d6177}.home-quickcalc__breakdown strong{white-space:nowrap}.home-quickcalc__breakdown .home-quickcalc__math-total{font-weight:800;border:0}.home-quickcalc__breakdown p{font-size:11px;color:#b7c9dd;margin:8px 0 0}
+.home-quickcalc__warning{padding:10px 12px;background:#354057;border-radius:12px;color:#ffe5b5;font-size:11px;line-height:1.45}
+@media(max-width:375px){.home-quickcalc{padding:13px}.home-quickcalc__header h2{font-size:19px}.home-quickcalc__inputs{gap:7px}.home-quickcalc__result strong{font-size:25px}}
+</style>
 </head>
 <body>
 <button type="button" id="mobileMenuButton" class="mobile-menu-button" aria-label="Abrir menú con todas las secciones" aria-controls="mainSidebar" aria-expanded="false"><span aria-hidden="true">☰</span><span>Menú</span></button>
@@ -827,6 +837,24 @@ html[data-mode] .nav button .ico{width:22px!important;height:22px!important}
       <img class="sage-player" src="player-soft-pastel.webp" alt="Ilustración 3D de futbolista juvenil con pelota" />
       <div class="sage-bike-figure" role="img" aria-label="Ciclista deportivo">🚴‍♂️</div>
       </header>
+
+    <!-- V40: consulta matemática rápida en Inicio; no dosifica ni guarda insulina -->
+    <section class="home-quickcalc" aria-labelledby="homeQuickTitle">
+      <div class="home-quickcalc__header"><div><span class="home-quickcalc__eyebrow">ACCESO DIRECTO</span><h2 id="homeQuickTitle">⚡ Cálculo rápido</h2></div><span class="home-quickcalc__ratio" id="homeQuickRatio">Ratio según comida</span></div>
+      <p class="home-quickcalc__intro">Consulta los componentes de la fórmula sin salir de Inicio.</p>
+      <div class="home-quickcalc__inputs">
+        <label>Glicemia actual <span>mg/dL</span><input id="homeQuickGlucose" type="text" inputmode="decimal" autocomplete="off" placeholder="Ej. 137" aria-describedby="homeQuickDisclaimer"></label>
+        <label>Carbohidratos <span>g HC</span><input id="homeQuickCarbs" type="text" inputmode="decimal" autocomplete="off" placeholder="Ej. 66,9" aria-describedby="homeQuickDisclaimer"></label>
+      </div>
+      <div class="home-quickcalc__result" aria-live="polite"><div><span>Componente por carbohidratos</span><strong id="homeQuickFoodValue">— U</strong></div><small>Resultado matemático, NO dosis para inyectar</small></div>
+      <details class="home-quickcalc__details" id="homeQuickDetails"><summary>Ver corrección y fórmula <span>⌄</span></summary><div class="home-quickcalc__breakdown">
+        <div><span>Comida (CH ÷ ratio)</span><strong id="homeQuickFoodDetail">—</strong></div>
+        <div><span>Corrección ((glicemia − objetivo) ÷ sensibilidad)</span><strong id="homeQuickCorrection">—</strong></div>
+        <div class="home-quickcalc__math-total"><span>Suma matemática, no dosis</span><strong id="homeQuickTotal">—</strong></div>
+        <p id="homeQuickParams">Objetivo y sensibilidad según Parámetros médicos.</p>
+      </div></details>
+      <div class="home-quickcalc__warning" id="homeQuickDisclaimer" role="note">⚠️ No usar este resultado para decidir cuánta Fiasp administrar. No considera insulina activa, hipoglucemias, ejercicio ni redondeo clínico. Sigue la pauta médica vigente.</div>
+    </section>
     <div class="nextbar-shell schedule-control"><button class="nextbar" id="nextPill" aria-label="Ver y editar horarios"></button><button type="button" class="schedule-edit" id="editSchedule" aria-label="Editar los horarios de comidas y recordatorios">✎ <span>Editar horarios</span></button></div>
     <aside class="sensor-reminder" id="sensorReminder" aria-label="Próximo cambio de sensor">
       <div class="sensor-top">
@@ -1252,9 +1280,9 @@ html[data-mode] .nav button .ico{width:22px!important;height:22px!important}
   var fig=readJSON('diego.v3.prefs',{});window.diegoChooseFigure(fig&&fig.fig==='bike'?'bike':'ball');
 })();
 </script>
-<script src="calc.js?v=37"></script>
+<script src="calc.js?v=40"></script>
 <script src="store.js"></script>
-<script src="app.js?v=37"></script>
+<script src="app.js?v=40"></script>
 <script src="bitacora.js?v=30"></script>
 <script src="diego-ai.js?v=31"></script>
 <script src="diego-ai-context.js?v=34"></script>
@@ -1273,6 +1301,32 @@ var targets={meal:'btAddMeal',glucose:'btAddGlucose',low:'btAddLow',exercise:'bt
 document.addEventListener('click',function(e){var b=e.target.closest('[data-ux-record]');if(!b)return;var which=b.getAttribute('data-ux-record');if(!dialog.hidden)close();var tab=document.querySelector('.nav button[data-go="bitacora"]');if(tab)tab.click();setTimeout(function(){var btn=$(targets[which]);if(btn)btn.click();},45);});
 function sync(){var status=$('familyStatus'),dest=$('uxSyncText');if(!status||!dest)return;var s=status.textContent.trim();dest.textContent= /sincronizad/i.test(s)?'✓ '+s:'◌ '+(s||'Sin sincronización verificada')+' · Comprueba el estado antes de confiar en la nube';}
 if($('familyStatus')){new MutationObserver(sync).observe($('familyStatus'),{subtree:true,childList:true,characterData:true});sync();}
+})();
+</script>
+
+<script id="home-quickcalc-v40-script">
+(function(){'use strict';
+  var el=function(id){return document.getElementById(id)};
+  var g=el('homeQuickGlucose'),c=el('homeQuickCarbs');if(!g||!c)return;
+  function parse(v){var t=String(v).trim().replace(',','.');if(!t||!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(t))return NaN;return Number(t)}
+  function fmt(v){return Number.isFinite(v)?v.toLocaleString('es-CL',{minimumFractionDigits:2,maximumFractionDigits:2})+' U':'—'}
+  function put(id,val){el(id).textContent=val}
+  function update(){
+    var valG=parse(g.value), valC=parse(c.value);
+    var meal=(el('uxMealName')&&el('uxMealName').textContent||'').trim().toLowerCase();
+    var ratio=window.Calc&&window.Calc.ratioForMeal?window.Calc.ratioForMeal(meal):null;
+    var settings=window.Store&&window.Store.create?window.Store.create().loadPauta(window.Calc.PAUTA_DEFAULT):null;
+    var target=settings?Number(settings.t):NaN,sensitivity=settings?Number(settings.f):NaN;
+    put('homeQuickRatio',ratio?'Ratio 1:'+ratio:'Sin ratio para esta comida');
+    var valid=ratio&&Number.isFinite(valG)&&Number.isFinite(valC)&&valG>=0&&valG<=600&&valC>=0&&valC<=500&&target===110&&sensitivity===50;
+    var food=valid?valC/ratio:NaN,correction=valid?(valG-target)/sensitivity:NaN;
+    put('homeQuickFoodValue',fmt(food));put('homeQuickFoodDetail',fmt(food));put('homeQuickCorrection',fmt(correction));put('homeQuickTotal',fmt(food+correction));
+    put('homeQuickParams',target===110&&sensitivity===50?'Fórmula: (glicemia − 110) ÷ 50 + CH ÷ '+(ratio||'ratio')+' · sin reglas clínicas adicionales.':'⚠️ Parámetros guardados diferentes de objetivo 110 y sensibilidad 50. Revisa Parámetros médicos; el cálculo permanece bloqueado.');
+  }
+  g.addEventListener('input',update);c.addEventListener('input',update);
+  var meal=el('uxMealName');if(meal&&window.MutationObserver)new MutationObserver(update).observe(meal,{childList:true,characterData:true,subtree:true});
+  document.addEventListener('visibilitychange',function(){if(!document.hidden)update()});
+  update();
 })();
 </script>
 </body>

@@ -1,0 +1,1 @@
+V40 - Cálculo rápido en Inicio. Glicemia y CH editables, desglose matemático de corrección bajo panel desplegable. NO aconseja ni registra dosis y bloquea resultado si objetivo/sensibilidad guardados difieren de 110/50. Usa ratio vigente por comida; colaciones sin ratio. No modifica fórmula previa ni ajustes médicos.
