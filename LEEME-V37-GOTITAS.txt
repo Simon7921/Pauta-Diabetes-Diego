@@ -1,0 +1,10 @@
+Diego Familiar V37 — Recordatorio de gotitas antes del desayuno
+
+- Al seleccionar DESAYUNO aparece un aviso destacado en Inicio y Alimentos: «Antes del desayuno: ¡recuerda tus gotitas!».
+- Botón «Ya las tomó» registra la confirmación de ese día solo en este dispositivo.
+- La alerta reaparece al día siguiente. No envía notificaciones push si la app está cerrada.
+- Se mantiene el pequeño aviso de la mañana presente desde V36.
+- Se conserva sin modificaciones el cálculo de Fiasp, sus parámetros, la bitácora, Firebase y el resto de la V36.
+- La indicación de vitamina D debe seguir la prescripción actual de su médico; no se modifica automáticamente aquí.
+- La calculadora de insulina no está validada clínicamente para decidir dosis.
+- No incorporar datos médicos reales a un sitio sin acceso privado verificado.

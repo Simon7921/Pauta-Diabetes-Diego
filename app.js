@@ -40,6 +40,21 @@
   // V35: la pauta vigente usa C.ratioForMeal, nunca el campo heredado P.r.
   // Sólo para mostrar coherencia con el ratio actual de desayuno.
   P = Object.assign({}, P, {r: C.ratioForMeal('desayuno')});
+  // V36: Nunca reinterpretar un parámetro heredado como si estuviera confirmado.
+  // Si este navegador tiene un valor diferente al comunicado, se muestra advertencia
+  // y se BLOQUEA la visualización del resultado matemático hasta revisar parámetros.
+  var clinicalMismatch = !(Number(P.t) === 110 && Number(P.f) === 50);
+  var medicalAuditKey = 'diego.v36.medicalAudit';
+  function auditMedicalChange(before, after, reason) {
+    try {
+      var items = JSON.parse(localStorage.getItem(medicalAuditKey) || '[]');
+      if (!Array.isArray(items)) items = [];
+      items.unshift({at:new Date().toISOString(),before:before,after:after,reason:reason});
+      localStorage.setItem(medicalAuditKey,JSON.stringify(items.slice(0,100)));
+    } catch(e) {}
+  }
+  function clinicalWarning() {return clinicalMismatch ? 'La configuración guardada en este dispositivo NO coincide con objetivo 110 y sensibilidad 50. Revisa Parámetros médicos. No se muestra el cálculo.' : '';}
+
   var custom = S.loadCustom(), recipes = S.loadRecipes(), favs = S.loadFavs(), plate = S.loadPlate();
   var usage = S.loadUsage(), hist = S.loadHistory(), rules = S.loadRules(), prefs = S.loadPrefs();
   var recent = S.loadList("recent"), favFoods = S.loadList("favFoods");
@@ -151,14 +166,22 @@
   function renderDrops(h) {
     var el = $("hello"), morning = h >= 5 && h < 12, pending = morning && !dropsDone();
     el.classList.toggle("drops", pending);
-    el.setAttribute("role", pending ? "button" : "text"); el.setAttribute("aria-label", pending ? "¿Tomaste tus 5 gotitas de vitamina D? Toca para marcar" : el.textContent); el.tabIndex = pending ? 0 : -1;
-    el.textContent = pending ? "💧 ¿Tomaste tus gotitas?" : morning ? "✓ Gotitas listas" : "¡Vamos, Diego! ⚡";
+    el.setAttribute("role", pending ? "button" : "text"); el.setAttribute("aria-label", pending ? "¿Tomaste tus gotitas de vitamina D? Toca para marcar" : el.textContent); el.tabIndex = pending ? 0 : -1;
+    el.textContent = pending ? "💧 ¿Tomaste tus gotitas?" : morning && dropsDone() ? "✓ Gotitas listas" : "¡Vamos, Diego! ⚡";
+    // El aviso destacado se muestra al preparar DESAYUNO, sin depender del reloj.
+    // La confirmación se conserva solamente en este dispositivo y para el día actual.
+    ["dropsBreakfastHome", "dropsBreakfastFoods"].forEach(function(id) {
+      var banner = $(id);
+      if (banner) banner.hidden = plate.meal !== "desayuno" || dropsDone();
+    });
   }
   function markDrops() {
-    if (!$("hello").classList.contains("drops")) return;
+    if (dropsDone()) return;
+    // La confirmación siempre es una acción explícita de la familia.
     try { localStorage.setItem("diego.v3.drops", todayKey()); } catch (e) {}
     renderDrops(new Date().getHours()); toast("¡Listo! Gotitas tomadas 💧", "check");
   }
+  document.querySelectorAll("[data-mark-drops]").forEach(function(btn){btn.addEventListener("click",markDrops);});
   $("hello").addEventListener("click", markDrops);
   $("hello").addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); markDrops(); } });
   function renderInicio() {
@@ -286,6 +309,7 @@
     $("addingTo").textContent = "¡Vamos a elegir! Agregando a: " + meal(plate.meal).name;
     var currentMealRatio = C.ratioForMeal(plate.meal);
     $("addingTo").textContent += " · " + (currentMealRatio == null ? "Sin insulina" : "Ratio 1:" + currentMealRatio);
+    renderDrops(new Date().getHours());
     var bm = breakfastMode(), canFilter = plate.meal === "desayuno" || plate.meal === "once";
     var cats = ["Todos", "Recientes", "Favoritos", "Mis alimentos"]; if (recipes.length) cats.push("Recetas"); cats = cats.concat(Object.keys(C.FOODS).filter(function (c) { return !bm || c !== "Acompañamientos"; }));
     if (cats.indexOf(ui.cat) < 0) ui.cat = "Todos";
@@ -523,6 +547,12 @@
       $("result").innerHTML = note("info", "Indicación médica comunicada", "Las colaciones no llevan insulina. Si hay una glucosa baja o alta, sigue el plan específico de la diabetóloga; esta pantalla no calcula correcciones.");
       return;
     }
+    if (clinicalMismatch) {
+      LAST = null;
+      $("doseBox").innerHTML = '<div class="lab">Revisión de parámetros pendiente</div><div class="dv">Bloqueado</div>';
+      $("result").innerHTML = note('danger','Parámetros diferentes a los confirmados',esc(clinicalWarning())+' Ve a Ajustes → Parámetros médicos. No se puede usar para decidir una dosis.');
+      return;
+    }
     var effectiveP = Object.assign({}, P, { r: activeRatio });
     var r = C.dose({ g: g, c: c, P: effectiveP, recent: pz.recent, sport: pz.sport, sym: pz.sym }), out = [];
     var st = "";
@@ -532,14 +562,18 @@
     var box = "";
     if (!r.valid) { LAST = null; box = '<div class="lab">Dosis según la fórmula</div><div class="dv">—<small>U</small></div><div class="brk">Ingresa la glicemia</div>'; }
     else if (r.hypo) {
-      LAST = { g: g, c: c || 0, dose: 0, hypo: 1 };
+      LAST = { g:g, c:c || 0, dose:null, hypo:1 };
       box = '<div class="lab">Hipoglucemia</div><div class="dv stop">No inyectar</div><div class="brk">Primero hay que tratar la hipoglucemia</div>';
       out.push('<div class="note danger">' + ico("alert") + "<div><b>Qué hacer ahora</b>15 g de azúcar rápida (jugo, tabletas o azúcar en agua). Medir de nuevo a los 15 minutos y repetir si sigue bajo 70. Al recuperarse, volver a revisar la comida.</div></div>");
     } else {
-      LAST = { g: g, c: c || 0, dose: r.main, corr: r.corr, food: r.food, recent: pz.recent, sport: pz.sport };
-      box = '<div class="lab">' + (r.mode === "food-only" ? "Dosis: solo la parte de la comida" : "Dosis según la fórmula") + '</div><div class="dv">' + dec2(r.main) + "<small>U</small></div>" +
-        '<div class="brk">' + (r.mode === "food-only" ? "Comida <b>" + fmt(r.food) + "</b> · corrección no sumada" : "Corrección <b>" + fmt(r.corr) + "</b> + Comida <b>" + fmt(r.food) + "</b>") + "</div>" +
-        '<div class="rnd">Con decimales. El redondeo lo haces tú, según tu equipo.</div>';
+      // La cifra es SOLO una simulación matemática, no una dosis recomendada.
+      // Nunca guardar como unidades administradas la simulación automática.
+      LAST = { g:g, c:c || 0, dose:null, corr:null, food:null, recent:pz.recent, sport:pz.sport };
+      box = '<div class="lab">SIMULACIÓN MATEMÁTICA — NO ES DOSIS PARA INYECTAR</div><div class="dv">' + dec2(r.main) + "<small>U teóricas</small></div>" +
+        '<div class="brk">Sensibilidad ' + dec2(P.f) + ' · objetivo ' + dec2(P.t) + ' · ratio 1:' + activeRatio + '</div>' +
+        '<div class="brk">Comida ' + dec2(r.food) + ' U matemáticas; corrección ' + dec2(r.corr) + ' U matemáticas. La opción de bolo reciente no estima con precisión la insulina activa.</div>' +
+        '<div class="rnd"><b>NO administrar insulina basándose en esta cifra.</b> No incorpora toda la insulina activa ni valida tendencia, ejercicio o redondeo. Usar la pauta médica vigente.</div>';
+      out.push(note('danger','No es una indicación de insulina','Este resultado es orientativo y NO puede utilizarse para decidir una inyección. Verifica la pauta escrita y las condiciones actuales con el equipo tratante.'));
     }
     $("doseBox").innerHTML = box;
     r.warnings.forEach(function (w) { if (w === "hipo") return; if (NOTES[w]) { var n = NOTES[w](r); out.push(note(n[0], n[1], n[2])); } });
@@ -552,7 +586,7 @@
     }
     if (!LAST) { toast("Primero ingresa la glicemia", "info"); $("pg").focus(); return; }
     var ap = C.num($("ap").value);
-    hist.unshift(Object.assign({ t: Date.now(), meal: meal(plate.meal).name, src: pz.src, ratio: C.ratioForMeal(plate.meal), ap: isNaN(ap) ? null : ap }, LAST));
+    hist.unshift(Object.assign({ t: Date.now(), meal: meal(plate.meal).name, src: pz.src, ratio: C.ratioForMeal(plate.meal), ap: isNaN(ap) ? null : ap, dose:null, note:'Unidades aplicadas ingresadas manualmente; no calculadas por la app.' }, LAST));
     S.saveHistory(hist); $("ap").value = ""; toast("Registro guardado. ¡Bien por llevar tu historial al día!", "clock");
   });
 
@@ -607,14 +641,32 @@
       '<label class="f" for="pT">Glucosa objetivo</label><div class="inp"><input id="pT" inputmode="decimal" value="' + dec(P.t) + '"' + dis + "><span>mg/dL</span></div>" +
       '<label class="f" for="pF" style="margin-top:10px">Factor de sensibilidad</label><div class="inp"><input id="pF" inputmode="decimal" value="' + dec(P.f) + '"' + dis + "><span>mg/dL</span></div>" +
       '<p class="t2 small" style="margin-top:12px"><b>Ratios vigentes por comida:</b> Desayuno 1:' + C.ratioForMeal('desayuno') + ' · Almuerzo 1:' + C.ratioForMeal('almuerzo') + ' · Once 1:' + C.ratioForMeal('once') + ' · Cena 1:' + C.ratioForMeal('cena') + '. Colaciones sin insulina. Edición protegida con historial.</p>' +
-      '<div class="err" id="pE" role="alert"></div>' + (unlocked ? '<button class="btn btn-primary" id="pSave" style="margin-top:12px">Guardar parámetros</button><button class="btn btn-ghost" id="pReset" style="margin-top:8px">Volver a la epicrisis (110 · 50 · 12)</button>' : '<button class="btn btn-secondary" id="pUnlock" style="margin-top:12px">' + ico("lock", "s") + "Desbloquear edición</button>"), function (b) {
+      (unlocked ? '<label class="f" for="pReason">Origen y motivo de la indicación (obligatorio)</label><input id="pReason" maxlength="180" placeholder="Ej. indicación de diabetóloga y fecha" style="width:100%;padding:12px;border:1px solid #a9b9ad;border-radius:12px"/><label style="display:flex;align-items:flex-start;gap:10px;margin:12px 0"><input type="checkbox" id="pAck" style="min-width:20px;min-height:20px"/>Confirmo que estos valores fueron indicados por el equipo tratante.</label>' : '') +
+      '<div class="err" id="pE" role="alert"></div><button class="btn btn-secondary" id="pHistory" style="margin:10px 0">Ver historial de objetivo y sensibilidad</button>' + (unlocked ? '<button class="btn btn-primary" id="pSave" style="margin-top:12px">Guardar parámetros</button><button class="btn btn-ghost" id="pReset" style="margin-top:8px">Volver a la epicrisis (110 · 50 · 12)</button>' : '<button class="btn btn-secondary" id="pUnlock" style="margin-top:12px">' + ico("lock", "s") + "Desbloquear edición</button>"), function (b) {
+      var mh=b.querySelector('#pHistory'); if(mh) mh.onclick=function(){
+        var events=[];try{events=JSON.parse(localStorage.getItem(medicalAuditKey)||'[]')||[];}catch(e){}
+        openSheet('<h3 id="shT">Historial de objetivo y sensibilidad</h3><p>Solo se guarda en este teléfono. No se sincroniza.</p>'+ (events.length?events.map(function(e){return '<p class="note info"><b>'+esc(new Date(e.at).toLocaleString('es-CL'))+'</b> · '+esc(e.reason)+' · Objetivo '+esc(e.before.t)+' → '+esc(e.after.t)+' · Sensibilidad '+esc(e.before.f)+' → '+esc(e.after.f)+'</p>';}).join(''):'<p>Sin cambios registrados en esta versión.</p>')+'<button class="btn btn-secondary" id="backMed">Volver</button>',function(v){v.querySelector('#backMed').onclick=function(){paramsSheet(false);};});
+      };
       var u = b.querySelector("#pUnlock"); if (u) u.onclick = function () { confirmModal({ title: "¿Desbloquear parámetros?", text: "Cambiarlos afecta todos los cálculos. Hazlo solo si el equipo médico indicó una pauta nueva.", ok: "Desbloquear", onOk: function () { paramsSheet(true); } }); };
       var sv = b.querySelector("#pSave"); if (sv) sv.onclick = function () {
         var t = C.num(b.querySelector("#pT").value), f = C.num(b.querySelector("#pF").value), r = C.ratioForMeal("desayuno");
         if (!(t >= 60 && t <= 200 && f > 0 && f <= 300)) { b.querySelector("#pE").textContent = "Revisa los valores: objetivo 60–200 y sensibilidad mayor que 0."; return; }
-        P = { t: t, f: f, r: r }; S.savePauta(P); closeSheet(); renderPerfil(); renderParams(); toast("Parámetros guardados", "lock");
+        var reason=b.querySelector('#pReason').value.trim();
+        if(reason.length < 5 || !b.querySelector('#pAck').checked){ b.querySelector('#pE').textContent='Indica la fuente médica y confirma el cambio antes de guardar.';return; }
+        var before={t:P.t,f:P.f}, after={t:t,f:f};
+        confirmModal({title:'Confirmar cambio clínico',text:'Antes: objetivo '+before.t+' / sensibilidad '+before.f+'. Nuevo: objetivo '+after.t+' / sensibilidad '+after.f+'. Esta calculadora NO está validada para dosificar.',ok:'Guardar y registrar',onOk:function(){
+          P={t:t,f:f,r:r};S.savePauta(P);auditMedicalChange(before,after,reason);
+          clinicalMismatch=!(Number(P.t)===110 && Number(P.f)===50);
+          closeSheet();renderPerfil();renderParams();compute();toast('Parámetros registrados','lock');
+        }});
       };
-      var rs = b.querySelector("#pReset"); if (rs) rs.onclick = function () { P = Object.assign({}, C.PAUTA_DEFAULT); try { localStorage.removeItem(S.KEYS.pauta); } catch (e) {} closeSheet(); renderPerfil(); renderParams(); toast("Valores de referencia restaurada", "lock"); };
+      var rs = b.querySelector("#pReset"); if (rs) rs.onclick = function () {
+        confirmModal({title:'Restablecer valores comunicados',text:'Objetivo 110 y sensibilidad 50. Solo confirma si siguen siendo los valores indicados por la médica. No usar la simulación para administrar insulina.',ok:'Confirmar restablecimiento',onOk:function(){
+          var before={t:P.t,f:P.f};P=Object.assign({},C.PAUTA_DEFAULT);S.savePauta(P);
+          auditMedicalChange(before,{t:P.t,f:P.f},'Restablecimiento confirmado manualmente a valores familiares 24/11/2026');
+          clinicalMismatch=false;closeSheet();renderPerfil();renderParams();compute();toast('Valores confirmados y registrados','lock');
+        }});
+      };
     });
   }
   // Ratios con trazabilidad local, confirmación explícita y sin alterar cálculos históricos.

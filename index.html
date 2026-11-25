@@ -775,6 +775,19 @@ html[data-mode] .nav button .ico{width:22px!important;height:22px!important}
 @media(max-width:360px){.ux-fab span{display:none}.ux-fab{padding:12px 17px}.ux-shortcuts button{font-size:11px}.ux-hub-count strong{font-size:35px}}
 .ux-quick-backdrop[hidden],.ux-quick-dialog[hidden]{display:none!important}
 </style>
+<style id="diego-v37-drops-style">
+.drops-before-breakfast{box-sizing:border-box;display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:12px 0 16px;padding:15px 16px;border:2px solid #b68e35;border-radius:18px;background:#fff1c7;color:#3f310d;box-shadow:0 4px 14px rgba(106,75,19,.10)}
+.drops-before-breakfast[hidden]{display:none!important}
+.drops-before-breakfast__icon{font-size:28px;line-height:1}
+.drops-before-breakfast__message{flex:1 1 185px;display:flex;flex-direction:column;gap:3px}
+.drops-before-breakfast__message strong{font-size:1.05rem;line-height:1.32;color:#3f310d}
+.drops-before-breakfast__message span{font-size:.88rem;color:#675018}
+.drops-before-breakfast__done{background:#273d31;color:#fff;border:0;border-radius:12px;padding:12px 14px;min-height:44px;font-weight:750;cursor:pointer}
+.drops-before-breakfast__done:focus-visible{outline:3px solid #2a77c4;outline-offset:3px}
+[data-mode="dark"] .drops-before-breakfast{background:#35331e;border-color:#a89957;color:#fff6d9}
+[data-mode="dark"] .drops-before-breakfast__message strong,[data-mode="dark"] .drops-before-breakfast__message span{color:#fff6d9}
+@media(max-width:440px){.drops-before-breakfast__done{width:100%}}
+</style>
 </head>
 <body>
 <button type="button" id="mobileMenuButton" class="mobile-menu-button" aria-label="Abrir menú con todas las secciones" aria-controls="mainSidebar" aria-expanded="false"><span aria-hidden="true">☰</span><span>Menú</span></button>
@@ -827,6 +840,11 @@ html[data-mode] .nav button .ico{width:22px!important;height:22px!important}
         <p>La app avisará aquí desde 3 días antes. Después del cambio, continuará cada 14 días. Si cambian el sensor antes, ajusta la fecha.</p>
         <div class="sensor-actions"><button id="sensorSave" type="button">Guardar fecha</button><button id="sensorCancel" type="button">Cancelar</button></div>
       </div>
+    </aside>
+    <aside class="drops-before-breakfast" id="dropsBreakfastHome" role="note" aria-live="polite" hidden>
+      <span class="drops-before-breakfast__icon" aria-hidden="true">💧</span>
+      <div class="drops-before-breakfast__message"><strong>Antes del desayuno: ¡recuerda tus gotitas!</strong><span>Vitamina D, según la indicación médica vigente.</span></div>
+      <button type="button" class="drops-before-breakfast__done" data-mark-drops="true">✓ Ya las tomó</button>
     </aside>
     <section class="ux-hub card" aria-label="Resumen y accesos rápidos">
       <div class="ux-hub-top"><div><span class="ux-eyebrow">TU COMIDA ACTUAL</span><h2 id="uxMealName">Desayuno</h2><p id="uxRatioText">Ratio 1:22 · se actualiza con la comida</p></div><span class="ux-pill" id="uxMealMode">Según horario</span></div>
@@ -898,6 +916,11 @@ html[data-mode] .nav button .ico{width:22px!important;height:22px!important}
   <!-- 2. EXPLORADOR DE ALIMENTOS -->
   <section class="screen" id="s-alimentos" hidden>
     <header class="top pastel-pagehead"><div><div class="eyebrow">EXPLORA · COMBINA · DISFRUTA</div><h1 class="h1">Alimentos <span aria-hidden="true">🍎</span></h1><div class="hello" id="addingTo"></div></div><button class="avatar" data-go="perfil" aria-label="Perfil y configuración">D</button></header>
+    <aside class="drops-before-breakfast" id="dropsBreakfastFoods" role="note" aria-live="polite" hidden>
+      <span class="drops-before-breakfast__icon" aria-hidden="true">💧</span>
+      <div class="drops-before-breakfast__message"><strong>Antes del desayuno: ¡recuerda tus gotitas!</strong><span>Vitamina D, según la indicación médica vigente.</span></div>
+      <button type="button" class="drops-before-breakfast__done" data-mark-drops="true">✓ Ya las tomó</button>
+    </aside>
     <div class="food-intro" aria-hidden="true"><div class="food-illus">🥐 <span>🍎</span> 🥛</div><div><b>¡Arma algo rico!</b><small>Tus alimentos, todos a mano</small></div></div>
     <div class="food-walkthrough" aria-label="Cómo preparar tu plato">
       <strong>¡Vamos a armar tu plato! 🍽️</strong>
@@ -968,7 +991,7 @@ html[data-mode] .nav button .ico{width:22px!important;height:22px!important}
       </div>
       <div class="row" style="margin-top:6px"><button class="lk" id="syncPlate" style="padding:0">Usar total del plato</button><span class="sp"></span><div class="seg" data-k="src" role="group" aria-label="Origen de la medición"><button data-v="sensor" aria-pressed="true">Sensor</button><button data-v="capilar" aria-pressed="false">Capilar</button></div></div>
       <div class="ratio-query-summary" id="pCalcContext" role="status" aria-live="polite" aria-atomic="true"><strong>Ratio utilizado: —</strong><span>Selecciona la comida y registra los carbohidratos.</span></div>
-      <div class="dosebox" id="doseBox" aria-live="polite"></div>
+      <div style="padding:12px;border:2px solid #ad5a38;border-radius:12px;margin:10px 0;font-weight:700" role="alert">⚠️ Simulación matemática solamente. NO utilizar esta pantalla para decidir ni ajustar una dosis de insulina. Revisar pauta médica escrita.</div><div class="dosebox" id="doseBox" aria-live="polite"></div>
       <div id="gState"></div>
     </div>
     <div class="card"><div class="q"><span class="lb">¿Insulina rápida hace menos de 3 h?</span><div class="seg" data-k="recent"><button class="yes" data-v="1" aria-pressed="false">Sí</button><button data-v="0" aria-pressed="true">No</button></div></div>
@@ -1229,9 +1252,9 @@ html[data-mode] .nav button .ico{width:22px!important;height:22px!important}
   var fig=readJSON('diego.v3.prefs',{});window.diegoChooseFigure(fig&&fig.fig==='bike'?'bike':'ball');
 })();
 </script>
-<script src="calc.js?v=35"></script>
+<script src="calc.js?v=37"></script>
 <script src="store.js"></script>
-<script src="app.js?v=35"></script>
+<script src="app.js?v=37"></script>
 <script src="bitacora.js?v=30"></script>
 <script src="diego-ai.js?v=31"></script>
 <script src="diego-ai-context.js?v=34"></script>

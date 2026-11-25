@@ -1,0 +1,16 @@
+DIEGO FAMILIAR V36 — REVISIÓN DE SEGURIDAD (24/11/2026)
+
+PARÁMETROS DE REFERENCIA comunicados: objetivo 110 mg/dL, sensibilidad 50 mg/dL/U, ratio 1:22 en desayuno/almuerzo/once/cena.
+
+Cambios:
+- Detecta parámetros guardados diferentes de objetivo 110 y sensibilidad 50; bloquea la simulación y exige revisión manual. No sobrescribe silenciosamente valores del usuario.
+- La pantalla muestra SIMULACIÓN MATEMÁTICA, no una dosis que deba administrarse; advierte que no incorpora bien insulina activa, ejercicio, tendencia o redondeo clínico.
+- Las simulaciones no se guardan como dosis administradas. Solo se registra una dosis real si el usuario la ingresa manualmente en su casilla.
+- Cambios de objetivo/sensibilidad requieren motivo, confirmación y dejan historial local. Los ratios conservan historial local de V35.
+- Historial y demás funciones existentes conservadas.
+
+ADVERTENCIA: aplicación NO validada clínicamente y NO apta para decidir dosis de insulina. Consultar con el equipo de diabetes.
+
+PRIVACIDAD: este paquete no lleva un historial médico precargado. GitHub Pages es público si se publica como sitio abierto; no cargar información médica real sin validar Access y Firestore.
+
+INSTALACIÓN: subir el contenido del ZIP (o ZIP mediante implementación directa en Cloudflare Pages). Para GitHub: descomprimir y subir archivos, no solo el ZIP.
