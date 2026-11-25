@@ -1,0 +1,1 @@
+V41: En Inicio, debajo del componente por carbohidratos, ahora aparece SIEMPRE visible la fórmula escrita por la doctora: (Glicemia − 110)/50 + (H de C)/22. El denominador de H de C refleja el ratio de la comida seleccionado, actualmente 22. No se modificó el algoritmo de cálculo ni los parámetros de la V40. El resultado sigue siendo una simulación, no una recomendación de dosis.

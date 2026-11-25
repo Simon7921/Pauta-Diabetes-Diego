@@ -790,6 +790,17 @@ html[data-mode] .nav button .ico{width:22px!important;height:22px!important}
 </style>
 
 <style id="home-quickcalc-v40-css">
+/* V41: fórmula médica siempre visible debajo del cálculo rápido */
+.home-quickcalc__visible-formula{margin:10px 0 4px;padding:12px 10px;background:#172a45;border:1px solid #536f86;border-radius:15px;text-align:center}
+.home-quickcalc__formula-caption{font-size:11px;font-weight:750;color:#c8dced;margin:0 0 10px}
+.home-quickcalc__equation{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:nowrap;color:#f7fbff;font-family:Georgia,'Times New Roman',serif;font-size:20px}
+.home-quickcalc__fraction{display:inline-flex;flex-direction:column;align-items:center;line-height:1.2;min-width:0;flex:0 1 auto}
+.home-quickcalc__numerator{border-bottom:1.6px solid #eef6ff;padding:0 6px 4px;white-space:nowrap}
+.home-quickcalc__denominator{padding-top:4px}
+.home-quickcalc__plus{font-size:25px;font-weight:400}
+.home-quickcalc__formula-foot{margin:9px 0 0;font-size:10px;color:#a9c1d8;line-height:1.35}
+@media(max-width:350px){.home-quickcalc__equation{gap:6px;font-size:17px}.home-quickcalc__numerator{padding-left:3px;padding-right:3px}}
+
 .home-quickcalc{margin:14px 0 16px;padding:18px;border-radius:24px;background:linear-gradient(135deg,#172843,#223C59);color:#eef7ff;box-shadow:0 12px 28px #18354d24;border:1px solid #4d688047}
 .home-quickcalc__header{display:flex;align-items:center;justify-content:space-between;gap:8px}.home-quickcalc__header h2{font-size:21px;margin:3px 0 0;color:#fff;letter-spacing:-.03em}.home-quickcalc__eyebrow{font-size:10px;letter-spacing:.14em;color:#91d6e3;font-weight:800}.home-quickcalc__ratio{font-size:12px;color:#c6f3e1;background:#345568;padding:7px 10px;border-radius:100px;white-space:nowrap;font-weight:700}.home-quickcalc__intro{margin:9px 0 14px;color:#c2d5e8;font-size:13px}
 .home-quickcalc__inputs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.home-quickcalc__inputs label{font-size:13px;font-weight:700;color:#e2f0fa;min-width:0}.home-quickcalc__inputs label span{font-size:10px;color:#a9bfd2;font-weight:500}.home-quickcalc__inputs input{display:block;box-sizing:border-box;width:100%;margin-top:7px;height:49px;border-radius:13px;border:1px solid #6a829a;background:#f8fbff;color:#1a2d46;padding:0 12px;font:700 20px inherit;font-size:20px;outline-offset:3px}
@@ -847,6 +858,15 @@ html[data-mode] .nav button .ico{width:22px!important;height:22px!important}
         <label>Carbohidratos <span>g HC</span><input id="homeQuickCarbs" type="text" inputmode="decimal" autocomplete="off" placeholder="Ej. 66,9" aria-describedby="homeQuickDisclaimer"></label>
       </div>
       <div class="home-quickcalc__result" aria-live="polite"><div><span>Componente por carbohidratos</span><strong id="homeQuickFoodValue">— U</strong></div><small>Resultado matemático, NO dosis para inyectar</small></div>
+      <div class="home-quickcalc__visible-formula" role="math" aria-label="Fórmula matemática: glicemia menos ciento diez dividido por cincuenta, más hidratos de carbono dividido por veintidós">
+        <p class="home-quickcalc__formula-caption">Fórmula de la doctora · ratio actualizado</p>
+        <div class="home-quickcalc__equation">
+          <span class="home-quickcalc__fraction"><span class="home-quickcalc__numerator">Glicemia − 110</span><span class="home-quickcalc__denominator">50</span></span>
+          <span class="home-quickcalc__plus">+</span>
+          <span class="home-quickcalc__fraction"><span class="home-quickcalc__numerator">H de C</span><span class="home-quickcalc__denominator" id="homeQuickFormulaRatio">22</span></span>
+        </div>
+        <p class="home-quickcalc__formula-foot">Fórmula matemática visible para comprobar los componentes. No determina por sí sola la dosis a administrar.</p>
+      </div>
       <details class="home-quickcalc__details" id="homeQuickDetails"><summary>Ver corrección y fórmula <span>⌄</span></summary><div class="home-quickcalc__breakdown">
         <div><span>Comida (CH ÷ ratio)</span><strong id="homeQuickFoodDetail">—</strong></div>
         <div><span>Corrección ((glicemia − objetivo) ÷ sensibilidad)</span><strong id="homeQuickCorrection">—</strong></div>
@@ -1318,6 +1338,7 @@ if($('familyStatus')){new MutationObserver(sync).observe($('familyStatus'),{subt
     var settings=window.Store&&window.Store.create?window.Store.create().loadPauta(window.Calc.PAUTA_DEFAULT):null;
     var target=settings?Number(settings.t):NaN,sensitivity=settings?Number(settings.f):NaN;
     put('homeQuickRatio',ratio?'Ratio 1:'+ratio:'Sin ratio para esta comida');
+    put('homeQuickFormulaRatio',ratio||'—');
     var valid=ratio&&Number.isFinite(valG)&&Number.isFinite(valC)&&valG>=0&&valG<=600&&valC>=0&&valC<=500&&target===110&&sensitivity===50;
     var food=valid?valC/ratio:NaN,correction=valid?(valG-target)/sensitivity:NaN;
     put('homeQuickFoodValue',fmt(food));put('homeQuickFoodDetail',fmt(food));put('homeQuickCorrection',fmt(correction));put('homeQuickTotal',fmt(food+correction));
