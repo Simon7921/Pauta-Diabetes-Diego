@@ -1,0 +1,9 @@
+Diego Familiar V46 - correccion de presentacion del calculo rapido
+
+- En Inicio, el valor principal representa la SUMA MATEMATICA de ambos terminos de la formula.
+- Por carbohidratos y correccion por glicemia se muestran siempre por separado.
+- Ejemplo de verificacion: (145-110)/50 + 69.5/22 = 3.8590909... = 3.86 U.
+- Ratio segun comida y parametros medico-sanitarios existentes. NO fueron modificados.
+- No se recalcula ni cambia historial, bitacora ni insulina administrada.
+- NO esta validado para indicar dosis. Puede incluir correcciones negativas, insulina activa no contabilizada, etc.
+- Actualizar ambos despliegues con el contenido del ZIP sin directorio adicional.

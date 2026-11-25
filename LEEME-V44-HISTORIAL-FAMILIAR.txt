@@ -1,0 +1,15 @@
+DIEGO FAMILIAR V44 - IMPORTACIÓN FAMILIAR DEL HISTORIAL
+
+1) No cargar los datos médicos en GitHub Pages público.
+2) En Cloudflare Pages, desplegar el ZIP V44 tras verificar la protección Access.
+3) Bitácora de Diego > Configurar o administrar acceso familiar.
+4) Iniciar sesión en Firebase con cuenta propia, correo verificado, rol propietario/editor; crear o unirse a UN SOLO espacio familiar. Cloudflare Access y Firebase son sesiones diferentes.
+5) Descargar «Respaldo JSON de bitácora» antes de importar.
+6) Seleccionar «Diego-Historial-28-Registros-IMPORTAR-FAMILIA.json» (archivo separado), revisar duplicados y confirmar importación.
+7) Tres casos pendientes están EXCLUIDOS: 22/11 23:13, 18/11 22:00, 16/11 12:21. Validarlos antes de agregarlos manualmente.
+8) En teléfonos de familiares, autenticar en Cloudflare Y Firebase, aceptar invitación al mismo ID de familia.
+9) Esta función comparte solo la BITÁCORA; no unifica automáticamente pauta, recetas, parámetros ni resúmenes de LibreView.
+10) Verificar reglas reales de Firestore y bloquear correos ajenos. No validar dosis con la app.
+
+Respaldo transcrito: cifras de fórmula y dosis aplicada se preservan SIN recalcular.
+Las etiquetas por hora son correcciones tentativas, no hechos clínicos comprobados.

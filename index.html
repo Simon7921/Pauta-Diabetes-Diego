@@ -807,6 +807,7 @@ html[data-mode] .nav button .ico{width:22px!important;height:22px!important}
 .home-quickcalc__result{background:#10243f;border:1px solid #3a5574;border-radius:17px;margin-top:14px;text-align:center;padding:14px 10px}.home-quickcalc__result>div{display:flex;align-items:center;justify-content:space-between;gap:10px;text-align:left}.home-quickcalc__result span{font-size:12px;color:#b9d0e4;line-height:1.3}.home-quickcalc__result strong{font-size:29px;color:#8fe4c2;white-space:nowrap;font-variant-numeric:tabular-nums}.home-quickcalc__result small{display:block;margin-top:7px;color:#b5c8dc;font-size:11px}
 .home-quickcalc__details{margin:10px 0;color:#d7e7fa}.home-quickcalc__details summary{cursor:pointer;list-style:none;text-align:center;padding:7px;font-weight:650;font-size:13px}.home-quickcalc__details summary::-webkit-details-marker{display:none}.home-quickcalc__breakdown{padding:10px;background:#10243f;border-radius:13px}.home-quickcalc__breakdown>div{display:flex;justify-content:space-between;gap:12px;padding:9px 0;font-size:12px;border-bottom:1px solid #4d6177}.home-quickcalc__breakdown strong{white-space:nowrap}.home-quickcalc__breakdown .home-quickcalc__math-total{font-weight:800;border:0}.home-quickcalc__breakdown p{font-size:11px;color:#b7c9dd;margin:8px 0 0}
 .home-quickcalc__warning{padding:10px 12px;background:#354057;border-radius:12px;color:#ffe5b5;font-size:11px;line-height:1.45}
+.home-quickcalc__total-label{font-size:13px!important;letter-spacing:.02em;color:#e0f6ff!important;white-space:normal!important}.home-quickcalc__always-breakdown{margin-top:9px;border:1px solid #45617c;border-radius:13px;background:#142c48;padding:6px 12px}.home-quickcalc__always-breakdown>div{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:7px 0}.home-quickcalc__always-breakdown>div+div{border-top:1px solid #45617c}.home-quickcalc__always-breakdown span{font-size:12px;color:#bcd2e7}.home-quickcalc__always-breakdown strong{font-size:17px;color:#eef9ff;font-variant-numeric:tabular-nums;white-space:nowrap}
 @media(max-width:375px){.home-quickcalc{padding:13px}.home-quickcalc__header h2{font-size:19px}.home-quickcalc__inputs{gap:7px}.home-quickcalc__result strong{font-size:25px}}
 </style>
 </head>
@@ -849,7 +850,7 @@ html[data-mode] .nav button .ico{width:22px!important;height:22px!important}
       <div class="sage-bike-figure" role="img" aria-label="Ciclista deportivo">🚴‍♂️</div>
       </header>
 
-    <!-- V40: consulta matemática rápida en Inicio; no dosifica ni guarda insulina -->
+    <!-- V46: resultado principal muestra formula algebraica completa; no dosifica ni guarda insulina -->
     <section class="home-quickcalc" aria-labelledby="homeQuickTitle">
       <div class="home-quickcalc__header"><div><span class="home-quickcalc__eyebrow">ACCESO DIRECTO</span><h2 id="homeQuickTitle">⚡ Cálculo rápido</h2></div><span class="home-quickcalc__ratio" id="homeQuickRatio">Ratio según comida</span></div>
       <p class="home-quickcalc__intro">Consulta los componentes de la fórmula sin salir de Inicio.</p>
@@ -857,7 +858,11 @@ html[data-mode] .nav button .ico{width:22px!important;height:22px!important}
         <label>Glicemia actual <span>mg/dL</span><input id="homeQuickGlucose" type="text" inputmode="decimal" autocomplete="off" placeholder="Ej. 137" aria-describedby="homeQuickDisclaimer"></label>
         <label>Carbohidratos <span>g HC</span><input id="homeQuickCarbs" type="text" inputmode="decimal" autocomplete="off" placeholder="Ej. 66,9" aria-describedby="homeQuickDisclaimer"></label>
       </div>
-      <div class="home-quickcalc__result" aria-live="polite"><div><span>Componente por carbohidratos</span><strong id="homeQuickFoodValue">— U</strong></div><small>Resultado matemático, NO dosis para inyectar</small></div>
+      <div class="home-quickcalc__result" aria-live="polite"><div><span><strong class="home-quickcalc__total-label">TOTAL DE LA FÓRMULA COMPLETA</strong></span><strong id="homeQuickMainTotal">— U</strong></div><small>Resultado algebraico únicamente. NO es una dosis para inyectar.</small></div>
+      <div class="home-quickcalc__always-breakdown" aria-label="Componentes matemáticos de la fórmula">
+        <div><span>Por carbohidratos</span><strong id="homeQuickFoodValue">— U</strong></div>
+        <div><span>Corrección por glicemia</span><strong id="homeQuickCorrectionVisible">— U</strong></div>
+      </div>
       <div class="home-quickcalc__visible-formula" role="group" aria-label="Fórmula matemática con valores actualizados de glicemia, carbohidratos y parámetros registrados">
         <p class="home-quickcalc__formula-caption">Fórmula de la doctora · ratio actualizado</p>
         <div class="home-quickcalc__equation">
@@ -867,7 +872,7 @@ html[data-mode] .nav button .ico{width:22px!important;height:22px!important}
         </div>
         <p class="home-quickcalc__formula-foot">Fórmula matemática visible para comprobar los componentes. No determina por sí sola la dosis a administrar.</p>
       </div>
-      <details class="home-quickcalc__details" id="homeQuickDetails"><summary>Ver corrección y fórmula <span>⌄</span></summary><div class="home-quickcalc__breakdown">
+      <details class="home-quickcalc__details" id="homeQuickDetails"><summary>Ver cálculo detallado <span>⌄</span></summary><div class="home-quickcalc__breakdown">
         <div><span>Comida (CH ÷ ratio)</span><strong id="homeQuickFoodDetail">—</strong></div>
         <div><span>Corrección ((glicemia − objetivo) ÷ sensibilidad)</span><strong id="homeQuickCorrection">—</strong></div>
         <div class="home-quickcalc__math-total"><span>Suma matemática, no dosis</span><strong id="homeQuickTotal">—</strong></div>
@@ -1115,6 +1120,14 @@ html[data-mode] .nav button .ico{width:22px!important;height:22px!important}
         </div>
         <div class="family-actions"><button type="button" class="btn btn-secondary" id="familyCopyId">Copiar ID para invitar</button><button type="button" class="btn btn-secondary" id="familyLeave">Desconectar este teléfono</button></div>
         <button type="button" class="btn btn-secondary" id="familyUpload">Subir registros locales de este dispositivo (una vez)</button>
+        <div class="bt-card" style="margin-top:12px" id="familyHistoryImportCard">
+          <b>Importar historial revisado a la familia</b>
+          <p class="bt-small">Selecciona el archivo «Diego-Historial-28-Registros-IMPORTAR-FAMILIA.json». Primero se revisan duplicados; solo un editor conectado puede subirlo a la bitácora compartida. No modifica los registros existentes ni aplica nuevos ratios a dosis anteriores.</p>
+          <input id="familyHistoryFile" type="file" accept=".json,application/json" aria-label="Seleccionar historial revisado" style="margin-top:8px">
+          <button type="button" class="btn btn-secondary" id="familyHistoryPreview" style="margin-top:8px;width:100%">Revisar archivo antes de importar</button>
+          <div class="bt-small" id="familyHistoryPreviewResult" role="status" aria-live="polite"></div>
+          <button type="button" class="btn btn-primary" id="familyHistoryCommit" disabled style="margin-top:8px;width:100%">Importar registros revisados a la familia</button>
+        </div>
         <p class="bt-small">Antes de subir datos antiguos, usa «Respaldo JSON». La sincronización incluye solo bitácora, no la pauta médica ni los parámetros de insulina.</p>
       </div>
     </div>
@@ -1303,11 +1316,11 @@ html[data-mode] .nav button .ico{width:22px!important;height:22px!important}
 <script src="calc.js?v=43"></script>
 <script src="store.js"></script>
 <script src="app.js?v=43"></script>
-<script src="bitacora.js?v=30"></script>
+<script src="bitacora.js?v=45"></script>
 <script src="diego-ai.js?v=31"></script>
 <script src="diego-ai-context.js?v=34"></script>
 <script src="firebase-config.js"></script>
-<script type="module" src="diego-familiar.js?v=30"></script>
+<script type="module" src="diego-familiar.js?v=45"></script>
 <script src="sage-dashboard.js?v=18"></script>
 <script src="ai-photos.js?v=18"></script>
 <script src="sensor-reminder.js?v=18"></script>
@@ -1349,7 +1362,7 @@ if($('familyStatus')){new MutationObserver(sync).observe($('familyStatus'),{subt
     put('homeQuickFormulaRatio',ratio||'—');
     var valid=ratio&&glucoseOk&&carbsOk&&target===110&&sensitivity===50;
     var food=valid?valC/ratio:NaN,correction=valid?(valG-target)/sensitivity:NaN;
-    put('homeQuickFoodValue',fmt(food));put('homeQuickFoodDetail',fmt(food));put('homeQuickCorrection',fmt(correction));put('homeQuickTotal',fmt(food+correction));
+    put('homeQuickMainTotal',fmt(food+correction));put('homeQuickFoodValue',fmt(food));put('homeQuickCorrectionVisible',fmt(correction));put('homeQuickFoodDetail',fmt(food));put('homeQuickCorrection',fmt(correction));put('homeQuickTotal',fmt(food+correction));
     put('homeQuickParams',target===110&&sensitivity===50?'Fórmula: (glicemia − 110) ÷ 50 + CH ÷ '+(ratio||'ratio')+' · sin reglas clínicas adicionales.':'⚠️ Parámetros guardados diferentes de objetivo 110 y sensibilidad 50. Revisa Parámetros médicos; el cálculo permanece bloqueado.');
   }
   g.addEventListener('input',update);c.addEventListener('input',update);

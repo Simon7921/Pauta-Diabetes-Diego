@@ -25,7 +25,7 @@ if (!config || !config.projectId || !config.apiKey || !config.appId) {
       window.DiegoBitacora?.loadShared?.(Array.isArray(backup)?backup:[]);
     }catch(e){window.DiegoBitacora?.loadShared?.([]);}
   }
-  function reset(){window.DIEGO_FAMILY_READ_ONLY=false;if(stopListener)stopListener();stopListener=null;connected=false;remoteReady=false;familyId=null;role=null;known.clear();pending.clear();show('familyConnected',false);show('familyHome',!!currentUser?.emailVerified);status('Solo en este teléfono');}
+  function reset(){window.DIEGO_FAMILY_READ_ONLY=false;if(stopListener)stopListener();stopListener=null;connected=false;remoteReady=false;serverSnapshotReady=false;clearImportPreview();familyId=null;role=null;known.clear();pending.clear();show('familyConnected',false);show('familyHome',!!currentUser?.emailVerified);status('Solo en este teléfono');}
   async function listMembers(){if(!familyId||role!=='owner')return;const container=$('familyMembers');if(!container)return;container.replaceChildren();
     const docs=await getDocs(collection(db,'families',familyId,'members'));
     docs.forEach(item=>{const m=item.data(), row=document.createElement('div');row.className='family-member';
@@ -58,6 +58,7 @@ if (!config || !config.projectId || !config.apiKey || !config.appId) {
       // Keep unacknowledged local changes while server is catching up.
       for(const [id,change] of pending){if(change===null){const i=rows.findIndex(x=>x.id===id);if(i>=0)rows.splice(i,1);}else {const i=rows.findIndex(x=>x.id===id);if(i>=0)rows[i]=change;else rows.push(change);}}
       // Avoid replacing device-only legacy data until an explicit upload/choice.
+      serverSnapshotReady=!snap.metadata.fromCache;
       if(!remoteReady){const local=window.DiegoBitacora?.getEntries?.()||[];
         if(local.length&&!snap.size){message('Espacio conectado y vacío. Haz respaldo JSON y luego pulsa «Subir registros locales» para compartirlos.');}
         else if(local.length&&snap.size){message('Se encontraron registros compartidos. La pantalla muestra los datos de la nube. Antes de subir registros antiguos, exporta el respaldo JSON.');}
@@ -110,6 +111,55 @@ if (!config || !config.projectId || !config.apiKey || !config.appId) {
     }catch(err){status('Pendiente de sincronizar');message('Los cambios siguen en este teléfono. '+safeError(err));}
   }
   window.addEventListener('diego-bitacora-changed',ev=>{const d=ev.detail||{};void pushChanges(d.changed||[],d.removed||[]);});
+  // Importador de un archivo revisado: únicamente al espacio compartido de Firebase.
+  let stagedHistory=null;
+  let serverSnapshotReady=false;
+  function clearImportPreview(){stagedHistory=null;const b=$('familyHistoryCommit');if(b)b.disabled=true;}
+  function entrySame(a,b){
+    if(!a||!b||a.type!=='meal'||b.type!=='meal')return false;
+    if(Math.abs(a.t-b.t)>45*60000)return false;
+    return Math.abs(Number(a.glucose)-Number(b.glucose))<0.01&&
+           Math.abs(Number(a.carbs)-Number(b.carbs))<0.01&&
+           (a.given==null||b.given==null||Math.abs(Number(a.given)-Number(b.given))<0.01);
+  }
+  async function previewHistory(){
+    clearImportPreview();
+    const file=$('familyHistoryFile')?.files?.[0];
+    if(!file)throw Error('Primero selecciona el archivo JSON de historial revisado.');
+    if(file.size>2*1024*1024)throw Error('Archivo demasiado grande.');
+    if(!connected||!remoteReady||!serverSnapshotReady||role==='viewer')throw Error('Conéctate con un usuario editor o propietario y espera que indique «Sincronizado».');
+    const parsed=JSON.parse(await file.text());
+    if(parsed?.app!=='diego-familiar-import-v1'||parsed.version!==1||!Array.isArray(parsed.entries)||parsed.entries.length>200)throw Error('No es el archivo de historial revisado.');
+    if(parsed.entries.some(e=>!e||e.type!=='meal'||typeof e.id!=='string'||!/^hist202611_/.test(e.id)||!Number.isFinite(e.t)||!Number.isFinite(e.carbs)||!Number.isFinite(e.glucose)||e.reviewStatus!=='propuesto_para_importar'))throw Error('El archivo incluye registros inválidos o pendientes de revisión.');
+    const existing=await getDocs(collection(db,'families',familyId,'entries'));
+    if(existing.metadata.fromCache)throw Error('Sin acceso confirmado al servidor. Prueba nuevamente conectado a internet.');
+    const originals=[];existing.forEach(d=>{if(d.data()?.payload)originals.push(d.data().payload);});
+    let duplicates=0;const fresh=[];
+    for(const e of parsed.entries){if(originals.some(old=>old.id===e.id||entrySame(old,e))||fresh.some(old=>old.id===e.id||entrySame(old,e)))duplicates++;else fresh.push(e);}
+    stagedHistory={entries:fresh,fid:familyId,uid:currentUser.uid,dataset:parsed.datasetId};
+    $('familyHistoryPreviewResult').textContent='Archivo: '+parsed.entries.length+' registros. Ya existentes o similares: '+duplicates+'. Nuevos propuestos: '+fresh.length+'. Casos pendientes excluidos del archivo: '+(parsed.excludedForReview||0)+'.';
+    $('familyHistoryCommit').disabled=fresh.length===0;
+  }
+  async function commitHistory(){
+    if(!stagedHistory||!stagedHistory.entries.length||!connected||!serverSnapshotReady||role==='viewer'||stagedHistory.fid!==familyId||stagedHistory.uid!==currentUser?.uid)throw Error('Vuelve a revisar el archivo conectado como editor.');
+    if(!confirm('Verifica primero que descargaste «Respaldo JSON de bitácora». ¿Importar '+stagedHistory.entries.length+' registros históricos a la nube familiar? No se recalculan las dosis.'))return;
+    const batchEntries=stagedHistory.entries;let added=0,skipped=0;
+    // Revalidar cada documento al escribir, para tolerar reintentos y sesiones familiares.
+    const snapshot=await getDocs(collection(db,'families',familyId,'entries'));
+    if(snapshot.metadata.fromCache)throw Error('Se requiere conexión al servidor para importar.');
+    const existing=[];snapshot.forEach(d=>{if(d.data()?.payload)existing.push(d.data().payload);});
+    for(const e of batchEntries){
+      if(existing.some(old=>old.id===e.id||entrySame(old,e))){skipped++;continue;}
+      await setDoc(doc(db,'families',familyId,'entries',e.id),{payload:e,updatedAt:serverTimestamp(),editedBy:currentUser.uid});
+      existing.push(e);added++;
+    }
+    clearImportPreview();
+    $('familyHistoryPreviewResult').textContent='Importación completada: '+added+' nuevos; '+skipped+' repetidos omitidos. La bitácora compartida se actualizará automáticamente. Conserva tus respaldos.';
+    message('Historial familiar actualizado. '+added+' registros nuevos.');
+  }
+  if($('familyHistoryPreview'))$('familyHistoryPreview').onclick=()=>run(previewHistory);
+  if($('familyHistoryCommit'))$('familyHistoryCommit').onclick=()=>run(commitHistory);
+  if($('familyHistoryFile'))$('familyHistoryFile').addEventListener('change',()=>{clearImportPreview();$('familyHistoryPreviewResult').textContent='Archivo seleccionado. Pulsa «Revisar archivo». ';});
   async function uploadLegacy(){
     if(!connected||!remoteReady||role==='viewer')throw Error('Conecta una cuenta con permiso de edición.');
     if(!confirm('Antes de continuar, descarga «Respaldo JSON». Se añadirán a la nube los registros de este teléfono sin borrar los compartidos. ¿Continuar?'))return;
