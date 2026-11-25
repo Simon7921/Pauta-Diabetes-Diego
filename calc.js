@@ -187,7 +187,7 @@
   /* Fórmula de la pauta: (glicemia − objetivo) ÷ sensibilidad + HC ÷ ratio.
      Lógica idéntica a la versión anterior:
      - glicemia < 70: hipoglucemia, sin dosis.
-     - insulina rápida hace < 3 h: solo la parte de la comida (no suma corrección).
+     - insulina rápida reciente: se advierte el riesgo, sin modificar la ecuación escrita.
      - resultado negativo se muestra como 0.
      Devuelve también los avisos que la interfaz debe mostrar. */
   function dose(input) {
@@ -201,8 +201,8 @@
     res.food = cc / P.r;
     res.total = res.corr + res.food;
     var main = res.total;
-    if (input.recent) { main = Math.max(res.food, 0); res.mode = "food-only"; res.warnings.push("bolo-reciente"); }
-    else if (res.corr < 0) res.warnings.push("bajo-objetivo");
+    if (input.recent) res.warnings.push("bolo-reciente");
+    if (res.corr < 0) res.warnings.push("bajo-objetivo");
     if (main < 0) main = 0;
     res.main = main;
     res.valid = true;

@@ -569,10 +569,11 @@
       // La cifra es SOLO una simulación matemática, no una dosis recomendada.
       // Nunca guardar como unidades administradas la simulación automática.
       LAST = { g:g, c:c || 0, dose:null, corr:null, food:null, recent:pz.recent, sport:pz.sport };
-      box = '<div class="lab">SIMULACIÓN MATEMÁTICA — NO ES DOSIS PARA INYECTAR</div><div class="dv">' + dec2(r.main) + "<small>U teóricas</small></div>" +
-        '<div class="brk">Sensibilidad ' + dec2(P.f) + ' · objetivo ' + dec2(P.t) + ' · ratio 1:' + activeRatio + '</div>' +
-        '<div class="brk">Comida ' + dec2(r.food) + ' U matemáticas; corrección ' + dec2(r.corr) + ' U matemáticas. La opción de bolo reciente no estima con precisión la insulina activa.</div>' +
-        '<div class="rnd"><b>NO administrar insulina basándose en esta cifra.</b> No incorpora toda la insulina activa ni valida tendencia, ejercicio o redondeo. Usar la pauta médica vigente.</div>';
+      box = '<div class="lab">COMPONENTE POR CARBOHIDRATOS · NO ES DOSIS PARA INYECTAR</div><div class="dv">' + dec2(r.food) + "<small>U por HC</small></div>" +
+        '<div class="brk" style="font-weight:700">' + dec2(c) + ' g de HC ÷ ' + activeRatio + ' = ' + dec2(r.food) + ' U por carbohidratos</div>' +
+        '<div class="brk">Corrección matemática separada: (' + dec2(g) + ' − ' + dec2(P.t) + ') ÷ ' + dec2(P.f) + ' = ' + dec2(r.corr) + ' U.</div>' +
+        '<div class="brk">Fórmula escrita completa: ' + dec2(r.food) + ' + (' + dec2(r.corr) + ') = ' + dec2(r.total) + ' U teóricas. <b>Este total NO es una dosis indicada.</b></div>' +
+        '<div class="rnd"><b>Importante:</b> mostrar ' + dec2(r.food) + ' U como componente de comida NO significa que la corrección negativa se deba ignorar ni que esta cantidad deba inyectarse. Consultar la pauta clínica para correcciones bajo el objetivo, insulina activa y redondeos. No inyectar basándose en esta simulación.</div>';
       out.push(note('danger','No es una indicación de insulina','Este resultado es orientativo y NO puede utilizarse para decidir una inyección. Verifica la pauta escrita y las condiciones actuales con el equipo tratante.'));
     }
     $("doseBox").innerHTML = box;

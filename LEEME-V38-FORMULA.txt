@@ -1,0 +1,11 @@
+Diego Familiar V38 - fórmula explícita
+
+Simulación mostrada: (glucosa - 110)/50 + carbohidratos/ratio de la comida.
+Ratios iniciales de desayuno, almuerzo, once, cena: 22.
+Desglose visible de corrección y comida.
+Insulina rápida reciente genera advertencia y NO modifica el resultado matemático de la fórmula.
+Hipoglucemia <70 se prioriza como alerta, sin simulación.
+Los parámetros guardados en el teléfono pueden prevalecer: verificarlos en Ajustes.
+No validado clínicamente para decisiones de dosificación.
+Conserva recordatorio de gotitas de V37.
+No utilizar para inyectar ni subir información médica a páginas públicas.
