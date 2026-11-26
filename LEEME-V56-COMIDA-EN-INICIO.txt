@@ -1,0 +1,1 @@
+V56: En Inicio, pulsar Desayuno / Almuerzo / Once / Cena solo cambia la selección de comida y actualiza ratio/fórmula en la misma pantalla. Si el plato tiene alimentos y se cambia a otra comida, se conserva la confirmación previa antes de vaciar. No se alteran las fichas nutricionales ni los ratios de V55.

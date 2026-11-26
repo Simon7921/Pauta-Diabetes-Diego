@@ -1,0 +1,9 @@
+DIEGO FAMILIAR V52 — FAVORITOS EN INICIO
+
+Basado en V51. En Alimentos, cada fila tiene una estrella ☆ / ★ para marcar o quitar el favorito sin abrir el alimento.
+Los favoritos seleccionados aparecen en una nueva sección superior en Inicio, antes de los 19 alimentos principales existentes.
+Tocar el favorito abre el selector de cantidad ya existente; tocar ★ en su tarjeta lo quita de favoritos (no del catálogo, del plato ni del historial).
+La estrella en el panel de cantidad también usa exactamente la misma lista y actualiza el Inicio.
+Persistencia local mediante la clave favFoods ya utilizada por la app. En varios teléfonos, esta lista no se sincroniza por sí sola.
+No se cambian ratios, dosis ni datos nutricionales.
+Publicación: subir el ZIP o los archivos a Cloudflare Pages según el proceso actual; probar en un dispositivo antes de reemplazar la aplicación familiar en uso.

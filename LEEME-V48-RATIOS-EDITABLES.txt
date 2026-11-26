@@ -1,0 +1,13 @@
+DIEGO FAMILIAR V48 — Ratios editables por comida
+
+Valores iniciales: desayuno 1:22; almuerzo 1:24; once 1:22; cena 1:24.
+
+Edición: entrar a Mi pauta > Editar ratios por comida o Perfil > Salud > Editar ratios de comidas.
+Ingresar los cuatro valores, indicar fuente/fecha de la indicación médica, confirmar y guardar.
+Los valores se guardan en el navegador del dispositivo, afectan los cálculos posteriores de la app y no alteran las dosis históricas.
+Cada dispositivo debe actualizar sus ratios por separado; Firebase solo comparte bitácora, NO estos parámetros clínicos.
+
+Subir a Cloudflare Pages todo el contenido de este ZIP, no la carpeta contenedora.
+En caso de dudas, confirmar la pauta vigente con diabetóloga; NO utilizar la simulación matemática como instrucción de dosificación.
+
+Base: paquete V47 aportado en conversación, conserva sus archivos y funciones.

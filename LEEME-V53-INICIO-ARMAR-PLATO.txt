@@ -1,0 +1,11 @@
+Diego Familiar V53 — Flujo de inicio
+
+1. Selector de comida arriba.
+2. Resumen de plato, glicemia editable y expresión matemática arriba.
+3. Favoritos y alimentos principales a continuación; 9 visibles y botón para ver todos.
+4. Los HC provienen del total real del plato y actualizan la fórmula existente.
+5. Lista del plato, acceso a bitácora y fórmula detallada más abajo.
+6. Los registros clínicos existentes no se reescriben; no hay cambio de ratios ni datos nutricionales.
+
+La fórmula es matemática e informativa y NO determina la dosis a administrar.
+No habilita sincronización nueva ni modifica permisos.

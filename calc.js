@@ -7,15 +7,21 @@
 })(typeof self !== "undefined" ? self : this, function () {
   "use strict";
 
-  // Ratios comunicados por la familia el 24/11/2026: 1:22 en las cuatro comidas. Tresiba 12 U según pauta previamente informada. Confirmar con el equipo tratante antes de dosificar. t = objetivo, f = sensibilidad, r = ratio.
+  // Ratios comunicados por la familia el 26/11/2026: desayuno y once 1:22; almuerzo y cena 1:24. Tresiba 12 U según pauta previamente informada. Confirmar con el equipo tratante antes de dosificar. t = objetivo, f = sensibilidad, r = ratio.
   var PAUTA_DEFAULT = Object.freeze({ t: 110, f: 50, r: 22 });
   // Pauta comunicada el 23/11/2026: la colación NO lleva insulina.
-  var MEAL_RATIOS = Object.freeze({ desayuno: 22, colacion: null, almuerzo: 22, once: 22, cena: 22 });
+  var MEAL_RATIOS = Object.freeze({ desayuno: 22, colacion: null, almuerzo: 24, once: 22, cena: 24 });
   var RATIO_STORAGE = "diego.v35.clinicalRatios";
+  // V55: ajustes personales separados por cuenta de Firebase en el navegador.
+  // Si no hay sesión, se utiliza la configuración local anterior (modo invitado).
+  function ratioStorageKey() {
+    var uid = typeof window !== 'undefined' && window.DIEGO_RATIO_USER_ID;
+    return uid ? RATIO_STORAGE + '.uid.' + uid : RATIO_STORAGE;
+  }
   function currentRatios() {
     var r = Object.assign({}, MEAL_RATIOS);
     try {
-      var val = JSON.parse(localStorage.getItem(RATIO_STORAGE) || 'null');
+      var val = JSON.parse(localStorage.getItem(ratioStorageKey()) || 'null');
       if (val && typeof val === 'object') ['desayuno','almuerzo','once','cena'].forEach(function(k){
         var n = Number(val[k]); if (Number.isInteger(n) && n >= 5 && n <= 60) r[k] = n;
       });
@@ -39,7 +45,8 @@
     "Frutas": [["Manzana", 13.8], ["Plátano pesado (sin cáscara)", 22.8], ["Medio plátano (mitad)", 22.8, 59], ["Naranja", 11.8], ["Mandarina", 13.3], ["Piña", 13.1], ["Palta", 8.5]],
     "Verduras": [["Tomate", 3.9], ["Tomate mediano (unidad)", 3.9, 123], ["Tomate cherry", 3.9]],
     "Huevos": [["Huevo (unidad)", 0.7, 50]],
-    "Lácteos": [["Yoghito vainilla sin azúcar (120 g)", 7.4, 120], ["Queso mantecoso / gauda", 1], ["Helado de crema", 23.6]],
+    "Proteínas": [["Carne simple (sin empanizado ni salsa)", 0], ["Pollo simple (sin empanizado ni salsa)", 0]],
+    "Lácteos": [["Yogurth vainilla sin azúcar (120 g)", 7.4, 120], ["Queso mantecoso / gauda", 1], ["Helado de crema", 23.6]],
     "Panes y cereales": [["Marraqueta", 58], ["Hallulla", 55], ["Pan de molde blanco", 49], ["Corn flakes", 84], ["Galletas de soda", 71]],
     "Acompañamientos": [["Fideos secos (pesar antes de cocinar)", 70], ["Papa cocida", 20], ["Puré de papas", 16], ["Puré mamá", 17.3], ["Papas fritas", 41]],
     "Bebidas": [["Té o infusión sin azúcar (taza de 200 ml)", 0, 200], ["Té con 1 cucharadita de azúcar (taza de 200 ml)", 2, 200], ["Vivo Néctar de Piña (190 ml)", 3.3684210526, 190], ["Jugo Del Valle (400 ml)", 4.9, 400], ["Jugo de naranja natural", 10.4], ["Néctar de fruta (aprox.)", 12]]
@@ -47,7 +54,7 @@
 
   // Estado y fuente de cada alimento base (no cambia los valores).
   var STATE = { "Fideos secos (pesar antes de cocinar)": "crudo", "Papa cocida": "cocido", "Puré de papas": "preparado", "Puré mamá": "preparado", "Papas fritas": "preparado" };
-  var SOURCE = { "Fideos secos (pesar antes de cocinar)": "Referencia provisional: 70 g HC por 100 g de pasta seca; confirmar etiqueta de la marca",  "Té o infusión sin azúcar (taza de 200 ml)": "Té preparado solo con agua; sin azúcar ni ingredientes con HC", "Té con 1 cucharadita de azúcar (taza de 200 ml)": "Estimación: una cucharadita rasa de azúcar de 4 g, aporta aproximadamente 4 g HC",  "Yoghito vainilla sin azúcar (120 g)": "Etiqueta Soprole", "Puré mamá": "Receta casera calculada (820 g)", "Vivo Néctar de Piña (190 ml)": "Etiqueta FatSecret/Vivo: por 1 unidad (190 ml) aporta 28 kcal, 0 g grasa, 6,4 g carbohidratos y 0,2 g proteínas.", "Jugo Del Valle (400 ml)": "Etiqueta Del Valle (19,6 g/botella)" };
+  var SOURCE = { "Carne simple (sin empanizado ni salsa)": "0 g HC estimados solo para carne sin ingredientes añadidos. Aporta proteínas y calorías; verificar preparación.", "Pollo simple (sin empanizado ni salsa)": "0 g HC estimados solo para pollo sin ingredientes añadidos. Aporta proteínas y calorías; verificar preparación.", "Fideos secos (pesar antes de cocinar)": "Referencia provisional: 70 g HC por 100 g de pasta seca; confirmar etiqueta de la marca",  "Té o infusión sin azúcar (taza de 200 ml)": "Té preparado solo con agua; sin azúcar ni ingredientes con HC", "Té con 1 cucharadita de azúcar (taza de 200 ml)": "Estimación: una cucharadita rasa de azúcar de 4 g, aporta aproximadamente 4 g HC",  "Yogurth vainilla sin azúcar (120 g)": "Etiqueta Soprole", "Puré mamá": "Receta casera calculada (820 g)", "Vivo Néctar de Piña (190 ml)": "Etiqueta FatSecret/Vivo: por 1 unidad (190 ml) aporta 28 kcal, 0 g grasa, 6,4 g carbohidratos y 0,2 g proteínas.", "Jugo Del Valle (400 ml)": "Etiqueta Del Valle (19,6 g/botella)" };
   var DEFAULT_SOURCE = "Tabla USDA (aprox.)";
 
   // Reglas que el equipo clínico debe confirmar antes de mostrar un resultado de dosis.
@@ -220,7 +227,7 @@
   }
 
   return {
-    PAUTA_DEFAULT: PAUTA_DEFAULT, MEAL_RATIOS: MEAL_RATIOS, currentRatios: currentRatios, ratioForMeal: ratioForMeal, MEALS: MEALS, FOODS: FOODS,
+    PAUTA_DEFAULT: PAUTA_DEFAULT, MEAL_RATIOS: MEAL_RATIOS, currentRatios: currentRatios, ratioForMeal: ratioForMeal, ratioStorageKey: ratioStorageKey, MEALS: MEALS, FOODS: FOODS,
     baseFoods: baseFoods, slug: slug, num: num, round1: round1,
     SCHEDULE_DEFAULT: SCHEDULE_DEFAULT, nextMeal: nextMeal, toMin: toMin, nextEvent: nextEvent, fmtDur: fmtDur, icsFor: icsFor, hcFor: hcFor, CLINICAL_RULES: CLINICAL_RULES, rulesStatus: rulesStatus, plateTotal: plateTotal, recipe: recipe, glucoseRange: glucoseRange, dose: dose, fmt: fmt
   };

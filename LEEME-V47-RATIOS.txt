@@ -1,0 +1,30 @@
+DIEGO FAMILIAR V47 — Actualización sobre la V46 original (26-11-2026)
+
+CAMBIOS
+- Desayuno: 1 unidad por 22 g de HC.
+- Almuerzo: 1 unidad por 24 g de HC.
+- Once: 1 unidad por 22 g de HC.
+- Cena: 1 unidad por 24 g de HC.
+- Colación: se conserva sin bolo según configuración previa.
+- Se conserva la fórmula visible, el desglose de corrección y carbohidratos,
+  el cálculo rápido, la bitácora, Firebase, Diego AI y el resto de la V46.
+- La primera ejecución de V47 actualiza los ratios persistidos de V46 en
+  el navegador (si los había), añade auditoría local y no recalcula el historial.
+- Actualización de versión del caché para recuperar los cambios en móviles.
+
+INSTALACIÓN CLOUDFLARE PAGES
+1. Haz una copia del ZIP V46 y exporta la bitácora antes de actualizar.
+2. Extrae este ZIP.
+3. Sube los archivos internos a Cloudflare Pages, NO la carpeta contenedora.
+4. Comprueba en Perfil > Editar ratios: 22 / 24 / 22 / 24.
+5. Comprueba los 4 tipos de comida en Cálculo rápido y Pauta.
+6. Repite la actualización de la otra publicación solo si está protegida
+   y tiene la misma configuración de acceso. GitHub Pages público NO protege
+   datos por ocultar la URL.
+
+SEGURIDAD CLÍNICA
+- La app muestra un cálculo matemático, no una dosis autorizada.
+- El equipo tratante debe confirmar los ratios y las reglas para correcciones,
+  hipoglucemia, insulina activa, ejercicio y redondeo.
+- No se modifican glucosa objetivo 110, sensibilidad 50 o Tresiba 12 U.
+- La auditoría de ratios es local; no se sincroniza por sí sola entre celulares.

@@ -37,6 +37,23 @@
       localStorage.setItem("diego.v3.pauta20261123v27", "1");
     }
   } catch (e) {}
+  // V47: actualizar una vez los ratios guardados en este navegador; de otro modo
+  // la configuración persistida de V46 (1:22 en todas las comidas) prevalece
+  // sobre los nuevos valores por defecto. Conservar el historial anterior.
+  try {
+    if (!localStorage.getItem('diego.v47.ratiosAplicados')) {
+      var oldRatios = C.currentRatios();
+      var newRatios = {desayuno:22, colacion:null, almuerzo:24, once:22, cena:24};
+      var labelRatios = function(r){return 'desayuno 1:'+r.desayuno+' · almuerzo 1:'+r.almuerzo+' · once 1:'+r.once+' · cena 1:'+r.cena;};
+      var auditKey = 'diego.v35.ratioAudit';
+      var auditHistory = JSON.parse(localStorage.getItem(auditKey) || '[]');
+      if (!Array.isArray(auditHistory)) auditHistory=[];
+      auditHistory.unshift({at:new Date().toISOString(),reason:'Actualización V47 solicitada por la familia el 26/11/2026. Confirmar indicación vigente con equipo tratante. No modifica registros históricos.',before:labelRatios(oldRatios),after:labelRatios(newRatios)});
+      localStorage.setItem('diego.v35.clinicalRatios', JSON.stringify(newRatios));
+      localStorage.setItem(auditKey, JSON.stringify(auditHistory.slice(0,100)));
+      localStorage.setItem('diego.v47.ratiosAplicados','1');
+    }
+  } catch(e) { console.warn('V47: verificar ratios en Perfil',e); }
   // V35: la pauta vigente usa C.ratioForMeal, nunca el campo heredado P.r.
   // Sólo para mostrar coherencia con el ratio actual de desayuno.
   P = Object.assign({}, P, {r: C.ratioForMeal('desayuno')});
@@ -184,11 +201,93 @@
   document.querySelectorAll("[data-mark-drops]").forEach(function(btn){btn.addEventListener("click",markDrops);});
   $("hello").addEventListener("click", markDrops);
   $("hello").addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); markDrops(); } });
+  // V49. Alimentos de uso habitual: los nombres de producto/receta sin datos
+  // confirmados requieren crear su ficha; no se suponen HC de otras marcas.
+  var DIEGO_STAPLES = [
+    {name:'Pan marraqueta',emoji:'🥖',base:'Marraqueta'},
+    {name:'Tomate',emoji:'🍅',base:'Tomate'},
+    {name:'Tallarines Talliani N.º 5 (secos)',emoji:'🍝',aliases:['Tallarines Talliani N.º 5 (secos)','Tallarines Talliani N° 5']},
+    {name:'Puré casero de mamá',emoji:'🥔',base:'Puré mamá'},
+    {name:'Palta',emoji:'🥑',base:'Palta'},
+    {name:'Pan de molde',emoji:'🍞',base:'Pan de molde blanco'},
+    {name:'Yogurth vainilla sin azúcar (120 g)',emoji:'🥛',base:'Yogurth vainilla sin azúcar (120 g)'},
+    {name:'Jugo Vivo',emoji:'🧃',base:'Vivo Néctar de Piña (190 ml)'},
+    {name:'Tomate cherry',emoji:'🍅',base:'Tomate cherry'},
+    {name:'Manzana',emoji:'🍏',base:'Manzana'},
+    {name:'Naranja',emoji:'🍊',base:'Naranja'},
+    {name:'Mandarina',emoji:'🍊',base:'Mandarina'},
+    {name:'Plátano',emoji:'🍌',base:'Plátano pesado (sin cáscara)'},
+    {name:'Papas cocidas',emoji:'🥔',base:'Papa cocida'},
+    {name:'Papas mayo',emoji:'🥗',aliases:['Papas mayo','Papas con mayonesa caseras']},
+    {name:'Papas fritas',emoji:'🍟',base:'Papas fritas'},
+    {name:'Huevo',emoji:'🥚',base:'Huevo (unidad)'},
+    {name:'Carne sin agregados',emoji:'🥩',base:'Carne simple (sin empanizado ni salsa)'},
+    {name:'Pollo sin agregados',emoji:'🍗',base:'Pollo simple (sin empanizado ni salsa)'}
+  ];
+  function stapleFood(x){
+    var names = [x.base || x.name].concat(x.aliases || []);
+    var fs = allFoods().slice().reverse();
+    return fs.find(function(f){return names.some(function(n){return norm(f.name) === norm(n);});}) || null;
+  }
+  // V52: favoritos elegidos en Alimentos, accesibles en la portada.
+  // Se reutiliza favFoods (misma clave que el filtro Favoritos y la estrella del modal).
+  function toggleFoodFavorite(id){
+    var food=findFood(id); if(!food)return;
+    var i=favFoods.indexOf(id), on=i<0;
+    if(on)favFoods.push(id); else favFoods.splice(i,1);
+    S.saveList('favFoods',favFoods);
+    if(ui.screen==='alimentos')renderFoods();
+    renderHomeFoodFavorites();
+    toast(on?'Agregado a Inicio y Favoritos ★':'Quitado de favoritos','star');
+  }
+  function renderHomeFoodFavorites(){
+    var section=$('homeFoodFavorites'), grid=$('homeFavoriteFoods');
+    if(!section||!grid)return;
+    var selected=favFoods.map(findFood).filter(Boolean);
+    section.hidden=!selected.length;
+    grid.innerHTML=selected.map(function(f){
+      var detail=(f.unit?fmt(C.hcFor(f,1,'u'))+' g HC/unidad · ':'')+fmt(f.hc100)+' g HC/100 g';
+      return '<div class="favorite-food-tile"><button type="button" class="staple-card favorite-food-card" data-home-food="'+esc(f.id)+'" aria-label="Agregar '+esc(f.name)+' al plato">'+
+        '<span class="staple-emoji" aria-hidden="true">'+thumb(f)+'</span><span class="staple-name">'+esc(f.name)+'</span><span class="staple-carbs">'+esc(detail)+'</span><span class="staple-source">Fuente: '+esc(srcTxt(f))+'</span><span class="staple-hint">Agregar +</span></button>'+
+        '<button type="button" class="fav-tile-remove" data-unfav-home="'+esc(f.id)+'" aria-label="Quitar '+esc(f.name)+' de favoritos" title="Quitar de favoritos">★</button></div>';
+    }).join('');
+  }
+  var homeFavoriteGrid=$('homeFavoriteFoods');
+  if(homeFavoriteGrid)homeFavoriteGrid.addEventListener('click',function(e){
+    var unfav=e.target.closest('[data-unfav-home]');
+    if(unfav){toggleFoodFavorite(unfav.dataset.unfavHome);return;}
+    var b=e.target.closest('[data-home-food]');
+    if(b){var food=findFood(b.dataset.homeFood);if(food)qtySheet(food,null);}
+  });
+  function renderStaples(){
+    var container = $('diegoStaples'); if(!container)return;
+    container.innerHTML = DIEGO_STAPLES.map(function(x,i){
+      var ready = !!stapleFood(x);
+      var food=stapleFood(x);
+      var detail=food ? (food.unit ? fmt(C.hcFor(food,1,'u'))+' g HC/unidad · ' : '')+fmt(food.hc100)+' g HC/100 g' : 'HC por confirmar';
+      var provenance=food ? srcTxt(food) : 'Falta etiqueta o receta';
+      return '<button type="button" class="staple-card'+(ready?'':' is-pending')+'" data-staple="'+i+'" aria-label="'+esc(x.name)+(ready?', '+detail+', agregar al plato':', completar ficha nutricional')+'">'+
+        '<span class="staple-emoji" aria-hidden="true">'+x.emoji+'</span><span class="staple-name">'+esc(x.name)+'</span><span class="staple-carbs">'+esc(detail)+'</span><span class="staple-source">Fuente: '+esc(provenance)+'</span><span class="staple-hint">'+(ready?'Agregar +':'Completar ficha +')+'</span></button>';
+    }).join('');
+  }
+  var stapleContainer = $('diegoStaples');
+  if(stapleContainer)stapleContainer.addEventListener('click',function(e){
+    var b = e.target.closest('[data-staple]'); if(!b)return;
+    var x = DIEGO_STAPLES[Number(b.dataset.staple)]; if(!x)return;
+    var food = stapleFood(x);
+    if(food)qtySheet(food,null);
+    else {
+      foodSheet(null,x.name);
+      toast('Falta confirmar los carbohidratos de '+x.name,'info');
+    }
+  });
   function renderInicio() {
     selectNextMealIfSafe();
     var d = new Date(), h = d.getHours();
     $("hiT").textContent = h >= 5 && h < 12 ? "¡Buenos días, Diego!" : h >= 20 || h < 5 ? "¡Buenas noches, Diego!" : "¡Hola, Diego!";
     renderDrops(h);
+    renderStaples();
+    renderHomeFoodFavorites();
     $("meals").innerHTML = C.MEALS.map(function (m) { return '<button type="button" class="chip" data-m="' + m.id + '" aria-label="Armar plato para ' + esc(m.name) + '" aria-pressed="' + (plate.meal === m.id) + '">' + ico(MEAL_ICON[m.id]) + m.name + "</button>"; }).join("");
     var status = $("mealSelectionStatus");
     if (status) {
@@ -251,7 +350,7 @@
   $("meals").addEventListener("click", function (e) {
     var b = e.target.closest("[data-m]"); if (!b) return;
     var target = b.dataset.m;
-    function startMeal() { mealSelectionMode = "manual"; plate.meal = target; savePlate(); renderInicio(); show("alimentos"); }
+    function startMeal() { mealSelectionMode = "manual"; plate.meal = target; savePlate(); renderInicio(); /* Permanecer en Inicio: seleccionar comida no es navegar a Alimentos. */ }
     if (target === plate.meal || !plate.items.length) { startMeal(); return; }
     confirmModal({
       title: "¿Empezar " + meal(target).name.toLowerCase() + "?",
@@ -354,12 +453,12 @@
     var emptyMsg = { Recientes: "Lo último que agregues va a aparecer aquí.", Favoritos: "Marca con ★ lo que más comes y lo tendrás siempre a mano.", "Mis alimentos": "Aquí quedan los alimentos que crees con su etiqueta." }[ui.cat] || "No hay alimentos en esta categoría.";
     $("foods").innerHTML = list.length ? list.map(function (f) {
       var fav = favFoods.indexOf(f.id) >= 0;
-      return '<li class="li"><span class="thumb" aria-hidden="true" style="width:44px;height:44px;font-size:24px">' + thumb(f) + '</span><button class="main" data-f="' + esc(f.id) + '"><span class="nm">' + (fav ? '<span style="color:var(--warning)" aria-label="favorito">★</span> ' : "") + esc(f.name) + stateBadge(f) + '</span><span class="mt">' + metaTxt(f) + " · " + esc(srcTxt(f)) + '</span></button><button class="ibtn add" data-f="' + esc(f.id) + '" aria-label="Agregar ' + esc(f.name) + '">' + ico("plus") + "</button></li>";
+      return '<li class="li"><span class="thumb" aria-hidden="true" style="width:44px;height:44px;font-size:24px">' + thumb(f) + '</span><button class="main" data-f="' + esc(f.id) + '"><span class="nm">' + esc(f.name) + stateBadge(f) + '</span><span class="mt">' + metaTxt(f) + " · " + esc(srcTxt(f)) + '</span></button><button type="button" class="ibtn food-favorite-toggle'+(fav?' is-favorite':'')+'" data-toggle-fav="' + esc(f.id) + '" aria-pressed="'+fav+'" aria-label="'+(fav?'Quitar de favoritos: ':'Agregar a favoritos e Inicio: ')+esc(f.name)+'" title="'+(fav?'Quitar de favoritos':'Agregar a favoritos e Inicio')+'">'+(fav?'★':'☆')+'</button><button class="ibtn add" data-f="' + esc(f.id) + '" aria-label="Agregar ' + esc(f.name) + '">' + ico("plus") + "</button></li>";
     }).join("") : '<li class="empty">' + ico("search") + "<p>" + (q ? 'No encontramos "' + esc(ui.q) + '".<br>¿Lo creamos con los datos de su etiqueta?' : emptyMsg) + "</p></li>";
   }
   $("q").addEventListener("input", function () { ui.q = this.value; renderFoods(); });
   $("cats").addEventListener("click", function (e) { if (e.target.closest("#showAll")) { ui.showAll = !ui.showAll; renderFoods(); return; } var b = e.target.closest("[data-cat]"); if (!b) return; ui.cat = b.dataset.cat; renderFoods(); });
-  $("foods").addEventListener("click", function (e) { var b = e.target.closest("[data-f]"); if (!b) return; var f = findFood(b.dataset.f); if (f) qtySheet(f, null); });
+  $("foods").addEventListener("click", function (e) { var fav = e.target.closest("[data-toggle-fav]"); if(fav){toggleFoodFavorite(fav.dataset.toggleFav);return;} var b = e.target.closest("[data-f]"); if (!b) return; var f = findFood(b.dataset.f); if (f) qtySheet(f, null); });
   $("newFood").addEventListener("click", function () { foodSheet(null); });
 
   // Bottom sheet: cantidad + unidad + cálculo en vivo
@@ -382,7 +481,7 @@
       lab(); upd(); inp.addEventListener("input", upd);
       var ms = b.querySelector("#qMode"); if (ms) ms.addEventListener("click", function (e) { var x = e.target.closest("[data-v]"); if (!x) return; mode = x.dataset.v; ms.querySelectorAll("button").forEach(function (y) { y.setAttribute("aria-pressed", String(y === x)); }); inp.value = mode === "u" ? "1" : ""; lab(); upd(); inp.focus(); });
       b.querySelector("#qk").addEventListener("click", function (e) { var x = e.target.closest("[data-v]"); if (x) { inp.value = x.dataset.v; upd(); } });
-      b.querySelector("#qFav").onclick = function () { var i = favFoods.indexOf(food.id); if (i >= 0) favFoods.splice(i, 1); else favFoods.push(food.id); S.saveList("favFoods", favFoods); var on = i < 0; this.classList.toggle("on", on); this.setAttribute("aria-pressed", on); toast(on ? "Guardado en tus favoritos ★" : "Quitado de tus favoritos", "star"); if (ui.screen === "alimentos") renderFoods(); };
+      b.querySelector("#qFav").onclick = function () { toggleFoodFavorite(food.id); var on=favFoods.indexOf(food.id)>=0; this.classList.toggle("on",on); this.setAttribute("aria-pressed",String(on)); };
       b.querySelector("#qOk").onclick = function () {
         var q = C.num(inp.value); if (!(q > 0)) { inp.setAttribute("aria-invalid", "true"); toast("Escribe una cantidad mayor que 0", "info"); inp.focus(); return; }
         var o = { fid: food.id, name: food.name, qty: q, unit: food.unit || null, hc100: food.hc100, mode: mode, hc: C.hcFor(food, q, mode) };
@@ -395,9 +494,9 @@
       var dl = b.querySelector("#qDel"); if (dl) dl.onclick = function () { confirmModal({ title: "¿Borramos " + food.name + "?", text: "Se quita de Mis alimentos. Los platos que ya armaste no cambian.", ok: "Sí, borrar", danger: true, onOk: function () { custom = custom.filter(function (f) { return f.id !== food.id; }); S.saveCustom(custom); renderFoods(); toast("Alimento borrado", "trash"); } }); };
     });
   }
-  function foodSheet(food) {
+  function foodSheet(food, proposedName) {
     openSheet('<h3 id="shT">' + (food ? "Editemos este alimento" : "Creemos un alimento") + '</h3><p class="t2 small">Mira la tabla del envase: fila "Hidratos de carbono disponibles", columna por 100 g o 100 ml.</p>' +
-      '<label class="f" for="nN">¿Cómo se llama?</label><input class="in s" id="nN" value="' + esc(food ? food.name : "") + '" placeholder="Ej. Helado vainilla Savory 0%">' +
+      '<label class="f" for="nN">¿Cómo se llama?</label><input class="in s" id="nN" value="' + esc(food ? food.name : (proposedName || "")) + '" placeholder="Ej. Helado vainilla Savory 0%">' +
       '<label class="f" for="nC" style="margin-top:12px">Hidratos de carbono por 100 g o 100 ml</label><div class="inp"><input id="nC" inputmode="decimal" value="' + (food ? dec(food.hc100) : "") + '" placeholder="Ej. 7,7"><span>g</span></div>' +
       '<label class="f" for="nU" style="margin-top:12px">Peso de una unidad (opcional)</label><div class="inp"><input id="nU" inputmode="decimal" value="' + (food && food.unit ? dec(food.unit) : "") + '" placeholder="Para contar por unidades"><span>g</span></div>' +
       '<label class="f" for="nS" style="margin-top:12px">Fuente (opcional)</label><input class="in s" id="nS" value="' + esc(food && food.source || "") + '" placeholder="Ej. Etiqueta Savory">' +
@@ -409,7 +508,7 @@
         if (!(c >= 0 && c <= 100)) { e.textContent = "Los carbohidratos deben estar entre 0 y 100 g por cada 100 g."; b.querySelector("#nC").setAttribute("aria-invalid", "true"); return; }
         if (food) custom = custom.filter(function (f) { return f.id !== food.id; });
         custom = S.upsertCustom(custom, { name: n, hc100: c, unit: u > 0 ? u : null, source: b.querySelector("#nS").value.trim() || null }); S.saveCustom(custom);
-        closeSheet(); ui.cat = "Mis alimentos"; ui.q = ""; $("q").value = ""; if (ui.screen === "alimentos") renderFoods(); if (ui.screen === "perfil") renderPerfil(); toast("¡Listo! " + n + " ya está en Mis alimentos");
+        closeSheet(); ui.cat = "Mis alimentos"; ui.q = ""; $("q").value = ""; if (ui.screen === "alimentos") renderFoods(); if (ui.screen === "perfil") renderPerfil(); if (ui.screen === "inicio") renderInicio(); toast("¡Listo! " + n + " ya está en Mis alimentos");
       };
     });
   }
@@ -532,6 +631,7 @@
   $("save").innerHTML = ico("check", "s") + "Guardar registro";
   $("toHist").innerHTML = ico("clock", "s") + "Ver mi historial";
   function renderParams() {
+    refreshRatioEditorSummary();
     var d = C.PAUTA_DEFAULT, mod = !(P.t === d.t && P.f === d.f && P.r === d.r);
     $("params").innerHTML = '<div class="kv"><span>Desayuno</span><b>1:' + C.ratioForMeal('desayuno') + '</b></div><div class="kv"><span>Almuerzo</span><b>1:' + C.ratioForMeal('almuerzo') + '</b></div><div class="kv"><span>Once</span><b>1:' + C.ratioForMeal('once') + '</b></div><div class="kv"><span>Cena</span><b>1:' + C.ratioForMeal('cena') + '</b></div><div class="kv"><span>Colaciones</span><b>Sin insulina</b></div><div class="kv"><span>Factor de sensibilidad</span><b>' + dec(P.f) + ' mg/dL</b></div><div class="kv"><span>Glucosa objetivo</span><b>' + dec(P.t) + ' mg/dL</b></div><div class="kv"><span>Basal (Tresiba)</span><b>12 U · 20:00</b></div>' + (mod ? '<div class="note warn" style="margin-top:8px">' + ico("alert") + "<div><b>Parámetros modificados</b>Distintos a la pauta indicada por la Dra. Revísalos en Perfil.</div></div>" : "");
   }
@@ -621,6 +721,15 @@
     S.saveHistory(hist); $("ap").value = ""; toast("Registro guardado. ¡Bien por llevar tu historial al día!", "clock");
   });
 
+  // V48: resumen de ratios en Mi pauta (siempre lee la configuración vigente).
+  function refreshRatioEditorSummary() {
+    var values=C.currentRatios();
+    [['ratioViewDesayuno','desayuno'],['ratioViewAlmuerzo','almuerzo'],['ratioViewOnce','once'],['ratioViewCena','cena']].forEach(function(pair){
+      var el=$(pair[0]); if(el) el.textContent='1:'+values[pair[1]];
+    });
+  }
+  if ($('editRatiosPauta')) $('editRatiosPauta').addEventListener('click',function(){ratioSheet();});
+  if ($('editRatiosInicio')) $('editRatiosInicio').addEventListener('click',function(){ratioSheet();});
   /* ================= 6. PERFIL / CONFIGURACIÓN ================= */
   function renderPerfil() {
     var th = document.documentElement.getAttribute("data-mode");
@@ -629,6 +738,7 @@
     $("qtySeg").querySelectorAll("button").forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === (prefs.qty === "g" ? "g" : "auto"))); });
     $("mngCount").textContent = custom.length ? custom.length + (custom.length === 1 ? " alimento creado por ti" : " alimentos creados por ti") : "Todavía no creas alimentos";
     var rs = C.rulesStatus(rules); $("rulesCount").textContent = "Opcional · " + rs.done + " de " + rs.total + " anotadas";
+    refreshRatioEditorSummary();
     var ratiosNow=C.currentRatios(), ratioSummary=$("ratioCurrentTxt");
     if(ratioSummary) ratioSummary.textContent='Desayuno 1:'+ratiosNow.desayuno+' · Almuerzo 1:'+ratiosNow.almuerzo+' · Once 1:'+ratiosNow.once+' · Cena 1:'+ratiosNow.cena+' · Ver cambios';
     var d = C.PAUTA_DEFAULT; $("paramsTxt").textContent = (P.t === d.t && P.f === d.f && P.r === d.r ? "Valores de referencia" : "Modificados") + " · protegidos";
@@ -702,16 +812,17 @@
   }
   // Ratios con trazabilidad local, confirmación explícita y sin alterar cálculos históricos.
   var RATIO_AUDIT_KEY = 'diego.v35.ratioAudit';
+  function ratioAuditKey(){ var uid=window.DIEGO_RATIO_USER_ID; return uid ? RATIO_AUDIT_KEY+'.uid.'+uid : RATIO_AUDIT_KEY; }
   try {
-    if (!localStorage.getItem(RATIO_AUDIT_KEY)) {
-      localStorage.setItem(RATIO_AUDIT_KEY, JSON.stringify([{at:new Date().toISOString(),reason:'Pauta comunicada por la familia el 24/11/2026. Registro inicial al instalar V35 (no modifica la historia anterior).',before:'desayuno 1:18 · almuerzo 1:22 · once 1:20 · cena 1:22',after:'desayuno 1:22 · almuerzo 1:22 · once 1:22 · cena 1:22'}]));
+    if (!window.DIEGO_RATIO_USER_ID && !localStorage.getItem(ratioAuditKey())) {
+      localStorage.setItem(ratioAuditKey(), JSON.stringify([{at:new Date().toISOString(),reason:'Pauta comunicada por la familia el 24/11/2026. Registro inicial al instalar V35 (no modifica la historia anterior).',before:'desayuno 1:18 · almuerzo 1:22 · once 1:20 · cena 1:22',after:'desayuno 1:22 · almuerzo 1:22 · once 1:22 · cena 1:22'}]));
     }
   } catch (e) {}
-  function ratioAudit() { try {var v=JSON.parse(localStorage.getItem(RATIO_AUDIT_KEY)||'[]'); return Array.isArray(v)?v:[];} catch(e){return [];} }
+  function ratioAudit() { try {var v=JSON.parse(localStorage.getItem(ratioAuditKey())||'[]'); return Array.isArray(v)?v:[];} catch(e){return [];} }
   function ratioHistorySheet() {
     var entries = ratioAudit();
-    openSheet('<h3 id="shT">Historial de cambios de ratios</h3><p class="t2 small">Registrado en este dispositivo. No se sincroniza automáticamente con Firebase. Los cálculos y dosis históricos no se modifican.</p>' +
-      (entries.length ? entries.map(function(e){return '<div class="card" style="margin:10px 0;padding:12px"><b>'+esc(new Date(e.at).toLocaleString('es-CL'))+'</b><p class="t2 small">'+esc(e.reason || 'Cambio inicial')+'</p><p class="t2 small">Antes: '+esc(e.before || 'No registrado')+'</p><p class="t2 small">Después: '+esc(e.after)+'</p></div>';}).join('') : '<p class="t2 small">Sin cambios registrados desde que instalaste esta versión. Estado inicial comunicado el 24/11/2026: 1:22 en todas las comidas.</p>') +
+    openSheet('<h3 id="shT">Historial de cambios de ratios</h3><p class="t2 small">Registro de la cuenta en este dispositivo. No se sincroniza automáticamente con otros dispositivos. Los cálculos y dosis históricos no se modifican.</p>' +
+      (entries.length ? entries.map(function(e){return '<div class="card" style="margin:10px 0;padding:12px"><b>'+esc(new Date(e.at).toLocaleString('es-CL'))+'</b><p class="t2 small">'+esc(e.reason || 'Cambio inicial')+'</p><p class="t2 small">Antes: '+esc(e.before || 'No registrado')+'</p><p class="t2 small">Después: '+esc(e.after)+'</p></div>';}).join('') : '<p class="t2 small">No hay cambios anotados en este dispositivo. Verifica los ratios vigentes por comida.</p>') +
       '<button class="btn btn-secondary" id="rhBack">Volver a ratios</button>',function(b){b.querySelector('#rhBack').onclick=ratioSheet;});
   }
   function ratioSheet(){
@@ -721,7 +832,7 @@
       meals.map(function(k){return '<label class="f" for="ratio-'+k+'">'+({desayuno:'Desayuno',almuerzo:'Almuerzo',once:'Once',cena:'Cena'}[k])+' · HC por 1 U</label><div class="inp"><span>1:</span><input id="ratio-'+k+'" type="number" inputmode="numeric" min="5" max="60" step="1" value="'+cur[k]+'" /></div>';}).join('')+
       '<label class="f" for="ratioReason" style="margin-top:12px">Fuente y motivo de la nueva indicación (obligatorio)</label><input id="ratioReason" placeholder="Ej.: diabetóloga, control 24/11/2026" maxlength="180" style="width:100%;padding:12px;border-radius:12px;border:1px solid #a9b9ad;font-size:16px" />'+
       '<label style="display:flex;gap:9px;align-items:flex-start;margin:14px 0"><input id="ratioAck" type="checkbox" style="min-width:20px;min-height:20px" /><span>Confirmo que estos ratios corresponden a una indicación clínica vigente, revisada por un adulto responsable.</span></label>'+ 
-      '<p class="t2 small">Este historial queda solo en este teléfono. Otros dispositivos deberán actualizar la pauta de forma independiente hasta disponer de sincronización médica verificada.</p>'+ 
+      '<p class="t2 small">Los cambios corresponden a la cuenta activa en este navegador. La misma cuenta en otro teléfono deberá actualizar sus ratios por separado; todavía no hay sincronización médica entre dispositivos.</p>'+ 
       '<div class="err" id="ratioErr" role="alert"></div><button class="btn btn-primary" id="ratioSave">Revisar cambio</button><button class="btn btn-secondary" id="ratioHistory" style="margin-top:10px">Ver historial de modificaciones</button>',function(b){
       b.querySelector('#ratioHistory').onclick=ratioHistorySheet;
       b.querySelector('#ratioSave').onclick=function(){
@@ -736,15 +847,18 @@
         confirmModal({title:'Confirmar modificación médica',text:'Antes: '+label(cur)+' | Nuevos ratios: '+label(next)+'. Este cambio afectará los cálculos futuros y no modificará las dosis antiguas. ¿Confirmas que fue indicado por la diabetóloga?',ok:'Confirmar cambio',onOk:function(){
           try {
             var history=ratioAudit(); history.unshift({at:new Date().toISOString(),reason:reason,before:label(cur),after:label(next)});
-            localStorage.setItem(RATIO_AUDIT_KEY,JSON.stringify(history));
-            localStorage.setItem('diego.v35.clinicalRatios',JSON.stringify(next));
+            localStorage.setItem(ratioAuditKey(),JSON.stringify(history));
+            localStorage.setItem(C.ratioStorageKey(),JSON.stringify(next));
             P=Object.assign({},P,{r:next.desayuno});S.savePauta(P);
           }catch(e){toast('No se pudo guardar. Revisa el almacenamiento local.','info');return;}
-          closeSheet();renderPerfil();renderParams();renderInicio(); if(ui.screen==='pauta')compute();toast('Ratios vigentes guardados con historial','shield');
+          closeSheet();renderPerfil();renderParams();refreshRatioEditorSummary();renderInicio(); if(ui.screen==='pauta')compute();window.dispatchEvent(new Event('diego:ratios-changed'));toast('Ratios de esta cuenta guardados con historial','shield');
         }});
       };
     });
   }
+  window.addEventListener('diego:ratio-user-changed',function(){
+    try { P=Object.assign({},P,{r:C.ratioForMeal('desayuno')}); renderPerfil();renderParams();refreshRatioEditorSummary();renderInicio(); if(ui.screen==='pauta')compute(); }catch(e){console.warn('No se pudo refrescar ratios al cambiar cuenta',e);}
+  });
   function fichaSheet() {
     var kv = function (k, v) { return '<div class="kv"><span>' + k + "</span><b>" + v + "</b></div>"; }, sect = function (t) { return '<div class="sect" style="margin-top:16px">' + t + "</div>"; };
     openSheet('<h3 id="shT">Mi ficha de tratamiento</h3><p class="t2 small" style="margin:0 0 4px">Diabetes tipo 1. Lo que indica tu equipo médico; si te cambian algo, manda lo que diga el equipo.</p>' +
@@ -755,7 +869,7 @@
       '<p class="t2 small" style="margin:6px 0 0">La colación no lleva insulina. Cualquier cálculo de la app debe verificarse con la pauta médica.</p>' +
       sect("Controles de glicemia") + '<p class="t2" style="margin:0">Antes de desayuno, almuerzo, once y cena; 2 h después de cada una; y a las 02:00.</p>' +
       sect("Otros") + kv("Vitamina D", "5 gotas al día, con el desayuno") +
-      sect("Cambios indicados por el equipo") + kv("24-11-2026 (última confirmación)", "Desayuno, almuerzo, once y cena 1:22; colaciones sin insulina.") + kv("14-11-2026", "Tresiba de 15 a 14 U") + kv("15-11-2026", "Ratio de 12 a 14 g") + kv("17-11-2026", "Ratio de 14 a 16 g") + kv("19-11-2026 (tarde)", "Ratio de 16 a 14 g; Tresiba de 14 a 12 U") + kv("19-11-2026 (noche)", "Ratio de 14 a 18 g; Tresiba sin cambio (12 U)") + kv("22-11-2026", "Ratio de 18 a 20 g; Tresiba sin cambio (12 U)") + kv("23-11-2026", "Desayuno 1:20; almuerzo, once y cena 1:22; colaciones sin insulina; Tresiba 12 U") + kv("23-11-2026 (última confirmación)", "Desayuno 1:18; almuerzo 1:22; once 1:20; cena 1:22; colaciones sin insulina; Tresiba 12 U") +
+      sect("Cambios comunicados por la familia") + kv("26-11-2026 (actualización V47)", "Desayuno 1:22; almuerzo 1:24; once 1:22; cena 1:24. Confirmar con diabetóloga.") + kv("24-11-2026 (pauta previa)", "Desayuno, almuerzo, once y cena 1:22; colaciones sin insulina.") + kv("14-11-2026", "Tresiba de 15 a 14 U") + kv("15-11-2026", "Ratio de 12 a 14 g") + kv("17-11-2026", "Ratio de 14 a 16 g") + kv("19-11-2026 (tarde)", "Ratio de 16 a 14 g; Tresiba de 14 a 12 U") + kv("19-11-2026 (noche)", "Ratio de 14 a 18 g; Tresiba sin cambio (12 U)") + kv("22-11-2026", "Ratio de 18 a 20 g; Tresiba sin cambio (12 U)") + kv("23-11-2026", "Desayuno 1:20; almuerzo, once y cena 1:22; colaciones sin insulina; Tresiba 12 U") + kv("23-11-2026 (última confirmación)", "Desayuno 1:18; almuerzo 1:22; once 1:20; cena 1:22; colaciones sin insulina; Tresiba 12 U") +
       sect("Hipoglucemia (bajo 70)") + note("warn", "Consciente y puede tragar", "15 g de azúcar rápida (jugo o bebida normal, 1 cda. de azúcar en agua). Medir a los 15 min y repetir si sigue bajo 70. Luego algo con carbohidrato lento. Si el sensor no coincide con cómo se siente, confirmar con capilar.") +
       note("danger", "Inconsciente, convulsiona o no puede tragar", "No darle nada por la boca. Ponerlo de lado, usar glucagón si hay y llevarlo a la clínica o llamar al 131 (SAMU)."));
   }

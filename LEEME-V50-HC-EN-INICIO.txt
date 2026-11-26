@@ -1,0 +1,12 @@
+Diego Familiar V50 — Fichas de carbohidratos en Inicio
+Basado en V49 (derivada de la V46 original). Mantiene todos los archivos JS/CSS/imágenes y módulos.
+
+Las tarjetas de 19 alimentos principales ahora muestran HC por 100 g y HC por unidad cuando el alimento la tiene, además de la fuente registrada en la base de la app. Al tocarlas se abre el mismo selector de cantidades y se puede agregar al plato.
+
+Ejemplo comprobable: Yogurth vainilla sin azúcar (120 g): 8,9 g HC/unidad y 7,4 g HC/100 g, fuente Etiqueta Soprole.
+
+Talliani N.º 5 y papas mayo se mantienen como pendientes hasta registrar sus etiquetas/recetas. No se inventan macros.
+IMPORTANTE: si la familia ha editado un alimento en Mis alimentos con el mismo nombre, la tarjeta prefiere la ficha editada.
+Ratios de la V48: desayuno y once 1:22; almuerzo y cena 1:24; editables. Los datos nutricionales de la app no han sido contrastados de nuevo con etiquetas reales; comprobar las demás fichas antes de calcular dosis.
+
+Publicación: cargar el ZIP completo en Cloudflare Pages, no solo index.html.

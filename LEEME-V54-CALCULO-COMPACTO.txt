@@ -1,0 +1,7 @@
+Diego Familiar V54
+- Se mantiene la calculadora original con los mismos IDs y lógica.
+- Se coloca visible, compacta, inmediatamente tras seleccionar comida y antes de alimentos favoritos/principales.
+- Glicemia, HC, total, desglose y fórmula visibles; detalle ampliado bajo desplegable.
+- Los carbohidratos se sincronizan desde el plato.
+- No se alteran ratios, fichas nutricionales, bitácora, datos ni autenticación.
+- Es referencia matemática, NO indicación de dosis.

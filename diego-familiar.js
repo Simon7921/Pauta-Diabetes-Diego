@@ -183,7 +183,7 @@ if (!config || !config.projectId || !config.apiKey || !config.appId) {
   $('familyUpload').onclick=()=>run(uploadLegacy);
   if($('familyRefreshMembers'))$('familyRefreshMembers').onclick=()=>run(listMembers);
   onAuthStateChanged(auth,async user=>{
-    currentUser=user;reset();show('familyAuth',!user);show('familyLogged',!!user);
+    currentUser=user;window.DIEGO_RATIO_USER_ID=user && user.emailVerified ? user.uid : null;window.dispatchEvent(new Event('diego:ratio-user-changed'));reset();show('familyAuth',!user);show('familyLogged',!!user);
     if(!user){restorePrivateLocal();message('Inicia sesión con tu cuenta personal.');return;}
     $('familyUserLabel').textContent=user.email+(user.emailVerified?' · verificado':' · pendiente de verificación');
     if(!user.emailVerified){message('Verifica tu correo para entrar al espacio familiar y vuelve a iniciar sesión.');return;}

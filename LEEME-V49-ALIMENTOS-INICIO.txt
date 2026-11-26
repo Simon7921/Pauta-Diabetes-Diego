@@ -1,0 +1,9 @@
+Diego Familiar V49 — Alimentos principales en Inicio
+
+Basado en V48. Aparecen 19 accesos rápidos en Inicio. Al tocar, se abre el diálogo original de cantidad, se calcula HC y se suma al plato.
+
+Los alimentos Talliani N.º 5, Yogurt Soprole vainilla sin azúcar y papas mayo quedan pendientes de ficha exacta (etiqueta o receta): se abre Crear alimento, sin inventar datos. Posteriormente estarán disponibles desde el acceso rápido.
+Carne y pollo simples, sin agregados, se contabilizan con 0 g HC estimados, no 0 kcal. El huevo mantiene el valor existente (0,7 g HC/100 g).
+La app almacena el plato y permite guardar la comida como favorita y registrar en historial con el flujo existente; la sincronización de familia requiere Firebase correctamente configurado.
+No se reemplazan los ratios de V48 (desayuno/once 22; almuerzo/cena 24).
+Publicar en Cloudflare Pages el contenido completo del ZIP.

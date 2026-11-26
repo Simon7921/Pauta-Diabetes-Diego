@@ -1,0 +1,14 @@
+DIEGO FAMILIAR V55 – RATIOS POR CUENTA
+
+Valores iniciales:
+Desayuno 1:22; Almuerzo 1:24; Once 1:22; Cena 1:24.
+Colación: sin bolo automático.
+
+Botón «Editar ratios» integrado al cálculo rápido de Inicio, además de Perfil y Mi pauta.
+Los ratios se almacenan por UID de la cuenta Firebase en cada navegador (localStorage).
+No se sincronizan aún entre dispositivos: la misma cuenta en otro teléfono requiere configurar sus ratios allí.
+Los datos de invitado sin sesión conservan las claves anteriores; no se asignan a otra cuenta.
+Cada edición exige motivo, confirmación explícita e historial local por cuenta.
+Los resultados muestran la expresión matemática, no una recomendación de dosis.
+No modifica dosis ni ratios registrados en eventos históricos.
+Antes de administrar insulina, verificar la pauta médica vigente, glucosa y otros factores clínicos.
