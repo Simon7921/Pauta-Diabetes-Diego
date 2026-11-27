@@ -1006,6 +1006,7 @@ html[data-mode=dark] .v53-warning{color:#f1d7a7}
     <section class="home-quickcalc" aria-labelledby="homeQuickTitle">
       <div class="home-quickcalc__header"><div><span class="home-quickcalc__eyebrow">ACCESO DIRECTO</span><h2 id="homeQuickTitle">⚡ Cálculo rápido</h2></div><span class="home-quickcalc__ratio" id="homeQuickRatio">Ratio según comida</span></div>
       <div class="v55-ratio-action"><span><span id="v55LiveRatioSummary">Desayuno 1:22 · Almuerzo 1:24 · Once 1:22 · Cena 1:24</span></span><button type="button" id="editRatiosInicio" aria-label="Editar ratios para cada comida">✎ Editar ratios</button></div>
+      <div class="v55-ratio-action"><span><span id="v64SensitivitySummary">Sensibilidad actual: 60 mg/dL por U</span></span><button type="button" id="editSensitivityInicio" aria-label="Editar sensibilidad">✎ Editar sensibilidad</button></div>
       <div class="home-quickcalc__inputs">
         <label>Glicemia actual <span>mg/dL</span><input id="homeQuickGlucose" type="text" inputmode="decimal" autocomplete="off" placeholder="Ej. 137" aria-describedby="homeQuickDisclaimer"></label>
         <label>Carbohidratos <span>g HC</span><input id="homeQuickCarbs" type="text" inputmode="decimal" autocomplete="off" placeholder="Ej. 66,9" aria-describedby="homeQuickDisclaimer"></label>
@@ -1018,7 +1019,7 @@ html[data-mode=dark] .v53-warning{color:#f1d7a7}
       <div class="home-quickcalc__visible-formula" role="group" aria-label="Fórmula matemática con valores actualizados de glicemia, carbohidratos y parámetros registrados">
         <p class="home-quickcalc__formula-caption">Fórmula completa · comprobación</p>
         <div class="home-quickcalc__equation">
-          <span class="home-quickcalc__fraction"><span class="home-quickcalc__numerator" id="homeQuickFormulaGlucose">— − 110</span><span class="home-quickcalc__denominator" id="homeQuickFormulaSensitivity">50</span></span>
+          <span class="home-quickcalc__fraction"><span class="home-quickcalc__numerator" id="homeQuickFormulaGlucose">— − 110</span><span class="home-quickcalc__denominator" id="homeQuickFormulaSensitivity">60</span></span>
           <span class="home-quickcalc__plus">+</span>
           <span class="home-quickcalc__fraction"><span class="home-quickcalc__numerator" id="homeQuickFormulaCarbs">—</span><span class="home-quickcalc__denominator" id="homeQuickFormulaRatio">22</span></span>
         </div>
@@ -1537,10 +1538,11 @@ if($('familyStatus')){new MutationObserver(sync).observe($('familyStatus'),{subt
     put('homeQuickFormulaCarbs',carbsOk?numeral(valC):'—');
     put('homeQuickFormulaSensitivity',Number.isFinite(sensitivity)&&sensitivity>0?numeral(sensitivity):'—');
     put('homeQuickFormulaRatio',ratio||'—');
-    var valid=ratio&&glucoseOk&&carbsOk&&target===110&&sensitivity===50;
+    var valid=ratio&&glucoseOk&&carbsOk&&Number.isFinite(target)&&target>=60&&target<=200&&Number.isFinite(sensitivity)&&sensitivity>0&&sensitivity<=300;
     var food=valid?valC/ratio:NaN,correction=valid?(valG-target)/sensitivity:NaN;
     put('homeQuickMainTotal',fmt(food+correction));put('homeQuickFoodValue',fmt(food));put('homeQuickCorrectionVisible',fmt(correction));put('homeQuickFoodDetail',fmt(food));put('homeQuickCorrection',fmt(correction));put('homeQuickTotal',fmt(food+correction));
-    put('homeQuickParams',target===110&&sensitivity===50?'Fórmula: (glicemia − 110) ÷ 50 + CH ÷ '+(ratio||'ratio')+' · sin reglas clínicas adicionales.':'⚠️ Parámetros guardados diferentes de objetivo 110 y sensibilidad 50. Revisa Parámetros médicos; el cálculo permanece bloqueado.');
+    put('homeQuickParams',valid?'Fórmula: (glicemia − '+numeral(target)+') ÷ '+numeral(sensitivity)+' + HC ÷ '+ratio+' · valores guardados en Parámetros médicos.':'⚠️ Revisa glicemia, carbohidratos y parámetros médicos.');
+    var summarySens=el('v64SensitivitySummary');if(summarySens)summarySens.textContent='Sensibilidad actual: '+(Number.isFinite(sensitivity)?numeral(sensitivity):'—')+' mg/dL por U';
   }
   g.addEventListener('input',update);c.addEventListener('input',update);
   var meal=el('uxMealName');if(meal&&window.MutationObserver)new MutationObserver(update).observe(meal,{childList:true,characterData:true,subtree:true});
@@ -1549,6 +1551,7 @@ if($('familyStatus')){new MutationObserver(sync).observe($('familyStatus'),{subt
   window.addEventListener('pageshow',update);
   window.addEventListener('storage',update);
   window.addEventListener('diego:ratios-changed',update);
+  window.addEventListener('diego:medical-params-changed',update);
   window.addEventListener('diego:ratio-user-changed',update);
   // La vista Pauta puede editar parámetros sin recargar toda la página.
   document.addEventListener('click',function(){setTimeout(update,0)});

@@ -8,7 +8,7 @@
   "use strict";
 
   // Ratios comunicados por la familia el 26/11/2026: desayuno y once 1:22; almuerzo y cena 1:24. Tresiba 12 U según pauta previamente informada. Confirmar con el equipo tratante antes de dosificar. t = objetivo, f = sensibilidad, r = ratio.
-  var PAUTA_DEFAULT = Object.freeze({ t: 110, f: 50, r: 22 });
+  var PAUTA_DEFAULT = Object.freeze({ t: 110, f: 60, r: 22 });
   // Pauta comunicada el 23/11/2026: la colación NO lleva insulina.
   var MEAL_RATIOS = Object.freeze({ desayuno: 22, colacion: null, almuerzo: 24, once: 22, cena: 24 });
   var RATIO_STORAGE = "diego.v35.clinicalRatios";

@@ -54,13 +54,30 @@
       localStorage.setItem('diego.v47.ratiosAplicados','1');
     }
   } catch(e) { console.warn('V47: verificar ratios en Perfil',e); }
+  // V64: cambio médico comunicado por la familia: sensibilidad 60.
+  // Solo migrar el antiguo valor por defecto (50) una vez. No sobrescribir
+  // sensibilidades personalizadas ni cambios posteriores.
+  try {
+    if (!localStorage.getItem('diego.v64.sensibilidad60')) {
+      if (Number(P.f) === 50 && Number(P.t) === 110) {
+        var prevSens={t:P.t,f:P.f};
+        P=Object.assign({},P,{f:60});
+        S.savePauta(P);
+        var log=JSON.parse(localStorage.getItem('diego.v36.medicalAudit')||'[]');
+        if (!Array.isArray(log)) log=[];
+        log.unshift({at:new Date().toISOString(),before:prevSens,after:{t:P.t,f:60},reason:'Sensibilidad 60 comunicada por la familia el 27/11/2026. Migración V64.'});
+        localStorage.setItem('diego.v36.medicalAudit',JSON.stringify(log.slice(0,100)));
+      }
+      localStorage.setItem('diego.v64.sensibilidad60','1');
+    }
+  } catch(e) { console.warn('V64: comprobar sensibilidad en Parámetros médicos',e); }
   // V35: la pauta vigente usa C.ratioForMeal, nunca el campo heredado P.r.
   // Sólo para mostrar coherencia con el ratio actual de desayuno.
   P = Object.assign({}, P, {r: C.ratioForMeal('desayuno')});
   // V36: Nunca reinterpretar un parámetro heredado como si estuviera confirmado.
   // Si este navegador tiene un valor diferente al comunicado, se muestra advertencia
   // y se BLOQUEA la visualización del resultado matemático hasta revisar parámetros.
-  var clinicalMismatch = !(Number(P.t) === 110 && Number(P.f) === 50);
+  var clinicalMismatch = !(Number.isFinite(Number(P.t)) && Number(P.t)>=60 && Number(P.t)<=200 && Number.isFinite(Number(P.f)) && Number(P.f)>0 && Number(P.f)<=300);
   var medicalAuditKey = 'diego.v36.medicalAudit';
   function auditMedicalChange(before, after, reason) {
     try {
@@ -70,7 +87,7 @@
       localStorage.setItem(medicalAuditKey,JSON.stringify(items.slice(0,100)));
     } catch(e) {}
   }
-  function clinicalWarning() {return clinicalMismatch ? 'La configuración guardada en este dispositivo NO coincide con objetivo 110 y sensibilidad 50. Revisa Parámetros médicos. No se muestra el cálculo.' : '';}
+  function clinicalWarning() {return clinicalMismatch ? 'Objetivo o sensibilidad inválidos. Revisa Parámetros médicos para continuar.' : '';}
 
   var custom = S.loadCustom(), recipes = S.loadRecipes(), favs = S.loadFavs(), plate = S.loadPlate();
   var usage = S.loadUsage(), hist = S.loadHistory(), rules = S.loadRules(), prefs = S.loadPrefs();
@@ -762,6 +779,7 @@
   }
   if ($('editRatiosPauta')) $('editRatiosPauta').addEventListener('click',function(){ratioSheet();});
   if ($('editRatiosInicio')) $('editRatiosInicio').addEventListener('click',function(){ratioSheet();});
+  if ($('editSensitivityInicio')) $('editSensitivityInicio').addEventListener('click',function(){paramsSheet(false);});
   /* ================= 6. PERFIL / CONFIGURACIÓN ================= */
   function renderPerfil() {
     var th = document.documentElement.getAttribute("data-mode");
@@ -815,7 +833,7 @@
       '<label class="f" for="pF" style="margin-top:10px">Factor de sensibilidad</label><div class="inp"><input id="pF" inputmode="decimal" value="' + dec(P.f) + '"' + dis + "><span>mg/dL</span></div>" +
       '<p class="t2 small" style="margin-top:12px"><b>Ratios vigentes por comida:</b> Desayuno 1:' + C.ratioForMeal('desayuno') + ' · Almuerzo 1:' + C.ratioForMeal('almuerzo') + ' · Once 1:' + C.ratioForMeal('once') + ' · Cena 1:' + C.ratioForMeal('cena') + '. Colaciones sin insulina. Edición protegida con historial.</p>' +
       (unlocked ? '<label class="f" for="pReason">Origen y motivo de la indicación (obligatorio)</label><input id="pReason" maxlength="180" placeholder="Ej. indicación de diabetóloga y fecha" style="width:100%;padding:12px;border:1px solid #a9b9ad;border-radius:12px"/><label style="display:flex;align-items:flex-start;gap:10px;margin:12px 0"><input type="checkbox" id="pAck" style="min-width:20px;min-height:20px"/>Confirmo que estos valores fueron indicados por el equipo tratante.</label>' : '') +
-      '<div class="err" id="pE" role="alert"></div><button class="btn btn-secondary" id="pHistory" style="margin:10px 0">Ver historial de objetivo y sensibilidad</button>' + (unlocked ? '<button class="btn btn-primary" id="pSave" style="margin-top:12px">Guardar parámetros</button><button class="btn btn-ghost" id="pReset" style="margin-top:8px">Volver a la epicrisis (110 · 50 · 12)</button>' : '<button class="btn btn-secondary" id="pUnlock" style="margin-top:12px">' + ico("lock", "s") + "Desbloquear edición</button>"), function (b) {
+      '<div class="err" id="pE" role="alert"></div><button class="btn btn-secondary" id="pHistory" style="margin:10px 0">Ver historial de objetivo y sensibilidad</button>' + (unlocked ? '<button class="btn btn-primary" id="pSave" style="margin-top:12px">Guardar parámetros</button><button class="btn btn-ghost" id="pReset" style="margin-top:8px">Restablecer pauta actual (110 · 60 · 12)</button>' : '<button class="btn btn-secondary" id="pUnlock" style="margin-top:12px">' + ico("lock", "s") + "Desbloquear edición</button>"), function (b) {
       var mh=b.querySelector('#pHistory'); if(mh) mh.onclick=function(){
         var events=[];try{events=JSON.parse(localStorage.getItem(medicalAuditKey)||'[]')||[];}catch(e){}
         openSheet('<h3 id="shT">Historial de objetivo y sensibilidad</h3><p>Solo se guarda en este teléfono. No se sincroniza.</p>'+ (events.length?events.map(function(e){return '<p class="note info"><b>'+esc(new Date(e.at).toLocaleString('es-CL'))+'</b> · '+esc(e.reason)+' · Objetivo '+esc(e.before.t)+' → '+esc(e.after.t)+' · Sensibilidad '+esc(e.before.f)+' → '+esc(e.after.f)+'</p>';}).join(''):'<p>Sin cambios registrados en esta versión.</p>')+'<button class="btn btn-secondary" id="backMed">Volver</button>',function(v){v.querySelector('#backMed').onclick=function(){paramsSheet(false);};});
@@ -829,15 +847,15 @@
         var before={t:P.t,f:P.f}, after={t:t,f:f};
         confirmModal({title:'Confirmar cambio clínico',text:'Antes: objetivo '+before.t+' / sensibilidad '+before.f+'. Nuevo: objetivo '+after.t+' / sensibilidad '+after.f+'. Esta calculadora NO está validada para dosificar.',ok:'Guardar y registrar',onOk:function(){
           P={t:t,f:f,r:r};S.savePauta(P);auditMedicalChange(before,after,reason);
-          clinicalMismatch=!(Number(P.t)===110 && Number(P.f)===50);
-          closeSheet();renderPerfil();renderParams();compute();toast('Parámetros registrados','lock');
+          clinicalMismatch=!(Number.isFinite(Number(P.t)) && Number(P.t)>=60 && Number(P.t)<=200 && Number.isFinite(Number(P.f)) && Number(P.f)>0 && Number(P.f)<=300);
+          closeSheet();renderPerfil();renderParams();compute();window.dispatchEvent(new Event('diego:medical-params-changed'));toast('Parámetros registrados','lock');
         }});
       };
       var rs = b.querySelector("#pReset"); if (rs) rs.onclick = function () {
-        confirmModal({title:'Restablecer valores comunicados',text:'Objetivo 110 y sensibilidad 50. Solo confirma si siguen siendo los valores indicados por la médica. No usar la simulación para administrar insulina.',ok:'Confirmar restablecimiento',onOk:function(){
+        confirmModal({title:'Restablecer valores comunicados',text:'Objetivo 110 y sensibilidad 60. Confirma que siguen siendo los valores indicados por la médica. No usar la simulación para administrar insulina.',ok:'Confirmar restablecimiento',onOk:function(){
           var before={t:P.t,f:P.f};P=Object.assign({},C.PAUTA_DEFAULT);S.savePauta(P);
-          auditMedicalChange(before,{t:P.t,f:P.f},'Restablecimiento confirmado manualmente a valores familiares 24/11/2026');
-          clinicalMismatch=false;closeSheet();renderPerfil();renderParams();compute();toast('Valores confirmados y registrados','lock');
+          auditMedicalChange(before,{t:P.t,f:P.f},'Restablecimiento confirmado manualmente a pauta actual 27/11/2026');
+          clinicalMismatch=false;closeSheet();renderPerfil();renderParams();compute();window.dispatchEvent(new Event('diego:medical-params-changed'));toast('Valores confirmados y registrados','lock');
         }});
       };
     });
