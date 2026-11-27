@@ -858,6 +858,12 @@ html[data-mode] .nav button .ico{width:22px!important;height:22px!important}
 #s-inicio .sage-hero .hero-copy h1{font-size:clamp(22px,6vw,30px)!important;line-height:1.09!important;margin:3px 0!important}
 #s-inicio .sage-hero .hero-copy p{display:none}
 #s-inicio .sage-hero .sage-player{max-height:140px!important;top:-4px!important}
+#s-inicio .sage-hero .sage-player,#s-inicio .sage-hero .sage-bike-figure{position:absolute;right:8px;bottom:-4px;z-index:1;pointer-events:none;width:auto;filter:drop-shadow(0 10px 18px rgba(0,0,0,.14));}
+#s-inicio .sage-hero .sage-player{display:none;max-height:140px!important;}
+#s-inicio .sage-hero .sage-bike-figure{display:block;max-height:142px!important;}
+html.fig-ball #s-inicio .sage-hero .sage-player{display:block;}
+html.fig-ball #s-inicio .sage-hero .sage-bike-figure{display:none;}
+@media(max-width:699px){#s-inicio .sage-hero .sage-bike-figure{max-height:112px!important;right:6px;bottom:-2px}}
 #s-inicio .sage-hero .hero-cta{min-height:36px!important;padding:7px 13px!important;font-size:12px!important;margin-top:7px!important}
 #s-inicio .v53-workflow{display:flex;flex-direction:column;gap:10px;margin-top:8px}
 #s-inicio .v53-workflow .section-intro{margin:0!important}
@@ -950,6 +956,12 @@ html[data-mode=dark] .v53-warning{color:#f1d7a7}
 @media(min-width:650px){#s-inicio .v54-workflow .home-quickcalc{max-width:720px;width:100%;box-sizing:border-box}}
 @media(max-width:360px){#s-inicio .v54-workflow .home-quickcalc{padding:10px!important}#s-inicio .v54-workflow .home-quickcalc__header h2{font-size:16px!important}}
 </style>
+<style id="v58NextMealStyle">
+.v58-next-meal{display:flex;align-items:center;justify-content:center;min-height:35px;margin:0 0 9px;padding:7px 12px;border-radius:12px;background:var(--surface);border:1px solid var(--border2);font-size:13px;font-weight:750;color:var(--text);text-align:center}
+#s-inicio .mgrid .chip.v58-upcoming:not([aria-pressed="true"]){border:2px solid var(--accent);box-shadow:0 0 0 2px rgba(144,202,77,.16)}
+#s-inicio .mgrid .chip.v58-upcoming::after{content:"PRÓXIMA";font-size:8px;font-weight:900;letter-spacing:.05em;line-height:1}
+@media(max-width:400px){.v58-next-meal{font-size:12px;padding:6px 8px}#s-inicio .mgrid .chip.v58-upcoming::after{font-size:7px}}
+</style>
 </head>
 <body>
 <button type="button" id="mobileMenuButton" class="mobile-menu-button" aria-label="Abrir menú con todas las secciones" aria-controls="mainSidebar" aria-expanded="false"><span aria-hidden="true">☰</span><span>Menú</span></button>
@@ -987,7 +999,7 @@ html[data-mode=dark] .v53-warning{color:#f1d7a7}
         <button class="hero-cta" id="v53HeroChoose" type="button"><svg class="ico s"><use href="#i-plus"/></svg> Elegir alimentos ↓</button>
       </div>
       <img class="sage-player" src="player-soft-pastel.webp" alt="Ilustración 3D de futbolista juvenil con pelota" />
-      <div class="sage-bike-figure" role="img" aria-label="Ciclista deportivo">🚴‍♂️</div>
+      <img class="sage-bike-figure" src="ciclista-diego-v59.png" alt="Ilustración de Diego en bicicleta" />
       </header>
 
     <!-- V46: resultado principal muestra formula algebraica completa; no dosifica ni guarda insulina -->
@@ -1047,6 +1059,7 @@ html[data-mode=dark] .v53-warning{color:#f1d7a7}
       <p class="ux-sync" id="uxSyncText" role="status">◌ Registros guardados en este dispositivo hasta verificar sincronización</p>
     </section>
     <div class="section-intro"><div class="dashboard-section-heading"><div><span class="soft-kicker">ARMA TU PLATO</span><h2>¿Qué comida vamos a preparar?</h2><p class="meal-helper">Toca una opción para buscar y agregar alimentos a tu plato.</p></div></div></div>
+    <div class="v58-next-meal" id="v58MealCountdown" role="status" aria-live="off">Próxima comida según horario</div>
     <div class="mgrid" id="meals" role="group" aria-label="Selecciona la comida que quieres preparar"></div><div class="meal-selection-status" id="mealSelectionStatus" aria-live="polite"></div>
     <details class="ux-extra"><summary>📷 Escanear etiquetas, fotos y más opciones <span>⌄</span></summary><div class="ux-extra-inner">
     <div class="diego-home-actions" aria-label="Accesos a fotografía nutricional">
@@ -1476,9 +1489,9 @@ html[data-mode=dark] .v53-warning{color:#f1d7a7}
   var fig=readJSON('diego.v3.prefs',{});window.diegoChooseFigure(fig&&fig.fig==='bike'?'bike':'ball');
 })();
 </script>
-<script src="calc.js?v=55"></script>
+<script src="calc.js?v=57"></script>
 <script src="store.js"></script>
-<script src="app.js?v=56"></script>
+<script src="app.js?v=57"></script>
 <script src="bitacora.js?v=45"></script>
 <script src="diego-ai.js?v=31"></script>
 <script src="diego-ai-context.js?v=34"></script>

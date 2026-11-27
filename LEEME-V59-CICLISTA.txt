@@ -1,0 +1,1 @@
+V59 · Se reemplaza el emoji del ciclista por una ilustración de Diego en bicicleta, sin casco, con mochila roja, polera blanca, short negro y zapatillas deportivas. Mantiene el selector Ciclista / Pelota y actualiza el service worker para refrescar caché.

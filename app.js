@@ -81,9 +81,39 @@
   // La selección automática es una sugerencia al abrir: nunca se impone sobre un plato iniciado
   // ni sobre una elección manual durante esta sesión.
   var mealSelectionMode = "automatic", automaticMeal = null;
+  // V58: la siguiente comida principal se obtiene del horario ya guardado en Mi pauta.
+  // Las colaciones y Tresiba conservan sus alarmas, pero no desplazan el icono principal.
+  function nextMainMeal(now) {
+    var allowed = {desayuno:true, almuerzo:true, once:true, cena:true};
+    var entries = sched().filter(function(x){return x && allowed[x.id] && /^\d{1,2}:\d{2}$/.test(x.t);});
+    if(!entries.length) return null;
+    var current = now.getHours()*60 + now.getMinutes() + now.getSeconds()/60;
+    var next=null;
+    entries.forEach(function(x){
+      var minutes=C.toMin(x.t)-current;
+      if(minutes<=0) minutes+=1440;
+      if(!next || minutes<next.minutes) next={item:x, minutes:Math.ceil(minutes), tomorrow:C.toMin(x.t)<=current};
+    });
+    return next;
+  }
+  function paintNextMainMeal(now) {
+    var next=nextMainMeal(now||new Date());
+    var count=document.getElementById('v58MealCountdown');
+    if(count) count.textContent=next ? 'Próxima comida: '+next.item.label+' · '+next.item.t+' · faltan '+next.minutes+' min'+(next.tomorrow?' (mañana)':'') : 'Configura tus horarios de comidas';
+    var icon=document.getElementById('v58MealUpcoming');
+    if(icon) icon.textContent=next ? '⏰ '+next.item.label+' en '+next.minutes+' min' : '';
+    var root=document.getElementById('meals');
+    if(root) root.querySelectorAll('[data-m]').forEach(function(button){
+      var upcoming=!!next && button.getAttribute('data-m')===next.item.id;
+      button.classList.toggle('v58-upcoming',upcoming);
+      button.setAttribute('data-next',upcoming?'true':'false');
+      button.title=upcoming ? 'Próxima comida en '+next.minutes+' minutos' : '';
+    });
+    return next;
+  }
   function selectNextMealIfSafe() {
     if (mealSelectionMode !== "automatic" || plate.items.length) return false;
-    var suggestion = C.nextMeal(new Date(), sched());
+    var suggestion = nextMainMeal(new Date());
     if (!suggestion) return false;
     automaticMeal = suggestion;
     if (plate.meal !== suggestion.item.id) {
@@ -206,7 +236,7 @@
   var DIEGO_STAPLES = [
     {name:'Pan marraqueta',emoji:'🥖',base:'Marraqueta'},
     {name:'Tomate',emoji:'🍅',base:'Tomate'},
-    {name:'Tallarines Talliani N.º 5 (secos)',emoji:'🍝',aliases:['Tallarines Talliani N.º 5 (secos)','Tallarines Talliani N° 5']},
+    {name:'Tallarines Talliani N.º 5 (cocidos)',emoji:'🍝',base:'Tallarines Talliani N.º 5 (cocidos)'},
     {name:'Puré casero de mamá',emoji:'🥔',base:'Puré mamá'},
     {name:'Palta',emoji:'🥑',base:'Palta'},
     {name:'Pan de molde',emoji:'🍞',base:'Pan de molde blanco'},
@@ -291,10 +321,10 @@
     $("meals").innerHTML = C.MEALS.map(function (m) { return '<button type="button" class="chip" data-m="' + m.id + '" aria-label="Armar plato para ' + esc(m.name) + '" aria-pressed="' + (plate.meal === m.id) + '">' + ico(MEAL_ICON[m.id]) + m.name + "</button>"; }).join("");
     var status = $("mealSelectionStatus");
     if (status) {
-      var suggestion = C.nextMeal(d, sched()), label = meal(plate.meal).name;
+      var suggestion = nextMainMeal(d), label = meal(plate.meal).name;
       if (plate.items.length) status.textContent = "Preparando: " + label + " · Puedes cambiar la comida manualmente";
       else if (mealSelectionMode === "manual") status.textContent = "Elegida por ti: " + label + " · Puedes cambiarla cuando quieras";
-      else if (suggestion && suggestion.item.id === plate.meal) status.textContent = "Comida más cercana según horario: " + label + " · " + suggestion.item.t + (suggestion.tomorrow ? " (mañana)" : suggestion.yesterday ? " (ayer)" : "") + " · Puedes cambiarla";
+      else if (suggestion && suggestion.item.id === plate.meal) status.textContent = "Próxima comida según horario: " + label + " · " + suggestion.item.t + (suggestion.tomorrow ? " (mañana)" : suggestion.yesterday ? " (ayer)" : "") + " · Puedes cambiarla";
       else status.textContent = "Seleccionada: " + label + " · Puedes cambiarla cuando quieras";
     }
     var m = meal(plate.meal), tot = plateTotal(), n = plate.items.length;
@@ -317,6 +347,7 @@
     }).join("") : '<li class="empty">' + ico("utensils") + "<p>Tu plato está vacío por ahora.<br>¿Qué se te antoja?</p></li>";
     $("dot").textContent = n || "";
     renderNext();
+    paintNextMainMeal(d);
   }
   // V42: abrir el plato REAL, no redirigir al buscador al intentar editar.
   // Los alimentos se mantienen en el dispositivo. No crea registros clínicos.
@@ -923,8 +954,8 @@
       '</div><div class="grid2" style="margin-top:12px"><button class="btn btn-secondary" id="schReset">Horario original</button><button class="btn btn-primary" id="schSave">Guardar horario</button></div>' +
       '<div class="sect" style="margin-top:18px">Alarmas en el iPhone</div><p class="t2 small" style="margin:0 0 10px">Crea eventos diarios en el Calendario con aviso 10 minutos antes y a la hora exacta. Funcionan aunque la app esté cerrada. Hazlo en el iPhone de Diego.</p><button class="btn btn-primary" id="schIcs">' + ico("calendar", "s") + "Agregar alarmas al Calendario</button>", function (b) {
       function read() { return list.map(function (x, i) { return Object.assign({}, x, { t: b.querySelector('[data-h="' + i + '"]').value + ":" + b.querySelector('[data-m="' + i + '"]').value }); }); }
-      b.querySelector("#schSave").onclick = function () { prefs.schedule = read(); S.savePrefs(prefs); if (mealSelectionMode === "automatic") selectNextMealIfSafe(); renderNext(); if (ui.screen === "inicio") renderInicio(); closeSheet(); toast("¡Horario guardado! ⏰", "clock"); };
-      b.querySelector("#schReset").onclick = function () { delete prefs.schedule; S.savePrefs(prefs); if (mealSelectionMode === "automatic") selectNextMealIfSafe(); renderNext(); if (ui.screen === "inicio") renderInicio(); scheduleSheet(); toast("Volvimos al horario original", "clock"); };
+      b.querySelector("#schSave").onclick = function () { prefs.schedule = read(); S.savePrefs(prefs); if (mealSelectionMode === "automatic") selectNextMealIfSafe(); renderNext(); paintNextMainMeal(new Date()); if (ui.screen === "inicio") renderInicio(); closeSheet(); toast("¡Horario guardado! ⏰", "clock"); };
+      b.querySelector("#schReset").onclick = function () { delete prefs.schedule; S.savePrefs(prefs); if (mealSelectionMode === "automatic") selectNextMealIfSafe(); renderNext(); paintNextMainMeal(new Date()); if (ui.screen === "inicio") renderInicio(); scheduleSheet(); toast("Volvimos al horario original", "clock"); };
       b.querySelector("#schIcs").onclick = function () {
         var cur = read(), txt = C.icsFor(cur, new Date());
         try { var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([txt], { type: "text/calendar" })); a.download = "alarmas-diego.ics"; document.body.appendChild(a); a.click(); a.remove(); toast("Abre el archivo y toca \"Agregar todo\"", "calendar"); }
@@ -935,7 +966,13 @@
   $("nextPill").addEventListener("click", scheduleSheet);
   var editSchedule = $("editSchedule"); if (editSchedule) editSchedule.addEventListener("click", scheduleSheet);
   $("schedB").addEventListener("click", scheduleSheet);
-  setInterval(function () { renderNext(); }, 30000);
+  setInterval(function () {
+    renderNext();
+    var upcoming=paintNextMainMeal(new Date());
+    if(ui.screen==='inicio' && mealSelectionMode==='automatic' && !plate.items.length && upcoming && plate.meal!==upcoming.item.id) {
+      selectNextMealIfSafe(); renderInicio();
+    }
+  }, 30000);
   document.addEventListener("visibilitychange", function () { if (!document.hidden) { lastNext = null; if (mealSelectionMode === "automatic" && !plate.items.length) { selectNextMealIfSafe(); if (ui.screen === "inicio") renderInicio(); } renderNext(); } });
 
   /* ================= HISTORIAL ================= */
