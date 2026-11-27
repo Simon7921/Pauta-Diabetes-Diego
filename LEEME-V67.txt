@@ -1,0 +1,1 @@
+V67: Se restaura sin cambios el diseño de V65 y se presenta Corrección como cuarto icono de la fila de accesos rápidos (Bitácora, Glucosa, Diego AI, Corrección), totalmente independiente del bloque Cálculo rápido. El panel abre debajo de accesos rápidos.

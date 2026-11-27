@@ -1,0 +1,1 @@
+V75: ratio de cena 1:26 (anterior 1:24). Desayuno 1:22, almuerzo 1:24, once 1:22. Se conserva el diseño y toda la app V74. Se migran valores locales cena=24 una sola vez por cuenta local; no se recalculan registros históricos. Revisar valores con la pauta de la diabetóloga.

@@ -1,0 +1,1 @@
+V77: botón Registrar ejercicio de Inicio guarda directamente en Bitácora, con mensaje de confirmación. Los registros nuevos de comida guardan ratios actuales, sin recalcular historia. Sincronización Firebase: cola local mientras llega primera vista y estado visible pendiente/sincronizado. Nunca confundir guardado local con nube.

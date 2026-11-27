@@ -1,0 +1,1 @@
+V68: Corrección sola, independiente, muestra aviso de umbral estrictamente superior a 300 mg/dL. Ejercicio >30 minutos propone objetivo temporal 150 únicamente tras checkbox y confirmación, no modifica el parámetro global. Validación manual y aviso clínico. Esta regla fue comunicada por el usuario, no verificada contra pauta escrita.

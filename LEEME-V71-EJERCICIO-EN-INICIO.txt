@@ -1,0 +1,1 @@
+V71: registro de actividad física directamente en Inicio. Botón abre formulario original de bitácora con actividad y duración precargadas, sin cambiar de pantalla. Ejercicio >30 min muestra advertencia y acceso a Corrección independiente; objetivo 150 requiere consentimiento explícito dentro de la calculadora, y no altera la pauta habitual. No hay dosis automáticas.

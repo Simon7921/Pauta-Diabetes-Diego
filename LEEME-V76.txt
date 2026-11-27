@@ -1,0 +1,1 @@
+V76: Objetivo 150 por ejercicio >30 minutos se acepta con UNA sola casilla en Corrección sola, sin casilla adicional, botón ni diálogo redundantes. El acceso desde ejercicio en Inicio no marca esa casilla automáticamente. Desmarcar restaura objetivo general. Sin cambios en cálculos de comidas, diseño o bitácora.

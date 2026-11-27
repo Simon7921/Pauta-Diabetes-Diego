@@ -1,0 +1,1 @@
+V74 se basa directamente en V72, conservando la estética y distribución. ÚNICOS cambios: chips de comida 42->36px; color de HC en tarjetas principales #27634f y nombre #333d36. El artefacto de prueba conserva todos los recursos integrados de V72, a diferencia del HTML incompleto de V73.

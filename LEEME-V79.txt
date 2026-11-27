@@ -1,0 +1,1 @@
+V79: dos reglas separadas. Corrección sola: umbral glucosa >300, objetivo fijo 110. Ejercicio: objetivo 150 aplicado exclusivamente en cálculo rápido de comida mediante una casilla; registrar ejercicio marca esa casilla para el cálculo actual. Sin cambios en ratios, estilos base ni historial. No es una dosis para administrar.

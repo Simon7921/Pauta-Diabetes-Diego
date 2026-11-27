@@ -1,0 +1,1 @@
+V65 Corrección sola: icono en Inicio; cálculo (glicemia - objetivo)/sensibilidad, resultado a un decimal, revalidación manual, simulación de parámetros y acceso al editor clínico protegido. Los parámetros simulados NO se guardan hasta confirmar en la pauta.

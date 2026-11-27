@@ -21,9 +21,12 @@ if (!config || !config.projectId || !config.apiKey || !config.appId) {
   let familyId=null, role=null, currentUser=null, stopListener=null, connected=false, remoteReady=false;
   const known=new Map(), pending=new Map();
   function restorePrivateLocal(){
-    try{const backup=JSON.parse(localStorage.getItem('diego.v30.precloudBackup')||'[]');
-      window.DiegoBitacora?.loadShared?.(Array.isArray(backup)?backup:[]);
-    }catch(e){window.DiegoBitacora?.loadShared?.([]);}
+    // La ausencia de respaldo NO autoriza vaciar registros locales.
+    try{const raw=localStorage.getItem('diego.v30.precloudBackup');
+      if(!raw)return;
+      const backup=JSON.parse(raw);
+      if(Array.isArray(backup))window.DiegoBitacora?.loadShared?.(backup);
+    }catch(e){message('El respaldo local está dañado; se conservarán los registros visibles.');}
   }
   function reset(){window.DIEGO_FAMILY_READ_ONLY=false;if(stopListener)stopListener();stopListener=null;connected=false;remoteReady=false;serverSnapshotReady=false;clearImportPreview();familyId=null;role=null;known.clear();pending.clear();show('familyConnected',false);show('familyHome',!!currentUser?.emailVerified);status('Solo en este teléfono');}
   async function listMembers(){if(!familyId||role!=='owner')return;const container=$('familyMembers');if(!container)return;container.replaceChildren();
@@ -66,7 +69,8 @@ if (!config || !config.projectId || !config.apiKey || !config.appId) {
         remoteReady=true;
       }
       window.DiegoBitacora?.loadShared?.(rows);
-      status(snap.metadata.fromCache?'Datos en caché':'Sincronizado');
+      status(pending.size?'Guardado local · sincronización pendiente':(snap.metadata.fromCache?'Datos en caché':'Sincronizado'));
+      if(pending.size&&remoteReady&&!flushing){queueMicrotask(()=>{if(connected&&pending.size)void flushPending();});}
     },err=>{status('Sin conexión');message(safeError(err));});
   }
   async function createFamily(){
@@ -99,16 +103,29 @@ if (!config || !config.projectId || !config.apiKey || !config.appId) {
     await readyFamily(fid);
   }
   // Firestore rules determine actual role and do NOT trust client input.
+  let flushing=false;
+  async function flushPending(){
+    if(flushing||!connected||!remoteReady||role==='viewer'||!pending.size)return;
+    flushing=true;status('Sincronizando…');
+    let succeeded=false;
+    try{
+      for(const [id,value] of [...pending.entries()]){
+        if(value===null)await deleteDoc(doc(db,'families',familyId,'entries',id));
+        else await setDoc(doc(db,'families',familyId,'entries',id),{payload:value,updatedAt:serverTimestamp(),editedBy:currentUser.uid});
+        if(pending.get(id)===value)pending.delete(id);
+      }
+      succeeded=true;
+      status(pending.size?'Guardado local · sincronización pendiente':'Sincronizado');
+    }catch(err){status('Pendiente de sincronizar');message('Guardado local, pero no confirmado en la nube. '+safeError(err));}
+    finally{flushing=false;}
+    if(succeeded&&pending.size&&connected)queueMicrotask(()=>{void flushPending();});
+  }
   async function pushChanges(changed,removed){
-    if(!connected||!remoteReady||role==='viewer')return;
+    if(!connected||role==='viewer')return;
     for(const e of changed){pending.set(e.id,e);}
     for(const id of removed){pending.set(id,null);}
-    status('Sincronizando…');
-    try{
-      for(const e of changed){await setDoc(doc(db,'families',familyId,'entries',e.id),{payload:e,updatedAt:serverTimestamp(),editedBy:currentUser.uid});pending.delete(e.id);}
-      for(const id of removed){await deleteDoc(doc(db,'families',familyId,'entries',id));pending.delete(id);}
-      status('Sincronizado');
-    }catch(err){status('Pendiente de sincronizar');message('Los cambios siguen en este teléfono. '+safeError(err));}
+    if(!remoteReady){status('Guardado local · esperando conexión');return;}
+    await flushPending();
   }
   window.addEventListener('diego-bitacora-changed',ev=>{const d=ev.detail||{};void pushChanges(d.changed||[],d.removed||[]);});
   // Importador de un archivo revisado: únicamente al espacio compartido de Firebase.

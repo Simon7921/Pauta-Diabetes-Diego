@@ -7,10 +7,10 @@
 })(typeof self !== "undefined" ? self : this, function () {
   "use strict";
 
-  // Ratios comunicados por la familia el 26/11/2026: desayuno y once 1:22; almuerzo y cena 1:24. Tresiba 12 U según pauta previamente informada. Confirmar con el equipo tratante antes de dosificar. t = objetivo, f = sensibilidad, r = ratio.
+  // Ratios comunicados por la familia el 26/11/2026: desayuno y once 1:22; almuerzo 1:24; cena 1:26. Tresiba 12 U según pauta previamente informada. Confirmar con el equipo tratante antes de dosificar. t = objetivo, f = sensibilidad, r = ratio.
   var PAUTA_DEFAULT = Object.freeze({ t: 110, f: 60, r: 22 });
   // Pauta comunicada el 23/11/2026: la colación NO lleva insulina.
-  var MEAL_RATIOS = Object.freeze({ desayuno: 22, colacion: null, almuerzo: 24, once: 22, cena: 24 });
+  var MEAL_RATIOS = Object.freeze({ desayuno: 22, colacion: null, almuerzo: 24, once: 22, cena: 26 });
   var RATIO_STORAGE = "diego.v35.clinicalRatios";
   // V55: ajustes personales separados por cuenta de Firebase en el navegador.
   // Si no hay sesión, se utiliza la configuración local anterior (modo invitado).
@@ -22,6 +22,24 @@
     var r = Object.assign({}, MEAL_RATIOS);
     try {
       var val = JSON.parse(localStorage.getItem(ratioStorageKey()) || 'null');
+      // V75: cambio de cena 1:24 a 1:26 comunicado por la familia.
+      // Migra únicamente el 24 guardado anterior para cada usuario/dispositivo.
+      // No modifica registros históricos ni ratios personales distintos de 24.
+      var key=ratioStorageKey();
+      if (val && typeof val==='object' && Number(val.cena)===24) {
+        var migratedKey=key+'.v75Cena26';
+        if (!localStorage.getItem(migratedKey)) {
+          var before=Object.assign({},val), next=Object.assign({},val,{cena:26});
+          localStorage.setItem(key,JSON.stringify(next));
+          localStorage.setItem(migratedKey,'1');
+          var auditKey=key+'.audit';
+          var audit=JSON.parse(localStorage.getItem(auditKey)||'[]');
+          if (!Array.isArray(audit)) audit=[];
+          audit.unshift({at:new Date().toISOString(),reason:'Cambio de ratio de cena a 1:26 informado por la familia el 27/11/2026; sin cambiar otras comidas.',before:JSON.stringify(before),after:JSON.stringify(next)});
+          localStorage.setItem(auditKey,JSON.stringify(audit.slice(0,100)));
+          val=next;
+        }
+      }
       if (val && typeof val === 'object') ['desayuno','almuerzo','once','cena'].forEach(function(k){
         var n = Number(val[k]); if (Number.isInteger(n) && n >= 5 && n <= 60) r[k] = n;
       });

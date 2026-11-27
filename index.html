@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Diego Familiar V42 · Plato editable</title>
+<title>Diego Familiar V79 · Ejercicio y corrección separados</title>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="diego.">
@@ -962,6 +962,67 @@ html[data-mode=dark] .v53-warning{color:#f1d7a7}
 #s-inicio .mgrid .chip.v58-upcoming::after{content:"PRÓXIMA";font-size:8px;font-weight:900;letter-spacing:.05em;line-height:1}
 @media(max-width:400px){.v58-next-meal{font-size:12px;padding:6px 8px}#s-inicio .mgrid .chip.v58-upcoming::after{font-size:7px}}
 </style>
+<style id="v71-home-activity-style">
+#s-inicio .v71-activity{border:1px solid #c9dfd2;border-radius:18px;padding:12px 13px;margin:10px 0;background:linear-gradient(145deg,#f1faf4,#fffaf4);color:#285748;box-shadow:0 7px 17px rgba(35,74,55,.06)}
+#s-inicio .v71-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:9px}
+#s-inicio .v71-head h2{font-size:17px;margin:1px 0;font-weight:850;color:#285748}
+#s-inicio .v71-eyebrow{font-size:10px;letter-spacing:.05em;color:#638475;font-weight:800}
+#s-inicio .v71-label{font-size:10px;color:#6a8278;background:#e4f1e9;padding:5px 8px;border-radius:999px}
+#s-inicio .v71-activity-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+#s-inicio .v71-activity-grid button{display:flex;gap:4px;flex-direction:column;align-items:center;justify-content:center;border:1px solid #d6e7dc;border-radius:12px;background:white;color:#355e4d;font-weight:750;font-size:12px;min-height:57px;cursor:pointer}
+#s-inicio .v71-activity-grid button span{font-size:22px}
+#s-inicio .v71-activity-grid button.v71-active{border:2px solid #438d70;background:#e5f7e7}
+#s-inicio .v71-activity-bottom{display:grid;grid-template-columns:1fr 1fr;gap:9px;align-items:end;margin-top:9px}
+#s-inicio .v71-activity-bottom label{font-size:12px;font-weight:750;min-width:0}
+#s-inicio .v71-activity-bottom label small{font-weight:450;color:#6e8378}
+#s-inicio .v71-activity-bottom input{display:block;height:42px;margin-top:4px;width:100%;box-sizing:border-box;border:1px solid #bdd5c7;background:white;color:#203e35;border-radius:11px;padding:8px;font-size:17px}
+#s-inicio .v71-save{min-height:42px;border:0;background:#2c7158;color:white;font-weight:800;border-radius:11px;cursor:pointer}
+#s-inicio .v71-status{font-size:11px;color:#617c6f;margin:8px 0 0;line-height:1.45}
+#s-inicio .v71-advisory{border:1px solid #ddc184;border-radius:12px;padding:10px;margin-top:9px;background:#fff4df;color:#6b4d20}
+#s-inicio .v71-advisory[hidden]{display:none!important}
+#s-inicio .v71-advisory strong{font-size:12px}#s-inicio .v71-advisory p{font-size:11px;line-height:1.5;margin:5px 0;color:#6b4d20}
+#s-inicio .v71-advisory button{border:1px solid #b08a44;border-radius:10px;background:white;color:#66491d;font-size:11px;font-weight:750;padding:9px;cursor:pointer}
+</style>
+
+<style id="v72-compact-home-style">
+/* V72: selección breve de comida y registro de ejercicio justo a continuación. */
+#s-inicio .v53-workflow .mgrid{gap:5px!important}
+#s-inicio .v53-workflow .mgrid .chip{min-height:42px!important;height:42px!important;padding:3px 2px!important;gap:2px!important;border-radius:11px!important;font-size:11px!important;line-height:1.05!important;box-shadow:none!important}
+#s-inicio .v53-workflow .mgrid .chip .ico{width:16px!important;height:16px!important;flex:none!important}
+#s-inicio .v53-workflow .section-intro{margin-bottom:0!important}
+#s-inicio .v53-workflow .section-intro h2{font-size:15px!important;line-height:1.2!important}
+#s-inicio .v53-workflow #mealSelectionStatus{line-height:1.15!important;font-size:10px!important;min-height:0!important}
+#s-inicio .v53-workflow .v71-activity{padding:9px 10px!important;margin:1px 0 4px!important;border-radius:14px!important;box-shadow:none!important}
+#s-inicio .v53-workflow .v71-head{margin-bottom:5px!important;gap:5px!important}
+#s-inicio .v53-workflow .v71-head h2{font-size:14px!important;line-height:1.1!important}
+#s-inicio .v53-workflow .v71-eyebrow{font-size:8px!important}
+#s-inicio .v53-workflow .v71-label{font-size:9px!important;padding:3px 6px!important}
+#s-inicio .v53-workflow .v71-activity-grid{gap:5px!important}
+#s-inicio .v53-workflow .v71-activity-grid button{min-height:42px!important;height:42px!important;display:flex!important;flex-direction:row!important;gap:4px!important;font-size:11px!important;padding:2px 3px!important;border-radius:10px!important}
+#s-inicio .v53-workflow .v71-activity-grid button span{font-size:17px!important}
+#s-inicio .v53-workflow .v71-activity-bottom{margin-top:5px!important;gap:7px!important}
+#s-inicio .v53-workflow .v71-activity-bottom label{font-size:10px!important}
+#s-inicio .v53-workflow .v71-activity-bottom input{height:39px!important;min-height:39px!important;margin-top:2px!important;padding:4px 9px!important;font-size:15px!important}
+#s-inicio .v53-workflow .v71-save{min-height:39px!important;height:39px!important;font-size:12px!important}
+#s-inicio .v53-workflow .v71-status{font-size:10px!important;line-height:1.2!important;margin:5px 0 0!important}
+#s-inicio .v53-workflow .v71-advisory{padding:8px!important;margin-top:7px!important}
+@media(max-width:360px){#s-inicio .v53-workflow .mgrid{grid-template-columns:repeat(4,minmax(0,1fr))!important}#s-inicio .v53-workflow .mgrid .chip{font-size:10px!important}#s-inicio .v53-workflow .v71-activity-grid button{font-size:10px!important}}
+</style>
+
+<style id="v74-two-small-adjustments">
+/* Solo ajustes puntuales sobre V72: no cambiar diseño ni estructura. */
+#s-inicio .v53-workflow .mgrid .chip{min-height:36px!important;height:36px!important;padding:2px 2px!important;}
+#s-inicio .v53-workflow .mgrid .chip .ico{width:15px!important;height:15px!important;}
+/* Verde más oscuro, legible, únicamente para cifras HC de tarjetas de alimentos. */
+#s-inicio .v53-workflow .staple-carbs{color:#27634f!important;}
+#s-inicio .v53-workflow .staple-name{color:#333d36!important;}
+</style>
+<style id="v79-exercise-separation">
+#s-inicio .v79-exercise-option{display:flex;align-items:center;gap:7px;margin:0;padding:5px 8px;border:1px solid #446880;border-radius:9px;color:#e4f5ff;font-size:11px;font-weight:600;background:#183852;line-height:1.25}
+#s-inicio .v79-exercise-option input{width:17px;height:17px;flex:none;accent-color:#7cdbb0}
+#s-inicio .v79-exercise-option strong{color:#b5f5d6}
+.v65-correction #v65Target[readonly]{background:#e8ede9;color:#304a3b;cursor:not-allowed}
+</style>
 </head>
 <body>
 <button type="button" id="mobileMenuButton" class="mobile-menu-button" aria-label="Abrir menú con todas las secciones" aria-controls="mainSidebar" aria-expanded="false"><span aria-hidden="true">☰</span><span>Menú</span></button>
@@ -1005,8 +1066,9 @@ html[data-mode=dark] .v53-warning{color:#f1d7a7}
     <!-- V46: resultado principal muestra formula algebraica completa; no dosifica ni guarda insulina -->
     <section class="home-quickcalc" aria-labelledby="homeQuickTitle">
       <div class="home-quickcalc__header"><div><span class="home-quickcalc__eyebrow">ACCESO DIRECTO</span><h2 id="homeQuickTitle">⚡ Cálculo rápido</h2></div><span class="home-quickcalc__ratio" id="homeQuickRatio">Ratio según comida</span></div>
-      <div class="v55-ratio-action"><span><span id="v55LiveRatioSummary">Desayuno 1:22 · Almuerzo 1:24 · Once 1:22 · Cena 1:24</span></span><button type="button" id="editRatiosInicio" aria-label="Editar ratios para cada comida">✎ Editar ratios</button></div>
+      <div class="v55-ratio-action"><span><span id="v55LiveRatioSummary">Desayuno 1:22 · Almuerzo 1:24 · Once 1:22 · Cena 1:26</span></span><button type="button" id="editRatiosInicio" aria-label="Editar ratios para cada comida">✎ Editar ratios</button></div>
       <div class="v55-ratio-action"><span><span id="v64SensitivitySummary">Sensibilidad actual: 60 mg/dL por U</span></span><button type="button" id="editSensitivityInicio" aria-label="Editar sensibilidad">✎ Editar sensibilidad</button></div>
+      <label class="v79-exercise-option"><input type="checkbox" id="v79ExerciseMode"><span>🏃 Ejercicio: objetivo <strong>150 mg/dL</strong> en cálculo de comida</span></label>
       <div class="home-quickcalc__inputs">
         <label>Glicemia actual <span>mg/dL</span><input id="homeQuickGlucose" type="text" inputmode="decimal" autocomplete="off" placeholder="Ej. 137" aria-describedby="homeQuickDisclaimer"></label>
         <label>Carbohidratos <span>g HC</span><input id="homeQuickCarbs" type="text" inputmode="decimal" autocomplete="off" placeholder="Ej. 66,9" aria-describedby="homeQuickDisclaimer"></label>
@@ -1031,7 +1093,7 @@ html[data-mode=dark] .v53-warning{color:#f1d7a7}
         <div class="home-quickcalc__math-total"><span>Suma matemática, no dosis</span><strong id="homeQuickTotal">—</strong></div>
         <p id="homeQuickParams">Objetivo y sensibilidad según Parámetros médicos.</p>
       </div></details>
-      <div class="home-quickcalc__warning" id="homeQuickDisclaimer" role="note">⚠️ No usar este resultado para decidir cuánta Fiasp administrar. No considera insulina activa, hipoglucemias, ejercicio ni redondeo clínico. Sigue la pauta médica vigente.</div>
+      <div class="home-quickcalc__warning" id="homeQuickDisclaimer" role="note">⚠️ Comprobación matemática, NO dosis para administrar. El modo ejercicio cambia solo el objetivo mostrado; no contempla insulina activa, hipoglucemias ni ajustes clínicos. Sigue la pauta médica vigente.</div>
     </section>
     <div class="nextbar-shell schedule-control"><button class="nextbar" id="nextPill" aria-label="Ver y editar horarios"></button><button type="button" class="schedule-edit" id="editSchedule" aria-label="Editar los horarios de comidas y recordatorios">✎ <span>Editar horarios</span></button></div>
     <aside class="sensor-reminder" id="sensorReminder" aria-label="Próximo cambio de sensor">
@@ -1056,8 +1118,19 @@ html[data-mode=dark] .v53-warning{color:#f1d7a7}
       <div class="ux-hub-top"><div><span class="ux-eyebrow">TU COMIDA ACTUAL</span><h2 id="uxMealName">Desayuno</h2><p id="uxRatioText">Ratio 1:22 · se actualiza con la comida</p></div><span class="ux-pill" id="uxMealMode">Según horario</span></div>
       <div class="ux-hub-count"><div><span class="ux-eyebrow">CARBOHIDRATOS DEL PLATO</span><strong id="uxCarbCount" aria-live="polite">0 <small>g HC</small></strong></div><span class="ux-food-count" id="uxFoodCount">0 alimentos</span></div>
       <button type="button" class="ux-main-action" id="uxEditPlate">＋ Armar mi plato <span>→</span></button>
-      <div class="ux-shortcuts"><button type="button" data-go="bitacora"><span>▤</span>Bitácora</button><button type="button" data-ux-record="glucose"><span>◉</span>Glucosa</button><button type="button" data-go="diegoai"><span>✧</span>Diego AI</button></div>
+      <div class="ux-shortcuts"><button type="button" data-go="bitacora"><span>▤</span>Bitácora</button><button type="button" data-ux-record="glucose"><span>◉</span>Glucosa</button><button type="button" data-go="diegoai"><span>✧</span>Diego AI</button><button type="button" id="v65CorrectionToggle" aria-controls="v65CorrectionPanel" aria-expanded="false"><span>🧮</span>Corrección</button></div>
       <p class="ux-sync" id="uxSyncText" role="status">◌ Registros guardados en este dispositivo hasta verificar sincronización</p>
+    </section>
+    <section class="v71-activity" id="v71Activity" aria-labelledby="v71Title">
+      <div class="v71-head"><div><span class="v71-eyebrow">REGISTRO RÁPIDO</span><h2 id="v71Title">⚡ Actividad física</h2></div><span class="v71-label">Bitácora familiar</span></div>
+      <div class="v71-activity-grid" role="group" aria-label="Tipo de ejercicio">
+        <button type="button" class="v71-active" data-v71-activity="Fútbol" aria-pressed="true"><span>⚽</span>Fútbol</button>
+        <button type="button" data-v71-activity="Bicicleta" aria-pressed="false"><span>🚴</span>Bicicleta</button>
+        <button type="button" data-v71-activity="Caminata" aria-pressed="false"><span>🚶</span>Caminata</button>
+      </div>
+      <div class="v71-activity-bottom"><label for="v71Minutes">Duración <small>(minutos)</small><input type="number" id="v71Minutes" inputmode="numeric" min="1" max="600" step="1" placeholder="Ej. 45"></label><button type="button" id="v71SaveExercise" class="v71-save">＋ Registrar</button></div>
+      <p id="v71ExerciseStatus" class="v71-status" role="status">Selecciona actividad y duración; el registro se guardará en la bitácora.</p>
+      <div id="v71ExerciseAdvisory" class="v71-advisory" hidden><strong>⚠️ Modo ejercicio</strong><p>Para el escenario de ejercicio, el cálculo de comida usa objetivo 150 mg/dL. La corrección independiente por glicemia &gt;300 mantiene objetivo 110 mg/dL.</p></div>
     </section>
     <div class="section-intro"><div class="dashboard-section-heading"><div><span class="soft-kicker">ARMA TU PLATO</span><h2>¿Qué comida vamos a preparar?</h2><p class="meal-helper">Toca una opción para buscar y agregar alimentos a tu plato.</p></div></div></div>
     <div class="v58-next-meal" id="v58MealCountdown" role="status" aria-live="off">Próxima comida según horario</div>
@@ -1208,7 +1281,7 @@ html[data-mode=dark] .v53-warning{color:#f1d7a7}
         <div><span>🌅 Desayuno</span><strong id="ratioViewDesayuno">1:22</strong></div>
         <div><span>🍽️ Almuerzo</span><strong id="ratioViewAlmuerzo">1:24</strong></div>
         <div><span>☕ Once</span><strong id="ratioViewOnce">1:22</strong></div>
-        <div><span>🌙 Cena</span><strong id="ratioViewCena">1:24</strong></div>
+        <div><span>🌙 Cena</span><strong id="ratioViewCena">1:26</strong></div>
       </div>
       <button type="button" class="btn btn-secondary" id="editRatiosPauta" style="width:100%;margin-top:12px">✎ Editar ratios por comida</button>
       <p class="t2 small" style="margin:10px 0 0">Los cambios requieren confirmación clínica y quedan registrados en este dispositivo. No modifican las dosis históricas ni se sincronizan automáticamente con otros teléfonos.</p>
@@ -1297,9 +1370,9 @@ html[data-mode=dark] .v53-warning{color:#f1d7a7}
         </div>
         <div class="family-actions"><button type="button" class="btn btn-secondary" id="familyCopyId">Copiar ID para invitar</button><button type="button" class="btn btn-secondary" id="familyLeave">Desconectar este teléfono</button></div>
         <button type="button" class="btn btn-secondary" id="familyUpload">Subir registros locales de este dispositivo (una vez)</button>
-        <div class="bt-card" style="margin-top:12px" id="familyHistoryImportCard">
+        <div class="bt-card" style="margin-top:12px" id="familyHistoryImportCard"><p class="bt-small">Historial histórico revisado: utiliza el archivo JSON privado que recibiste en el chat. No se incluye en los archivos públicos de la aplicación. Antes de importar, descarga un respaldo JSON.</p>
           <b>Importar historial revisado a la familia</b>
-          <p class="bt-small">Selecciona el archivo «Diego-Historial-28-Registros-IMPORTAR-FAMILIA.json». Primero se revisan duplicados; solo un editor conectado puede subirlo a la bitácora compartida. No modifica los registros existentes ni aplica nuevos ratios a dosis anteriores.</p>
+          <p class="bt-small">Selecciona el archivo «Diego-Historial-15a24-Nov-2026-Importar.json» que descargaste del chat. Primero se revisan duplicados; solo un editor conectado puede subirlo a la bitácora compartida. No modifica los registros existentes ni aplica nuevos ratios a dosis anteriores.</p>
           <input id="familyHistoryFile" type="file" accept=".json,application/json" aria-label="Seleccionar historial revisado" style="margin-top:8px">
           <button type="button" class="btn btn-secondary" id="familyHistoryPreview" style="margin-top:8px;width:100%">Revisar archivo antes de importar</button>
           <div class="bt-small" id="familyHistoryPreviewResult" role="status" aria-live="polite"></div>
@@ -1323,7 +1396,7 @@ html[data-mode=dark] .v53-warning{color:#f1d7a7}
     <div class="bt-card"><div class="bt-row"><b>Actividad</b><select id="btTimelinePeriod" style="max-width:130px"><option value="day">Día</option><option value="week">Semana</option><option value="month">Mes</option></select><span class="bt-muting" id="btDayTitle"></span></div><div id="btTimeline"></div></div>
     <div class="bt-card"><div class="bt-row"><b>Calendario e historial</b><div><button class="bt-pill" id="btPrevMonth" aria-label="Mes anterior">‹</button><button class="bt-pill" id="btNextMonth" aria-label="Mes siguiente">›</button></div></div><p id="btMonthLabel" class="bt-muting"></p><div id="btCalendar" class="bt-calendar"></div><p class="bt-small">Verde: registros sin baja · Amarillo: descenso preventivo · Rojo: hipoglucemia · Gris: sin datos. No representa tiempo en rango.</p></div>
     <div class="bt-card"><div class="bt-row"><b>Análisis de tendencias</b><select id="btStatsPeriod" style="max-width:140px"><option value="7">7 días</option><option value="30">30 días</option><option value="90">90 días</option></select></div><div id="btStats" style="margin-top:10px"></div><div id="btGlucoseChart"></div></div>
-    <div class="bt-card"><b>Informe para la doctora</b><p class="bt-small">Resumen descriptivo de los datos registrados. No determina causas ni modifica insulina.</p><div class="grid2" style="margin-top:10px"><button class="btn btn-secondary" id="btExportCSV">Exportar CSV</button><button class="btn btn-primary" id="btWeeklyReport">Informe 7 días</button></div><button class="btn btn-secondary" id="btBackup" style="margin-top:9px;width:100%">Respaldo JSON de bitácora</button></div>
+    <div class="bt-card"><b>Informe para la doctora</b><p class="bt-small">Resumen descriptivo de los datos registrados. No determina causas ni modifica insulina.</p><div class="grid2" style="margin-top:10px"><button class="btn btn-secondary" id="btExportCSV">Exportar CSV</button><button class="btn btn-primary" id="btWeeklyReport">Informe 7 días</button></div><button class="btn btn-secondary" id="btBackup" style="margin-top:9px;width:100%">Respaldo JSON de bitácora</button><div style="margin-top:13px;border-top:1px solid var(--border2);padding-top:12px"><b>Bitácora → ChatGPT o Claude</b><p class="bt-small">La app es la fuente de datos. Descarga un JSON actualizado y adjúntalo voluntariamente a tu asistente de IA. No se envían datos automáticamente.</p><div class="grid2"><button class="btn btn-secondary" id="btExportForAI">Exportar para IA (JSON)</button><button class="btn btn-secondary" id="btAIInstructions">Copiar instrucciones para IA</button></div><button class="btn btn-secondary" id="btImportHistoryShortcut" style="margin-top:8px;width:100%">Importar historial privado a la familia</button><button class="btn btn-secondary" id="btGoHistory" style="margin-top:8px;width:100%">Ver historial inicial de noviembre 2026</button><p class="bt-small">Contiene información médica privada. Compártela solo con servicios y personas de confianza.</p></div></div>
   </section>
 
   <!-- HISTORIAL -->
@@ -1490,14 +1563,14 @@ html[data-mode=dark] .v53-warning{color:#f1d7a7}
   var fig=readJSON('diego.v3.prefs',{});window.diegoChooseFigure(fig&&fig.fig==='bike'?'bike':'ball');
 })();
 </script>
-<script src="calc.js?v=57"></script>
+<script src="calc.js?v=75"></script>
 <script src="store.js"></script>
-<script src="app.js?v=57"></script>
-<script src="bitacora.js?v=45"></script>
+<script src="app.js?v=75"></script>
+<script src="bitacora.js?v=78"></script>
 <script src="diego-ai.js?v=31"></script>
 <script src="diego-ai-context.js?v=34"></script>
 <script src="firebase-config.js"></script>
-<script type="module" src="diego-familiar.js?v=56"></script>
+<script type="module" src="diego-familiar.js?v=78"></script>
 <script src="sage-dashboard.js?v=18"></script>
 <script src="ai-photos.js?v=18"></script>
 <script src="sensor-reminder.js?v=18"></script>
@@ -1526,7 +1599,7 @@ if($('familyStatus')){new MutationObserver(sync).observe($('familyStatus'),{subt
     var meal=(el('uxMealName')&&el('uxMealName').textContent||'').trim().toLowerCase();
     var ratio=window.Calc&&window.Calc.ratioForMeal?window.Calc.ratioForMeal(meal):null;
     var settings=window.Store&&window.Store.create?window.Store.create().loadPauta(window.Calc.PAUTA_DEFAULT):null;
-    var target=settings?Number(settings.t):NaN,sensitivity=settings?Number(settings.f):NaN;
+    var target=el('v79ExerciseMode')?.checked?150:(settings?Number(settings.t):NaN),sensitivity=settings?Number(settings.f):NaN;
     put('homeQuickRatio',ratio?'Ratio 1:'+ratio:'Sin ratio para esta comida');
     var summary=el('v55LiveRatioSummary'); if(summary&&window.Calc){var rr=window.Calc.currentRatios(); summary.textContent='Desayuno 1:'+rr.desayuno+' · Almuerzo 1:'+rr.almuerzo+' · Once 1:'+rr.once+' · Cena 1:'+rr.cena;}
     // Los datos visibles en ambas fracciones son los mismos ingresados arriba.
@@ -1541,9 +1614,10 @@ if($('familyStatus')){new MutationObserver(sync).observe($('familyStatus'),{subt
     var valid=ratio&&glucoseOk&&carbsOk&&Number.isFinite(target)&&target>=60&&target<=200&&Number.isFinite(sensitivity)&&sensitivity>0&&sensitivity<=300;
     var food=valid?valC/ratio:NaN,correction=valid?(valG-target)/sensitivity:NaN;
     put('homeQuickMainTotal',fmt(food+correction));put('homeQuickFoodValue',fmt(food));put('homeQuickCorrectionVisible',fmt(correction));put('homeQuickFoodDetail',fmt(food));put('homeQuickCorrection',fmt(correction));put('homeQuickTotal',fmt(food+correction));
-    put('homeQuickParams',valid?'Fórmula: (glicemia − '+numeral(target)+') ÷ '+numeral(sensitivity)+' + HC ÷ '+ratio+' · valores guardados en Parámetros médicos.':'⚠️ Revisa glicemia, carbohidratos y parámetros médicos.');
+    put('homeQuickParams',valid?'Fórmula: (glicemia − '+numeral(target)+') ÷ '+numeral(sensitivity)+' + HC ÷ '+ratio+' · objetivo '+(el('v79ExerciseMode')?.checked?'de ejercicio (150)':'habitual')+'; sensibilidad y ratio guardados en Parámetros médicos.':'⚠️ Revisa glicemia, carbohidratos y parámetros médicos.');
     var summarySens=el('v64SensitivitySummary');if(summarySens)summarySens.textContent='Sensibilidad actual: '+(Number.isFinite(sensitivity)?numeral(sensitivity):'—')+' mg/dL por U';
   }
+  el('v79ExerciseMode').addEventListener('change',update);
   g.addEventListener('input',update);c.addEventListener('input',update);
   var meal=el('uxMealName');if(meal&&window.MutationObserver)new MutationObserver(update).observe(meal,{childList:true,characterData:true,subtree:true});
   document.addEventListener('visibilitychange',function(){if(!document.hidden)update()});
@@ -1563,7 +1637,7 @@ if($('familyStatus')){new MutationObserver(sync).observe($('familyStatus'),{subt
  const hero=home.querySelector('.sage-hero');if(!hero)return;
  const flow=document.createElement('div');flow.className='v53-workflow v54-workflow';flow.id='v53Workflow';hero.after(flow);
  const move=node=>{if(node)flow.appendChild(node)};
- move(home.querySelector('.section-intro'));move($('meals'));move($('mealSelectionStatus'));
+ move(home.querySelector('.section-intro'));move($('meals'));move($('mealSelectionStatus'));move($('v71Activity'));
  // Reutiliza el cálculo clínico-matemático original: no se crea una segunda calculadora.
  const quick=home.querySelector('.home-quickcalc');move(quick);
  move($('homeFoodFavorites'));
@@ -1601,5 +1675,140 @@ if($('familyStatus')){new MutationObserver(sync).observe($('familyStatus'),{subt
  if(src)new MutationObserver(syncPlate).observe(src,{subtree:true,childList:true,characterData:true});
  syncPlate();
 })();</script>
+
+<style id="v67-independent-correction-style">
+/* V67: únicamente añade una cuarta opción con el estilo existente de accesos rápidos. */
+#s-inicio .ux-shortcuts{grid-template-columns:repeat(4,minmax(0,1fr));}
+#s-inicio .ux-shortcuts button{min-width:0;font-size:clamp(10px,2.5vw,12px);padding:6px 2px;}
+#s-inicio .ux-shortcuts button span{font-size:22px;}
+#s-inicio .v65-correction{margin:12px 0;}
+@media(max-width:380px){#s-inicio .ux-shortcuts{gap:5px;}#s-inicio .ux-shortcuts button{font-size:10px;}}
+</style>
+<style id="v68-exercise-style">
+.v68-exercise{margin:14px 0;padding:12px 13px;border:1px solid #b6d7c7;border-radius:14px;background:#effaf5}
+.v68-exercise-warning{margin:6px 0!important;color:#7a5622!important;line-height:1.45}
+.v68-accept{margin:10px 0;min-height:42px;width:100%;font-weight:800;border:0;border-radius:12px;background:#275e4c;color:#fff;cursor:pointer}
+.v68-accept:disabled{opacity:.42;cursor:not-allowed}
+.v68-exercise [hidden]{display:none!important}
+</style>
+<style id="v65-correction-style">
+.v65-corr-toggle{width:100%;border-radius:13px;border:1px solid #b1d8ca;background:#e9f7ee;color:#245b4d;min-height:45px;font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px;margin:4px 0 6px}
+.v65-correction{border:1px solid #b1d9c7;border-radius:20px;background:linear-gradient(160deg,#effaf4,#fffdf8);padding:15px;color:#284b43;box-shadow:0 6px 22px #183c2420;margin:0 0 10px}
+.v65-correction[hidden]{display:none!important}.v65-correction h3{font-size:18px;margin:0 0 3px;color:#244e41}.v65-correction p{margin:5px 0 12px;font-size:12px;line-height:1.55;color:#576c60}
+.v65-correction .v65-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.v65-correction label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:750;min-width:0}
+.v65-correction input:not([type=checkbox]){border:1px solid #a9cbb6;border-radius:11px;min-width:0;width:100%;box-sizing:border-box;height:43px;padding:8px;background:white;color:#203e36;font-size:17px;font-weight:800}
+.v65-result{margin:12px 0;background:#1a3542;border-radius:14px;padding:13px;color:#f7fff9}.v65-result .v65-result-num{font-size:29px;font-weight:850;line-height:1.3;color:#baf3d7}.v65-result small{font-size:11px;color:#c9dfd8;display:block}
+.v65-math{font-size:14px;font-weight:800;margin:9px 0!important;color:#29483d!important;overflow-wrap:anywhere}
+.v65-note{padding:10px;border:1px solid #e0bd77;border-radius:12px;background:#fff1d8;color:#684812!important;margin:10px 0!important}
+.v65-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.v65-actions button{min-height:40px;border:1px solid #9fc5b4;border-radius:11px;background:#fff;color:#255b47;font-weight:750;padding:8px 10px;cursor:pointer}.v65-actions button:first-child{background:#d9f4e7}
+.v65-check{display:flex!important;flex-direction:row!important;align-items:flex-start;gap:8px!important;font-size:12px!important;line-height:1.4}.v65-check input{min-width:18px;min-height:18px;margin-top:2px}.v65-validation{font-size:12px!important;font-weight:700!important;margin:6px 0!important}
+</style>
+
+<script id="v65-correction-code">
+(function(){'use strict';
+ const start=()=>{
+  const hub=document.querySelector('#s-inicio .ux-hub');
+  const toggle=document.getElementById('v65CorrectionToggle');
+  if(!hub||!toggle||document.getElementById('v65CorrectionPanel'))return;
+  const panel=document.createElement('section');panel.id='v65CorrectionPanel';panel.className='v65-correction';panel.hidden=true;
+  panel.innerHTML=`<h3>🧮 Corrección sola</h3>
+  <p>Herramienta independiente del cálculo de comidas. Solo permite comprobar la operación y contrastarla con la pauta escrita.</p>
+  <p class="v65-note" role="alert"><strong>⚠️ Pauta informada: corrección solo con glicemia mayor a 300 mg/dL.</strong> En 300 o menos no se presenta una cantidad de corrección. Si hay síntomas, cetonas o malestar, sigue el protocolo de la doctora y no dependas de esta calculadora.</p>
+  <div class="v65-grid"><label for="v65Glucose">Glicemia actual (mg/dL)<input id="v65Glucose" type="text" inputmode="decimal" placeholder="Ej. 320" autocomplete="off"></label>
+  <label for="v65Target">Objetivo de corrección (mg/dL)<input id="v65Target" type="text" inputmode="decimal" value="110" readonly aria-readonly="true"></label>
+  <label for="v65Sensitivity">Sensibilidad (mg/dL por U)<input id="v65Sensitivity" type="text" inputmode="decimal" value="60"></label>
+  <label for="v65Manual">Tu cálculo manual (U)<input id="v65Manual" type="text" inputmode="decimal" placeholder="Para revalidar"></label></div>
+  <p class="v65-validation">Corrección independiente: objetivo <strong>110 mg/dL</strong> exclusivamente cuando la glicemia supera 300 mg/dL, según la pauta informada. El ejercicio se configura en Cálculo rápido.</p>
+  <div class="v65-result"><small>COMPROBACIÓN MATEMÁTICA · NO ES DOSIS PARA ADMINISTRAR</small><div id="v65Result" class="v65-result-num" aria-live="polite">—</div><small id="v68ThresholdStatus">Ingresa la glicemia para verificar el umbral mayor a 300.</small></div>
+  <p class="v65-math" id="v65Formula">(Glicemia − Objetivo) ÷ Sensibilidad</p>
+  <p class="v65-validation" id="v65Compare" aria-live="polite">Ingresa tu cálculo manual para compararlo.</p>
+  <p class="v65-note">⚠️ La corrección usa siempre el objetivo 110. Editar sensibilidad aquí solo simula escenarios; no modifica la pauta guardada. La insulina activa, las cetonas, el ejercicio y otras condiciones requieren la indicación clínica específica. La cifra matemática no determina la dosis a aplicar.</p>
+  <label class="v65-check"><input id="v65Confirm" type="checkbox"> Confirmo que revisaré estos valores con la pauta escrita de la doctora antes de cualquier decisión sobre insulina.</label>
+  <div class="v65-actions"><button type="button" id="v65OpenParams">✎ Editar pauta protegida</button><button type="button" id="v65Reset">Volver a valores guardados</button></div>
+  <p id="v65ParamsStatus">Objetivo y sensibilidad tomados de Parámetros médicos.</p>`;
+  hub.after(panel);
+  const by=id=>document.getElementById(id),fields=['v65Glucose','v65Sensitivity','v65Manual'];
+  const parse=v=>{const t=String(v).trim().replace(',','.');return /^\d+(?:\.\d+)?$/.test(t)?Number(t):NaN};
+  const fmt=n=>Number(n).toLocaleString('es-CL',{minimumFractionDigits:1,maximumFractionDigits:1});
+  
+  function load(){
+   let sensitivity=60;
+   try{const st=window.Store.create(),p=st.loadPauta(window.Calc.PAUTA_DEFAULT);sensitivity=Number(p.f)||60;}catch(e){}
+   by('v65Target').value='110';by('v65Sensitivity').value=sensitivity;
+   by('v65ParamsStatus').textContent='Corrección sola: objetivo fijo 110 · sensibilidad '+sensitivity+' (según parámetros). El ejercicio se calcula por separado.';
+   calc();
+  }
+  function calc(){
+   const g=parse(by('v65Glucose').value),t=110,sen=parse(by('v65Sensitivity').value),m=parse(by('v65Manual').value);
+   const valid=Number.isFinite(g)&&g>=0&&g<=600&&Number.isFinite(t)&&t>=60&&t<=200&&Number.isFinite(sen)&&sen>0&&sen<=300;
+   const status=by('v68ThresholdStatus');
+   if(!valid){by('v65Result').textContent='—';by('v65Formula').textContent='Ingresa glicemia y sensibilidad válida. Objetivo de corrección fijo: 110.';status.textContent='Faltan datos válidos.';by('v65Compare').textContent='Sin resultado verificable.';return;}
+   if(g<=300){by('v65Result').textContent='No indicada';by('v65Formula').textContent='Glicemia '+g+' mg/dL: no supera los 300 mg/dL de la pauta informada.';status.textContent='Umbral no cumplido (debe ser superior a 300). No calcular corrección para administrar.';by('v65Compare').textContent='La validación manual se habilita solamente cuando se cumple el umbral.';return;}
+   const raw=(g-t)/sen,rounded=Math.round((raw+Number.EPSILON)*10)/10;
+   by('v65Result').textContent=fmt(rounded)+' U';
+   status.textContent='Umbral mayor a 300 cumplido. Resultado solo matemático, no una indicación de administración.';
+   by('v65Formula').textContent='('+g+' − '+t+') ÷ '+sen+' = '+raw.toFixed(4).replace('.',',')+' U → '+fmt(rounded)+' U';
+   by('v65Compare').textContent=Number.isFinite(m)?(Math.abs(m-rounded)<0.051?'✓ Coincide con la comprobación manual a un decimal.':'⚠️ No coincide con el cálculo manual. Revisa operación y redondeo.'):'Introduce tu cálculo manual para revalidar.';
+  }
+  toggle.addEventListener('click',()=>{panel.hidden=!panel.hidden;toggle.setAttribute('aria-expanded',String(!panel.hidden));if(!panel.hidden){load();panel.scrollIntoView({block:'nearest',behavior:'smooth'});}});
+  fields.filter(id=>id!=='v65Target').forEach(id=>by(id).addEventListener('input',calc));
+  by('v65Reset').addEventListener('click',load);
+  by('v65OpenParams').addEventListener('click',()=>{if(!by('v65Confirm').checked){by('v65Compare').textContent='⚠️ Confirma la advertencia antes de editar los parámetros protegidos.';return;}const b=by('paramsB');if(b)b.click();else by('v65Compare').textContent='No se encontró el editor protegido de parámetros.';});
+  window.addEventListener('diego:medical-params-changed',load);
+ };
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start);else start();
+})();
+</script>
+<script id="v71-home-activity-code">
+(function(){'use strict';
+  const $=id=>document.getElementById(id), box=$('v71Activity');if(!box)return;
+  let activity='Fútbol';const buttons=[...box.querySelectorAll('[data-v71-activity]')],minutes=$('v71Minutes'),status=$('v71ExerciseStatus'),notice=$('v71ExerciseAdvisory');
+  const duration=()=>Number(minutes.value);
+  function update(){const n=duration();const ok=minutes.value.trim()!==''&&Number.isInteger(n)&&n>=1&&n<=600;
+   notice.hidden=!ok;status.textContent=!minutes.value.trim()?'Selecciona actividad y duración; el registro se guardará en la bitácora.':!ok?'⚠️ Ingresa una duración válida entre 1 y 600 minutos.':'Actividad: '+activity+' · '+n+' min. Pulsa Registrar para guardar en Bitácora.';
+   $('v71SaveExercise').disabled=!ok;
+  }
+  buttons.forEach(b=>b.addEventListener('click',()=>{activity=b.dataset.v71Activity;buttons.forEach(x=>{let active=x===b;x.classList.toggle('v71-active',active);x.setAttribute('aria-pressed',String(active))});update()}));
+  minutes.addEventListener('input',update);
+  $('v71SaveExercise').addEventListener('click',()=>{
+    const n=duration();if(!Number.isInteger(n)||n<1||n>600)return;
+    const api=window.DiegoBitacora;
+    if(!api||typeof api.saveExercise!=='function'){status.textContent='⚠️ Bitácora no disponible. Recarga la aplicación e inténtalo nuevamente.';return;}
+    const btn=$('v71SaveExercise');btn.disabled=true;
+    let saved=false;
+    try{saved=api.saveExercise({activity:activity,minutes:n});}
+    finally{btn.disabled=false;}
+    if(saved){
+      const ex=$('v79ExerciseMode');if(ex){ex.checked=true;ex.dispatchEvent(new Event('change',{bubbles:true}));}
+      minutes.value='';update();
+      status.textContent='✓ '+activity+' · '+n+' min guardados localmente. Objetivo 150 activado en el cálculo de comida actual (puedes desactivarlo allí). Comprueba la sincronización familiar.';
+    }else status.textContent='⚠️ No se pudo guardar. Revisa permisos de Bitácora y espacio disponible.';
+  });
+  // Refleja el último ejercicio confirmado en Bitácora, sin asumir ventana clínica de efecto.
+  function lastSaved(){try{const all=window.DiegoBitacora?.getEntries?.()||[];const item=all.filter(x=>x.type==='exercise'&&Number.isFinite(x.t)).sort((a,b)=>b.t-a.t)[0];
+    if(item&&(!minutes.value||document.activeElement!==minutes))status.textContent='Último ejercicio guardado: '+item.exercise+' · '+item.duration+' min ('+new Date(item.t).toLocaleString('es-CL')+').';
+   }catch(e){}}
+  window.addEventListener('diego-bitacora-changed',lastSaved);window.addEventListener('diego-family-synced',lastSaved);
+  update();setTimeout(lastSaved,250);
+})();
+</script>
+<style id="v78-correction-visible-style">
+#s-inicio .v78-correction-launcher{display:flex;align-items:center;justify-content:flex-start;margin:1px 0 2px;}
+#s-inicio .v78-correction-launcher #v65CorrectionToggle{display:inline-flex;align-items:center;gap:8px;min-height:42px;padding:7px 12px;border-radius:12px;border:1px solid #b7d8c9;background:#e7f4e9;color:#315c4d;font-size:13px;font-weight:800;box-shadow:none;cursor:pointer;}
+#s-inicio .v78-correction-launcher #v65CorrectionToggle span{font-size:19px;line-height:1;}
+#s-inicio .v78-correction-launcher #v65CorrectionToggle[aria-expanded=true]{background:#d7eddf;}
+</style>
+<script id="v78-fix-hidden-correction">
+(function(){'use strict';
+ function init(){
+  const flow=document.getElementById('v53Workflow'),btn=document.getElementById('v65CorrectionToggle'),panel=document.getElementById('v65CorrectionPanel'),exercise=document.getElementById('v71Activity');
+  if(!flow||!btn||!panel||btn.closest('.v78-correction-launcher'))return;
+  const launcher=document.createElement('div');launcher.className='v78-correction-launcher';
+  if(exercise&&exercise.parentElement===flow)exercise.after(launcher);else flow.prepend(launcher);
+  launcher.appendChild(btn);launcher.after(panel);
+ }
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
+</script>
 </body>
 </html>

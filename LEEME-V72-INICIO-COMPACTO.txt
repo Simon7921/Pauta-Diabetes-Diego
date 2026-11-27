@@ -1,0 +1,1 @@
+V72: Actividad física ubicada justo debajo de selección de comida, antes del cálculo rápido; tarjetas de comida reducidas a ~42px de alto y bloque de ejercicio compacto. No cambia operaciones médicas, fichas nutricionales ni guardado familiar.

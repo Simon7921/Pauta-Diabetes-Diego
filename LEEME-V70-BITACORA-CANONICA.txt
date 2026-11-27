@@ -1,0 +1,9 @@
+V70 · BITÁCORA FAMILIAR COMO FUENTE PRINCIPAL
+SEGURIDAD: El ZIP NO contiene historial médico personal de Diego. El JSON de importación se entrega POR SEPARADO en el chat. No alojarlo en carpetas publicadas de Cloudflare o GitHub Pages.
+1. Publica ZIP de la app en Cloudflare.
+2. Abre Bitácora → «Respaldo JSON de bitácora» para proteger datos previos.
+3. En una cuenta familiar editor/owner, abre «Importar historial privado a la familia», selecciona el JSON separado, usa «Revisar archivo antes de importar» y revisa el número de duplicados. Confirma importación.
+4. Los 28 registros históricos ya depurados se incorporan en orden con su dosis histórica original, sin recalcular. Los 3 sospechosos quedan solo en la auditoría, no se importan.
+5. De ahora en adelante ingresa los nuevos registros directamente en la aplicación. Firebase (si está conectado y sincronizado) es la fuente compartida. No se reimportan datos viejos salvo reposición deliberada.
+6. En Bitácora, «Exportar para IA (JSON)» guarda una copia puntual de los registros presentes y puede adjuntarse manualmente a ChatGPT o Claude. No existe conexión automática ni se comparten datos sin acción del usuario.
+7. Revisa que diga «Sincronizado». Las copias exportadas no son la fuente viva, solo instantáneas.

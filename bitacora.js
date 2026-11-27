@@ -93,7 +93,7 @@ var x={id:edit?v.id:'bt-'+Date.now()+'-'+Math.random().toString(36).slice(2,7),t
 function n(id,prop){var z=optInt(id);if(z!=null)x[prop||id]=z;}
 if(type==='meal'){
   x.mealId=read('btMeal');x.mealName={'desayuno':'Desayuno','colacion':'Colación','almuerzo':'Almuerzo','once':'Once','cena':'Cena'}[x.mealId];
-  x.ratio=x.mealId==='colacion'?null:{desayuno:18,almuerzo:22,once:20,cena:22}[x.mealId];
+  x.ratio=x.mealId==='colacion'?null:(window.Calc&&typeof window.Calc.ratioForMeal==='function'?window.Calc.ratioForMeal(x.mealId):null);
   x.foods=edit?v.foods||[]:(c.foods||[]);x.calculatedDose=edit?v.calculatedDose:null;
   if(!edit&&c.mealId===x.mealId&&Number.isFinite(c.calculatedDose))x.calculatedDose=c.calculatedDose;
   n('btCarbs','carbs');n('btGlucose','glucose');n('btCapillary','capillary');n('btGiven','given');x.injection=read('btInjection');x.mealStart=read('btMealStart');x.trend=read('btTrend');
@@ -151,8 +151,42 @@ if($('btCalendar'))$('btCalendar').onclick=function(e){var b=e.target.closest('[
 if($('btTimeline'))$('btTimeline').onclick=function(e){var ed=e.target.closest('[data-edit]'),del=e.target.closest('[data-delete]');if(ed){var x=entries.find(function(x){return x.id===ed.dataset.edit;});if(x)showForm(x.type,x);}else if(del){var v=entries.find(function(x){return x.id===del.dataset.delete;});if(v&&confirm('¿Eliminar este registro?')){entries=entries.filter(function(x){return x.id!==v.id;});if(save())render();}}};
 if($('btExportCSV'))$('btExportCSV').onclick=exportCSV;
 if($('btWeeklyReport'))$('btWeeklyReport').onclick=report;
+// V70: la bitácora actual es el único origen para exportaciones de análisis.
+if($('btExportForAI'))$('btExportForAI').onclick=function(){
+ const exportRows=entries.slice().sort(function(a,b){return a.t-b.t;});
+ const payload={schema:'diego-familiar-bitacora-v1',generatedAt:new Date().toISOString(),
+  sourceOfTruth:'Bitácora de Diego Familiar (local o Firebase sincronizado, según estado visible)',
+  clinicalNotice:'Datos de seguimiento. No inferir dosis recomendadas ni recalcular dosis históricas.',
+  total:exportRows.length,entries:exportRows};
+ download('Diego-Bitacora-Para-IA-'+localDate(new Date())+'.json',JSON.stringify(payload,null,2),'application/json;charset=utf-8');
+};
+if($('btAIInstructions'))$('btAIInstructions').onclick=function(){
+ const prompt='Analiza SOLO el archivo JSON adjunto exportado desde Diego Familiar. Ordena por fecha y hora, describe patrones observados de glucosa, alimentos, ejercicio e insulina registrada; separa dosis históricas calculadas de las realmente administradas y señala datos faltantes o duplicados. No recomiendes ni calcules dosis nuevas. Los registros nuevos de la app son la fuente de datos y no debes inventar datos.';
+ if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(prompt).then(function(){alert('Instrucciones copiadas. Adjunta el JSON a ChatGPT o Claude.');}).catch(function(){alert(prompt);});}
+ else alert(prompt);
+};
+if($('btImportHistoryShortcut'))$('btImportHistoryShortcut').onclick=function(){
+ const settings=$('familySettings');if(settings)settings.open=true;
+ const input=$('familyHistoryFile');if(input)input.scrollIntoView({behavior:'smooth',block:'center'});
+};
+if($('btGoHistory'))$('btGoHistory').onclick=function(){
+ selected='2026-11-24';month=10;year=2026;
+ if($('btTimelinePeriod'))$('btTimelinePeriod').value='month';
+ timeline();calendar();
+ $('btTimeline')?.scrollIntoView({block:'nearest',behavior:'smooth'});
+};
 if($('btBackup'))$('btBackup').onclick=function(){download('Bitacora-Diego-respaldo-'+localDate(new Date())+'.json',JSON.stringify({version:29,exportedAt:new Date().toISOString(),entries:entries},null,2),'application/json;charset=utf-8');};
 window.DiegoBitacora={render:render,openMeal:function(){if(bridge())bridge().open();showForm('meal');},
+  saveExercise:function(preset){
+    var mins=Number(preset&&preset.minutes),activity=String(preset&&preset.activity||'Fútbol');
+    if(!Number.isInteger(mins)||mins<1||mins>600||!['Fútbol','Bicicleta','Caminata','Gimnasio','Otro'].includes(activity))return false;
+    var record={id:'bt-'+Date.now()+'-'+Math.random().toString(36).slice(2,7),type:'exercise',t:Date.now(),exercise:activity,duration:mins,intensity:'No registrada',note:'Registrado desde Inicio; glucosa inicial y final no informadas.'};
+    entries.push(record);
+    if(!save()){entries=entries.filter(function(x){return x.id!==record.id;});return false;}
+    selected=dateOnly(record.t);month=new Date(record.t).getMonth();year=new Date(record.t).getFullYear();render();
+    return true;
+  },
+  openExercise:function(preset){var v={type:'exercise'};showForm('exercise');var a=$('btExercise'),d=$('btDuration'),i=$('btIntensity');if(a&&preset&&preset.activity)a.value=preset.activity;if(d&&preset&&preset.minutes)d.value=preset.minutes;if(i&&preset&&preset.intensity)i.value=preset.intensity;},
   getEntries:function(){return entries.map(function(x){return JSON.parse(JSON.stringify(x));});},
   loadShared:function(list){if(!Array.isArray(list))return;entries=list.filter(function(x){return x&&typeof x.id==='string'&&Number.isFinite(x.t);});
     try{localStorage.setItem(KEY,JSON.stringify(entries));}catch(e){}
