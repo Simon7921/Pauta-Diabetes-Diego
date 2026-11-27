@@ -1010,13 +1010,13 @@ html[data-mode=dark] .v53-warning{color:#f1d7a7}
         <label>Glicemia actual <span>mg/dL</span><input id="homeQuickGlucose" type="text" inputmode="decimal" autocomplete="off" placeholder="Ej. 137" aria-describedby="homeQuickDisclaimer"></label>
         <label>Carbohidratos <span>g HC</span><input id="homeQuickCarbs" type="text" inputmode="decimal" autocomplete="off" placeholder="Ej. 66,9" aria-describedby="homeQuickDisclaimer"></label>
       </div>
-      <div class="home-quickcalc__result" aria-live="polite"><div><span><strong class="home-quickcalc__total-label">CÁLCULO PRINCIPAL · SOLO CARBOHIDRATOS</strong></span><strong id="homeQuickMainTotal">— U</strong></div><small>HC ÷ ratio de la comida. Referencia matemática, NO dosis para inyectar.</small></div>
+      <div class="home-quickcalc__result" aria-live="polite"><div><span><strong class="home-quickcalc__total-label">RESULTADO PRINCIPAL · FÓRMULA COMPLETA</strong></span><strong id="homeQuickMainTotal">— U</strong></div><small>Corrección por glicemia + HC ÷ ratio. Resultado matemático, NO dosis para inyectar.</small></div>
       <div class="home-quickcalc__always-breakdown" aria-label="Componentes matemáticos de la fórmula">
         <div><span>Por carbohidratos</span><strong id="homeQuickFoodValue">— U</strong></div>
         <div><span>Corrección por glicemia</span><strong id="homeQuickCorrectionVisible">— U</strong></div>
       </div>
       <div class="home-quickcalc__visible-formula" role="group" aria-label="Fórmula matemática con valores actualizados de glicemia, carbohidratos y parámetros registrados">
-        <p class="home-quickcalc__formula-caption">Fórmula completa · desglose secundario</p>
+        <p class="home-quickcalc__formula-caption">Fórmula completa · comprobación</p>
         <div class="home-quickcalc__equation">
           <span class="home-quickcalc__fraction"><span class="home-quickcalc__numerator" id="homeQuickFormulaGlucose">— − 110</span><span class="home-quickcalc__denominator" id="homeQuickFormulaSensitivity">50</span></span>
           <span class="home-quickcalc__plus">+</span>
@@ -1518,7 +1518,7 @@ if($('familyStatus')){new MutationObserver(sync).observe($('familyStatus'),{subt
   var el=function(id){return document.getElementById(id)};
   var g=el('homeQuickGlucose'),c=el('homeQuickCarbs');if(!g||!c)return;
   function parse(v){var t=String(v).trim().replace(',','.');if(!t||!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(t))return NaN;return Number(t)}
-  function fmt(v){return Number.isFinite(v)?v.toLocaleString('es-CL',{minimumFractionDigits:2,maximumFractionDigits:2})+' U':'—'}
+  function fmt(v){return Number.isFinite(v)?(Math.round((v+Number.EPSILON)*10)/10).toLocaleString('es-CL',{minimumFractionDigits:1,maximumFractionDigits:1})+' U':'—'}
   function put(id,val){el(id).textContent=val}
   function update(){
     var valG=parse(g.value), valC=parse(c.value);
@@ -1539,7 +1539,7 @@ if($('familyStatus')){new MutationObserver(sync).observe($('familyStatus'),{subt
     put('homeQuickFormulaRatio',ratio||'—');
     var valid=ratio&&glucoseOk&&carbsOk&&target===110&&sensitivity===50;
     var food=valid?valC/ratio:NaN,correction=valid?(valG-target)/sensitivity:NaN;
-    put('homeQuickMainTotal',fmt(food));put('homeQuickFoodValue',fmt(food));put('homeQuickCorrectionVisible',fmt(correction));put('homeQuickFoodDetail',fmt(food));put('homeQuickCorrection',fmt(correction));put('homeQuickTotal',fmt(food+correction));
+    put('homeQuickMainTotal',fmt(food+correction));put('homeQuickFoodValue',fmt(food));put('homeQuickCorrectionVisible',fmt(correction));put('homeQuickFoodDetail',fmt(food));put('homeQuickCorrection',fmt(correction));put('homeQuickTotal',fmt(food+correction));
     put('homeQuickParams',target===110&&sensitivity===50?'Fórmula: (glicemia − 110) ÷ 50 + CH ÷ '+(ratio||'ratio')+' · sin reglas clínicas adicionales.':'⚠️ Parámetros guardados diferentes de objetivo 110 y sensibilidad 50. Revisa Parámetros médicos; el cálculo permanece bloqueado.');
   }
   g.addEventListener('input',update);c.addEventListener('input',update);

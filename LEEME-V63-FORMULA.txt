@@ -1,0 +1,1 @@
+V63: resultado principal = (glicemia - objetivo)/sensibilidad + HC/ratio. Se presenta con un decimal tanto en Inicio como en Mi pauta. Ejemplo: 180 mg/dL, 55,1 g HC, ratio 24 = 3,7 U. Simulación matemática, no indicación de insulina.

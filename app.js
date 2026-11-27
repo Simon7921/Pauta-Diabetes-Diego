@@ -688,7 +688,7 @@
     "sintomas": function () { return ["warn", "Síntomas distintos a la lectura", "Confirma con glucómetro capilar antes de decidir."]; }
   };
   var LAST = null;
-  function dec2(x) { return (Math.round(x * 100) / 100).toLocaleString("es-CL", { minimumFractionDigits: 1, maximumFractionDigits: 2 }); }
+  function dec2(x) { return (Math.round((x + Number.EPSILON) * 10) / 10).toLocaleString("es-CL", { minimumFractionDigits: 1, maximumFractionDigits: 1 }); }
   function note(kind, title, txt) { return '<div class="note ' + kind + '">' + ico(kind === "info" ? "info" : "alert") + "<div><b>" + esc(title) + "</b>" + txt + "</div></div>"; }
   function compute() {
     var g = C.num($("pg").value), c = C.num($("pc").value);
@@ -731,10 +731,10 @@
       // La cifra es SOLO una simulación matemática, no una dosis recomendada.
       // Nunca guardar como unidades administradas la simulación automática.
       LAST = { g:g, c:c || 0, dose:null, corr:null, food:null, recent:pz.recent, sport:pz.sport };
-      box = '<div class="lab">CÁLCULO PRINCIPAL · SOLO CARBOHIDRATOS · NO ES DOSIS PARA INYECTAR</div><div class="dv">' + dec2(r.food) + "<small>U teóricas</small></div>" +
+      box = '<div class="lab">RESULTADO PRINCIPAL · FÓRMULA COMPLETA · NO ES DOSIS PARA INYECTAR</div><div class="dv">' + dec2(r.total) + "<small>U teóricas</small></div>" +
         '<div class="brk">Por carbohidratos: ' + dec2(c) + ' g HC ÷ ' + activeRatio + ' = <b>' + dec2(r.food) + ' U</b></div>' +
         '<div class="brk">Corrección matemática: (' + dec2(g) + ' − ' + dec2(P.t) + ') ÷ ' + dec2(P.f) + ' = <b>' + dec2(r.corr) + ' U</b></div>' +
-        '<div class="brk" style="font-weight:700">Fórmula completa (desglose adicional, NO cifra principal): ' + dec2(r.food) + ' + (' + dec2(r.corr) + ') = ' + dec2(r.total) + ' U teóricas.</div>' +
+        '<div class="brk" style="font-weight:700">Fórmula completa (resultado principal): ' + dec2(r.food) + ' + (' + dec2(r.corr) + ') = ' + dec2(r.total) + ' U teóricas.</div>' +
         '<div class="rnd"><b>Atención:</b> el total mostrado es exclusivamente matemático y NO es una dosis para administrar. La aplicación no considera insulina activa, ejercicio, hipoglucemias ni la pauta de redondeo. Confirma con el equipo tratante cuándo corresponde una corrección, incluida la corrección negativa por debajo del objetivo.</div>';
       out.push(note('danger','No es una indicación de insulina','Este resultado es orientativo y NO puede utilizarse para decidir una inyección. Verifica la pauta escrita y las condiciones actuales con el equipo tratante.'));
     }
