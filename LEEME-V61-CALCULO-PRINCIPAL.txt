@@ -1,0 +1,1 @@
+V61: Muestra HC / ratio como resultado principal. La corrección (glucemia - objetivo) / sensibilidad y el total de la fórmula completa se conservan debajo como desglose matemático; no usar como dosis automática. Ejemplo once: HC 80,9 / ratio 22 = 3,68 U principal; corrección (142-110)/50=0,64 U; suma completa secundaria 4,32 U. No modifica registros previos.

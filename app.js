@@ -673,6 +673,7 @@
   }
   $("syncPlate").addEventListener("click", function () { pz.fromPlate = true; $("pc").value = dec(C.round1(plateTotal())); compute(); toast("Usamos el total de tu plato: " + fmt(plateTotal()) + " g"); });
   $("pc").addEventListener("input", function () { pz.fromPlate = false; compute(); });
+  $("pc").addEventListener("focus", function () { if ($("pc").value.trim() === "0") $("pc").select(); });
   $("pg").addEventListener("input", compute);
   document.querySelectorAll("#s-pauta .seg").forEach(function (s) {
     s.addEventListener("click", function (e) { var b = e.target.closest("button"); if (!b) return; var v = b.dataset.v; pz[s.dataset.k] = isNaN(+v) ? v : +v; s.querySelectorAll("button").forEach(function (x) { x.setAttribute("aria-pressed", String(x === b)); }); compute(); });
@@ -730,11 +731,11 @@
       // La cifra es SOLO una simulación matemática, no una dosis recomendada.
       // Nunca guardar como unidades administradas la simulación automática.
       LAST = { g:g, c:c || 0, dose:null, corr:null, food:null, recent:pz.recent, sport:pz.sport };
-      box = '<div class="lab">COMPONENTE POR CARBOHIDRATOS · NO ES DOSIS PARA INYECTAR</div><div class="dv">' + dec2(r.food) + "<small>U por HC</small></div>" +
-        '<div class="brk" style="font-weight:700">' + dec2(c) + ' g de HC ÷ ' + activeRatio + ' = ' + dec2(r.food) + ' U por carbohidratos</div>' +
-        '<div class="brk">Corrección matemática separada: (' + dec2(g) + ' − ' + dec2(P.t) + ') ÷ ' + dec2(P.f) + ' = ' + dec2(r.corr) + ' U.</div>' +
-        '<div class="brk">Fórmula escrita completa: ' + dec2(r.food) + ' + (' + dec2(r.corr) + ') = ' + dec2(r.total) + ' U teóricas. <b>Este total NO es una dosis indicada.</b></div>' +
-        '<div class="rnd"><b>Importante:</b> mostrar ' + dec2(r.food) + ' U como componente de comida NO significa que la corrección negativa se deba ignorar ni que esta cantidad deba inyectarse. Consultar la pauta clínica para correcciones bajo el objetivo, insulina activa y redondeos. No inyectar basándose en esta simulación.</div>';
+      box = '<div class="lab">CÁLCULO PRINCIPAL · SOLO CARBOHIDRATOS · NO ES DOSIS PARA INYECTAR</div><div class="dv">' + dec2(r.food) + "<small>U teóricas</small></div>" +
+        '<div class="brk">Por carbohidratos: ' + dec2(c) + ' g HC ÷ ' + activeRatio + ' = <b>' + dec2(r.food) + ' U</b></div>' +
+        '<div class="brk">Corrección matemática: (' + dec2(g) + ' − ' + dec2(P.t) + ') ÷ ' + dec2(P.f) + ' = <b>' + dec2(r.corr) + ' U</b></div>' +
+        '<div class="brk" style="font-weight:700">Fórmula completa (desglose adicional, NO cifra principal): ' + dec2(r.food) + ' + (' + dec2(r.corr) + ') = ' + dec2(r.total) + ' U teóricas.</div>' +
+        '<div class="rnd"><b>Atención:</b> el total mostrado es exclusivamente matemático y NO es una dosis para administrar. La aplicación no considera insulina activa, ejercicio, hipoglucemias ni la pauta de redondeo. Confirma con el equipo tratante cuándo corresponde una corrección, incluida la corrección negativa por debajo del objetivo.</div>';
       out.push(note('danger','No es una indicación de insulina','Este resultado es orientativo y NO puede utilizarse para decidir una inyección. Verifica la pauta escrita y las condiciones actuales con el equipo tratante.'));
     }
     $("doseBox").innerHTML = box;

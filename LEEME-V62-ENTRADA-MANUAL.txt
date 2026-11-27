@@ -1,0 +1,1 @@
+V62: El campo de carbohidratos de Inicio queda vacío cuando el plato no contiene alimentos, sin introducir el 0 automáticamente. Al agregar alimentos, se sincroniza el total de HC. La entrada manual permanece editable. En Mi pauta se selecciona el cero al enfocar, si lo hubiera. Sin cambios en fórmulas ni ratios.

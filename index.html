@@ -1010,13 +1010,13 @@ html[data-mode=dark] .v53-warning{color:#f1d7a7}
         <label>Glicemia actual <span>mg/dL</span><input id="homeQuickGlucose" type="text" inputmode="decimal" autocomplete="off" placeholder="Ej. 137" aria-describedby="homeQuickDisclaimer"></label>
         <label>Carbohidratos <span>g HC</span><input id="homeQuickCarbs" type="text" inputmode="decimal" autocomplete="off" placeholder="Ej. 66,9" aria-describedby="homeQuickDisclaimer"></label>
       </div>
-      <div class="home-quickcalc__result" aria-live="polite"><div><span><strong class="home-quickcalc__total-label">TOTAL DE LA FÓRMULA COMPLETA</strong></span><strong id="homeQuickMainTotal">— U</strong></div><small>Resultado algebraico únicamente. NO es una dosis para inyectar.</small></div>
+      <div class="home-quickcalc__result" aria-live="polite"><div><span><strong class="home-quickcalc__total-label">CÁLCULO PRINCIPAL · SOLO CARBOHIDRATOS</strong></span><strong id="homeQuickMainTotal">— U</strong></div><small>HC ÷ ratio de la comida. Referencia matemática, NO dosis para inyectar.</small></div>
       <div class="home-quickcalc__always-breakdown" aria-label="Componentes matemáticos de la fórmula">
         <div><span>Por carbohidratos</span><strong id="homeQuickFoodValue">— U</strong></div>
         <div><span>Corrección por glicemia</span><strong id="homeQuickCorrectionVisible">— U</strong></div>
       </div>
       <div class="home-quickcalc__visible-formula" role="group" aria-label="Fórmula matemática con valores actualizados de glicemia, carbohidratos y parámetros registrados">
-        <p class="home-quickcalc__formula-caption">Fórmula de la doctora · ratio actualizado</p>
+        <p class="home-quickcalc__formula-caption">Fórmula completa · desglose secundario</p>
         <div class="home-quickcalc__equation">
           <span class="home-quickcalc__fraction"><span class="home-quickcalc__numerator" id="homeQuickFormulaGlucose">— − 110</span><span class="home-quickcalc__denominator" id="homeQuickFormulaSensitivity">50</span></span>
           <span class="home-quickcalc__plus">+</span>
@@ -1539,7 +1539,7 @@ if($('familyStatus')){new MutationObserver(sync).observe($('familyStatus'),{subt
     put('homeQuickFormulaRatio',ratio||'—');
     var valid=ratio&&glucoseOk&&carbsOk&&target===110&&sensitivity===50;
     var food=valid?valC/ratio:NaN,correction=valid?(valG-target)/sensitivity:NaN;
-    put('homeQuickMainTotal',fmt(food+correction));put('homeQuickFoodValue',fmt(food));put('homeQuickCorrectionVisible',fmt(correction));put('homeQuickFoodDetail',fmt(food));put('homeQuickCorrection',fmt(correction));put('homeQuickTotal',fmt(food+correction));
+    put('homeQuickMainTotal',fmt(food));put('homeQuickFoodValue',fmt(food));put('homeQuickCorrectionVisible',fmt(correction));put('homeQuickFoodDetail',fmt(food));put('homeQuickCorrection',fmt(correction));put('homeQuickTotal',fmt(food+correction));
     put('homeQuickParams',target===110&&sensitivity===50?'Fórmula: (glicemia − 110) ÷ 50 + CH ÷ '+(ratio||'ratio')+' · sin reglas clínicas adicionales.':'⚠️ Parámetros guardados diferentes de objetivo 110 y sensibilidad 50. Revisa Parámetros médicos; el cálculo permanece bloqueado.');
   }
   g.addEventListener('input',update);c.addEventListener('input',update);
@@ -1573,9 +1573,28 @@ if($('familyStatus')){new MutationObserver(sync).observe($('familyStatus'),{subt
  const headBtn=$('v53HeroChoose');if(headBtn)headBtn.addEventListener('click',()=>{(home.querySelector('#homeFoodFavorites:not([hidden])')||staples)?.scrollIntoView({behavior:'smooth',block:'start'})});
  // El total proviene del plato calculado por la app, no de un cálculo paralelo.
  const src=$('uxCarbCount'),carbs=$('homeQuickCarbs');
+ // V62: El ingreso manual comienza vacío; el 0 del plato sin alimentos no se copia.
+ // Un cambio REAL del plato actualiza el campo; escribir manualmente no se pisa.
+ let lastPlateValue=null,fromPlate=false;
  function syncPlate(){if(!src||!carbs)return;
- const n=parseFloat(src.textContent.replace(/\s/g,'').replace(',','.'));if(!Number.isFinite(n))return;
- const val=String(Number(n.toFixed(2))).replace('.',',');if(carbs.value!==val){carbs.value=val;carbs.dispatchEvent(new Event('input',{bubbles:true}));}}
+   const n=parseFloat(src.textContent.replace(/\s/g,'').replace(',','.'));
+   if(!Number.isFinite(n))return;
+   const items=document.getElementById('uxFoodCount');
+   const count=items?parseInt(items.textContent,10):NaN;
+   const empty=Number.isFinite(count)?count===0:n===0;
+   const val=String(Number(n.toFixed(2))).replace('.',',');
+   const changed=lastPlateValue!==val;
+   if(!changed)return;
+   lastPlateValue=val;
+   if(empty){
+     if(fromPlate){carbs.value='';carbs.dispatchEvent(new Event('input',{bubbles:true}));fromPlate=false;}
+     return;
+   }
+   fromPlate=true;
+   carbs.value=val;carbs.dispatchEvent(new Event('input',{bubbles:true}));
+ }
+ carbs.addEventListener('input',()=>{fromPlate=false;});
+ carbs.addEventListener('focus',()=>{if(carbs.value.trim()==='0')carbs.select();});
  if(src)new MutationObserver(syncPlate).observe(src,{subtree:true,childList:true,characterData:true});
  syncPlate();
 })();</script>
